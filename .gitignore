@@ -1,0 +1,4 @@
+gowhoson
+*.txt
+vendor/
+dist/
