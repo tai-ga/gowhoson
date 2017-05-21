@@ -209,7 +209,9 @@ func (ses *Session) methodQuery() {
 
 func (ses *Session) methodQuit() {
 	ses.sendResponsePositive("QUIT OK")
-	ses.conn.Close()
+	if ses.protocol == pTCP {
+		ses.conn.Close()
+	}
 }
 
 func (ses *Session) close() {
