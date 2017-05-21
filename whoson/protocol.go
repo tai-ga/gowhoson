@@ -151,12 +151,16 @@ func (ses *Session) startHandler() bool {
 			}
 		}
 		err = ses.parseCmd(line)
+		if err != nil {
+			ses.sendResponseBadRequest(err.Error())
+			return true
+		}
 	} else {
 		err = ses.parseCmd(string(ses.b.buf[:ses.b.count]))
-	}
-	if err != nil {
-		ses.sendResponseBadRequest(err.Error())
-		return true
+		if err != nil {
+			ses.sendResponseBadRequest(err.Error())
+			return true
+		}
 	}
 
 	switch ses.cmdMethod {
