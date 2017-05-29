@@ -51,6 +51,7 @@ func NewSessionTCP(s *TCPServer, c net.Conn) (*Session, error) {
 
 	return &Session{
 		protocol:  pTCP,
+		id:        id,
 		tcpserver: s,
 		conn:      c,
 		tp:        textproto.NewConn(c),
