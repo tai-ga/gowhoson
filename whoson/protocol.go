@@ -132,7 +132,14 @@ func (ses *Session) sendResponseBadRequest(str string) error {
 	return ses.sendLine(fmt.Sprintf("%s%s", result[rBadRequest], str))
 }
 
+func (ses *Session) resetCmd() {
+	ses.cmdMethod = mUnkownMethod
+	ses.cmdIp = nil
+	ses.cmdArgs = ""
+}
+
 func (ses *Session) startHandler() bool {
+	defer ses.resetCmd()
 	var err error
 
 	if ses.protocol == pTCP {

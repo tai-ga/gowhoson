@@ -23,7 +23,8 @@ const (
 	SessionTimeOut  = 10 * time.Second
 	StoreDataExpire = 30 * time.Minute
 
-	pTCP ProtocolType = iota
+	pUnkownProtocol ProtocolType = iota
+	pTCP
 	pUDP
 
 	mUnkownMethod MethodType = iota
@@ -41,10 +42,11 @@ var (
 	MainStore Store = nil
 
 	method = map[MethodType]string{
-		mLogin:  "LOGIN",
-		mLogout: "LOGOUT",
-		mQuery:  "QUERY",
-		mQuit:   "QUIT",
+		mUnkownMethod: "NONE",
+		mLogin:        "LOGIN",
+		mLogout:       "LOGOUT",
+		mQuery:        "QUERY",
+		mQuit:         "QUIT",
 	}
 
 	result = map[ResultType]string{
