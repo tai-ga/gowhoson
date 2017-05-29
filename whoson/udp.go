@@ -149,7 +149,6 @@ DONE:
 // wait causes the caller to block until all active Whoson sessions have finished
 func (s *UDPServer) wait() {
 	s.wg.Wait()
-	//log.Tracef("whoson process waited")
 }
 
 type Worker struct {
