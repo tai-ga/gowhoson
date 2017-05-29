@@ -61,12 +61,17 @@ func (s *TCPServer) ListenAndServe() error {
 }
 
 func (s *TCPServer) ServeTCP(l *net.TCPListener) error {
+	var err error
 	NewMainStore()
+	err = NewIDGenerator(uint32(1))
+	if err != nil {
+		return errors.Wrap(err, "IDGenerator failed")
+	}
+
 	if s.listener == nil {
 		s.listener = l
 	}
 	ctx, ctxCancel := context.WithCancel(context.Background())
-	var err error
 	for {
 		select {
 		case <-ctx.Done():

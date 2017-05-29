@@ -71,7 +71,14 @@ func (s *UDPServer) ListenAndServe() error {
 }
 
 func (s *UDPServer) ServeUDP(c *net.UDPConn) error {
+	var err error
+
 	NewMainStore()
+	err = NewIDGenerator(uint32(1))
+	if err != nil {
+		return errors.Wrap(err, "IDGenerator failed")
+	}
+
 	if s.conn == nil {
 		s.conn = c
 	}
@@ -89,7 +96,7 @@ func (s *UDPServer) ServeUDP(c *net.UDPConn) error {
 		s.wg.Add(1)
 		go w.Run(ctx)
 	}
-	err := s.startSession(ctx)
+	err = s.startSession(ctx)
 	ctxCancel()
 	s.wg.Wait()
 	return err

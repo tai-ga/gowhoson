@@ -12,6 +12,7 @@ import (
 
 type Session struct {
 	protocol ProtocolType
+	id       uint64
 
 	udpconn    *net.UDPConn
 	remoteAddr *net.UDPAddr
@@ -27,22 +28,33 @@ type Session struct {
 	cmdArgs   string
 }
 
-func NewSessionUDP(c *net.UDPConn, r *net.UDPAddr, b *Buffer) *Session {
+func NewSessionUDP(c *net.UDPConn, r *net.UDPAddr, b *Buffer) (*Session, error) {
+	id, err := IDGenerator.NextID()
+	if err != nil {
+		return nil, err
+	}
+
 	return &Session{
 		protocol:   pUDP,
+		id:         id,
 		udpconn:    c,
 		remoteAddr: r,
 		b:          b,
-	}
+	}, nil
 }
 
-func NewSessionTCP(s *TCPServer, c net.Conn) *Session {
+func NewSessionTCP(s *TCPServer, c net.Conn) (*Session, error) {
+	id, err := IDGenerator.NextID()
+	if err != nil {
+		return nil, err
+	}
+
 	return &Session{
 		protocol:  pTCP,
 		tcpserver: s,
 		conn:      c,
 		tp:        textproto.NewConn(c),
-	}
+	}, nil
 }
 
 func (ses *Session) setTpId() {
