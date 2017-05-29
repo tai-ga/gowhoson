@@ -2,7 +2,6 @@ package whoson
 
 import (
 	"context"
-	"fmt"
 	"net"
 	"runtime"
 	"strconv"
@@ -74,6 +73,7 @@ func (s *UDPServer) ServeUDP(c *net.UDPConn) error {
 	var err error
 
 	NewMainStore()
+	NewLogger("stdout", "warn")
 	err = NewIDGenerator(uint32(1))
 	if err != nil {
 		return errors.Wrap(err, "IDGenerator failed")
@@ -133,10 +133,16 @@ func (s *UDPServer) startSession(ctx context.Context) error {
 			goto DONE
 		}
 		b.count = n
-		s.enqueue(NewSessionUDP(s.conn, a, b))
+		ses, err := NewSessionUDP(s.conn, a, b)
+		if err != nil {
+			Log("error", "Session failed", ses, err)
+		}
+
+		s.enqueue(ses)
+		Log("debug", "Session start", ses, nil)
 	}
 DONE:
-	fmt.Println("UDP Core: done")
+	Log("info", "UDPServerStop", nil, nil)
 	return err
 }
 
@@ -158,7 +164,7 @@ func (w *Worker) Run(ctx context.Context) {
 		case v := <-w.s.queue:
 			w.work(v)
 		case <-ctx.Done():
-			fmt.Println("Worker: done")
+			Log("info", "UDPServerWorkerStop", nil, nil)
 			return
 		}
 	}

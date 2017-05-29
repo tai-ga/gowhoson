@@ -196,6 +196,7 @@ func (ses *Session) startHandler() bool {
 		err := errors.New("handler error")
 		ses.sendResponseBadRequest(err.Error())
 	}
+	Log("debug", "SessionHandler", ses, err)
 	return true
 }
 

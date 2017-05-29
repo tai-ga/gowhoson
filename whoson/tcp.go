@@ -2,7 +2,6 @@ package whoson
 
 import (
 	"context"
-	"fmt"
 	"net"
 	"strconv"
 	"sync"
@@ -63,11 +62,13 @@ func (s *TCPServer) ListenAndServe() error {
 func (s *TCPServer) ServeTCP(l *net.TCPListener) error {
 	var err error
 	NewMainStore()
+	NewLogger("stdout", "warn")
 	err = NewIDGenerator(uint32(1))
 	if err != nil {
 		return errors.Wrap(err, "IDGenerator failed")
 	}
 
+	Log("info", "TCPServerStart", nil, nil)
 	if s.listener == nil {
 		s.listener = l
 	}
@@ -90,7 +91,7 @@ func (s *TCPServer) ServeTCP(l *net.TCPListener) error {
 DONE:
 	ctxCancel()
 	s.wait()
-	fmt.Println("TCP Core: done")
+	Log("info", "TCPServerStop", nil, nil)
 	return err
 }
 
@@ -100,11 +101,15 @@ func (s *TCPServer) startSession(ctx context.Context, conn net.Conn) {
 		s.wg.Done()
 	}()
 
-	ses := NewSessionTCP(s, conn)
+	ses, err := NewSessionTCP(s, conn)
+	if err != nil {
+		Log("error", "Session failed", ses, err)
+	}
+	Log("debug", "Session start", ses, nil)
 	for {
 		select {
 		case <-ctx.Done():
-			fmt.Println("TCP Worker: done")
+			Log("info", "TCPServerWorkerStop", nil, nil)
 			return
 		default:
 		}
