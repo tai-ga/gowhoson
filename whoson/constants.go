@@ -1,6 +1,11 @@
 package whoson
 
-import "time"
+import (
+	"time"
+
+	katsubushi "github.com/kayac/go-katsubushi"
+	"go.uber.org/zap"
+)
 
 type ProtocolType int
 type MethodType int
@@ -39,7 +44,9 @@ const (
 )
 
 var (
-	MainStore Store = nil
+	MainStore   Store = nil
+	Logger      *zap.Logger
+	IDGenerator *katsubushi.Generator
 
 	method = map[MethodType]string{
 		mUnkownMethod: "NONE",
