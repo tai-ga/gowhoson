@@ -163,25 +163,31 @@ func (ses *Session) startHandler() bool {
 		line, err := ses.readLine()
 		if err != nil {
 			if opError, ok := err.(*net.OpError); ok && opError.Timeout() {
+				Log("debug", "StartHandler:Timeout", ses, err)
 				return false
 			} else if ok {
 				if opError2, ok2 := opError.Err.(*os.SyscallError); ok2 && opError2.Err == syscall.ECONNRESET {
+					Log("debug", "StartHandler:ResetByPeer", ses, err)
 					return false
 				}
 			} else if err.Error() == "EOF" {
+				Log("debug", "StartHandler:EOF", ses, err)
 				return false
 			}
+			Log("error", "StartHandler:Error", ses, err)
 			ses.sendResponseBadRequest(err.Error())
 			return true
 		}
 		err = ses.parseCmd(line)
 		if err != nil {
+			Log("debug", "StartHandler", ses, err)
 			ses.sendResponseBadRequest(err.Error())
 			return true
 		}
 	} else {
 		err = ses.parseCmd(string(ses.b.buf[:ses.b.count]))
 		if err != nil {
+			Log("debug", "StartHandler", ses, err)
 			ses.sendResponseBadRequest(err.Error())
 			return true
 		}
@@ -198,6 +204,7 @@ func (ses *Session) startHandler() bool {
 		ses.methodQuit()
 	default:
 		err := errors.New("handler error")
+		Log("error", "StartHandler:Error", ses, err)
 		ses.sendResponseBadRequest(err.Error())
 	}
 	Log("debug", "SessionHandler", ses, err)
