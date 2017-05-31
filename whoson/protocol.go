@@ -174,6 +174,7 @@ func (ses *Session) startHandler() bool {
 				Log("debug", "StartHandler:EOF", ses, err)
 				return false
 			}
+			expErrorsTotal.Add(1)
 			Log("error", "StartHandler:Error", ses, err)
 			ses.sendResponseBadRequest(err.Error())
 			return true
@@ -195,15 +196,20 @@ func (ses *Session) startHandler() bool {
 
 	switch ses.cmdMethod {
 	case mLogin:
+		expCommandLoginTotal.Add(1)
 		ses.methodLogin()
 	case mLogout:
+		expCommandLogoutTotal.Add(1)
 		ses.methodLogout()
 	case mQuery:
+		expCommandQueryTotal.Add(1)
 		ses.methodQuery()
 	case mQuit:
+		expCommandQuitTotal.Add(1)
 		ses.methodQuit()
 	default:
 		err := errors.New("handler error")
+		expErrorsTotal.Add(1)
 		Log("error", "StartHandler:Error", ses, err)
 		ses.sendResponseBadRequest(err.Error())
 	}

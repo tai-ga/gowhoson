@@ -135,6 +135,7 @@ func (s *UDPServer) startSession(ctx context.Context) error {
 		b.count = n
 		ses, err := NewSessionUDP(s.conn, a, b)
 		if err != nil {
+			expErrorsTotal.Add(1)
 			Log("error", "Session failed", ses, err)
 		}
 
@@ -171,7 +172,12 @@ func (w *Worker) Run(ctx context.Context) {
 
 func (w *Worker) work(v interface{}) {
 	if ses, ok := v.(*Session); ok {
-		defer ses.close()
+		defer func() {
+			ses.close()
+			expConnectsUdpCurrent.Add(-1)
+		}()
+		expConnectsUdpTotal.Add(1)
+		expConnectsUdpCurrent.Add(1)
 		ses.startHandler()
 	} else {
 		panic(v)

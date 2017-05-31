@@ -99,10 +99,14 @@ func (s *TCPServer) startSession(ctx context.Context, conn net.Conn) {
 	defer func() {
 		conn.Close()
 		s.wg.Done()
+		expConnectsTcpCurrent.Add(-1)
 	}()
 
+	expConnectsTcpTotal.Add(1)
+	expConnectsTcpCurrent.Add(1)
 	ses, err := NewSessionTCP(s, conn)
 	if err != nil {
+		expErrorsTotal.Add(1)
 		Log("error", "Session failed", ses, err)
 	}
 	Log("debug", "Session start", ses, nil)

@@ -1,6 +1,9 @@
 package whoson
 
 import (
+	"expvar"
+	"runtime"
+	"runtime/pprof"
 	"time"
 
 	katsubushi "github.com/kayac/go-katsubushi"
@@ -48,6 +51,23 @@ var (
 	Logger      *zap.Logger
 	IDGenerator *katsubushi.Generator
 
+	// start time
+	startTime = time.Now().UTC()
+
+	// expvar Map
+	ExpvarMap = expvar.NewMap("gowhoson")
+
+	// Raw stat collectors
+	expConnectsTcpTotal   = new(expvar.Int)
+	expConnectsUdpTotal   = new(expvar.Int)
+	expConnectsTcpCurrent = new(expvar.Int)
+	expConnectsUdpCurrent = new(expvar.Int)
+	expCommandLoginTotal  = new(expvar.Int)
+	expCommandLogoutTotal = new(expvar.Int)
+	expCommandQueryTotal  = new(expvar.Int)
+	expCommandQuitTotal   = new(expvar.Int)
+	expErrorsTotal        = new(expvar.Int)
+
 	method = map[MethodType]string{
 		mUnkownMethod: "NONE",
 		mLogin:        "LOGIN",
@@ -69,4 +89,18 @@ func init() {
 	for i, v := range method {
 		methodFromString[v] = i
 	}
+
+	ExpvarMap.Set("ConnectsTcpTotal", expConnectsTcpTotal)
+	ExpvarMap.Set("ConnectsUdpTotal", expConnectsUdpTotal)
+	ExpvarMap.Set("ConnectsTcpCurrent", expConnectsTcpCurrent)
+	ExpvarMap.Set("ConnectsUdpCurrent", expConnectsUdpCurrent)
+	ExpvarMap.Set("CommandLoginTotal", expCommandLoginTotal)
+	ExpvarMap.Set("CommandLogoutTotal", expCommandLogoutTotal)
+	ExpvarMap.Set("CommandQueryTotal", expCommandQueryTotal)
+	ExpvarMap.Set("CommandQuitTotal", expCommandQuitTotal)
+	ExpvarMap.Set("ErrorsTotal", expErrorsTotal)
+	ExpvarMap.Set("Goroutines", expvar.Func(func() interface{} { return runtime.NumGoroutine() }))
+	ExpvarMap.Set("NumCPU", expvar.Func(func() interface{} { return runtime.NumCPU() }))
+	ExpvarMap.Set("OSThreads", expvar.Func(func() interface{} { return pprof.Lookup("threadcreate").Count() }))
+	ExpvarMap.Set("UpTime", expvar.Func(func() interface{} { return int64(time.Since(startTime)) }))
 }
