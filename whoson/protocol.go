@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net"
 	"net/textproto"
+	"os"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/pkg/errors"
@@ -162,13 +164,15 @@ func (ses *Session) startHandler() bool {
 		if err != nil {
 			if opError, ok := err.(*net.OpError); ok && opError.Timeout() {
 				return false
-			}
-			if err.Error() == "EOF" {
+			} else if ok {
+				if opError2, ok2 := opError.Err.(*os.SyscallError); ok2 && opError2.Err == syscall.ECONNRESET {
+					return false
+				}
+			} else if err.Error() == "EOF" {
 				return false
-			} else {
-				ses.sendResponseBadRequest(err.Error())
-				return true
 			}
+			ses.sendResponseBadRequest(err.Error())
+			return true
 		}
 		err = ses.parseCmd(line)
 		if err != nil {
