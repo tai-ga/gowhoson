@@ -8,7 +8,11 @@ import (
 
 func TestNewSessionUDP(t *testing.T) {
 	bp := NewBufferPool()
-	s := NewSessionUDP(new(net.UDPConn), new(net.UDPAddr), bp.Get())
+	s, err := NewSessionUDP(new(net.UDPConn), new(net.UDPAddr), bp.Get())
+	if err != nil {
+		t.Fatalf("Error %v", err)
+		return
+	}
 	actual := reflect.TypeOf(s).String()
 	expected := "*whoson.Session"
 	if actual != expected {
