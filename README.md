@@ -1,16 +1,22 @@
-# gowhoson
+### gowhoson
 
 gowhoson is a golang implementation of the "Whoson" protocol.
 
-## What is whoson ?
+[![Build Status](https://travis-ci.org/tai-ga/gowhoson.svg?branch=master)](https://travis-ci.org/tai-ga/gowhoson)
+[![Coverage Status](https://coveralls.io/repos/github/tai-ga/gowhoson/badge.svg?branch=master)](https://coveralls.io/github/tai-ga/gowhoson?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tai-ga/gowhoson)](https://goreportcard.com/badge/github.com/tai-ga/gowhoson)
+[![GitHub release](https://img.shields.io/github/release/tai-ga/gowhoson.svg)](https://github.com/tai-ga/gowhoson/releases/latest)
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/tai-ga/gowhoson/blob/master/LICENSE)
+
+#### What is whoson ?
 Whoson ("WHO iS ONline") is a proposed Internet protocol that allows Internet server programs know if a particular (dynamically allocated) IP address is currently allocated to a known (trusted) user and, optionally, the identity of the said user.
 The protocol could be used by an SMTP Message Transfer System in conjunction with anti-spam-relaying filters to implement a scheme similar to the one described here to allow roaming customers use their "home" SMTP server to submit email while connected from a "foreign" network.
 
-## Link
+#### Link
 * "Whoson" Project page. [http://whoson.sourceforge.net/](http://whoson.sourceforge.net/).
 * About the "Whoson" protocol.  [http://whoson.sourceforge.net/whoson.txt](http://whoson.sourceforge.net/whoson.txt)
 
-## Examples whoson package
+#### Examples whoson package
 Server 01
 ```go
 func main() {
@@ -49,12 +55,12 @@ func main() {
         fmt.Println(res.String())
 }
 ```
-## Install
+#### Install
 ```
 $ go get -u github.com/tai-ga/gowhoson
 ```
 
-## Usage
+#### Usage
 Server
 ```
 > gowhoson server -h
@@ -87,13 +93,20 @@ COMMANDS:
 OPTIONS:
    --help, -h  show help
 ```
-## Status of implementations
+#### Implemented commands
 
-* [X] LOGIN
-* [X] LOGOUT
-* [X] QUERY
+* LOGIN
+* LOGOUT
+* QUERY
+* QUIT
 
-# Contribute
+#### Reference
+
+* Original reference implementation of whoson.
+* Many japanese gopher products.
+* :tada: Many Thanks! :tada:
+
+#### Contribute
 
 1. fork a repository: github.com/tai-ga/gowhoson to github.com/you/repo
 2. get original code: go get github.com/tai-ga/gowhoson
@@ -104,10 +117,10 @@ OPTIONS:
 
 - see [GitHub and Go: forking, pull requests, and go-getting](http://blog.campoy.cat/2014/03/github-and-go-forking-pull-requests-and.html)
 
-## License
+#### License
 
 MIT
 
-## Author
+#### Author
 
 Masahiro Ono ([@tai-ga](https://twitter.com/tai_ga))
