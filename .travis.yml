@@ -1,0 +1,32 @@
+language: go
+sudo: false
+go:
+- 1.8
+before_install:
+- go get github.com/mattn/goveralls
+- go get golang.org/x/tools/cmd/cover
+script:
+- make
+- "$HOME/gopath/bin/goveralls -repotoken $COVERALLS_TOKEN"
+before_deploy:
+- go get -u github.com/laher/goxc
+- mkdir -p $TRAVIS_BUILD_DIR/dist
+- goxc -d=$TRAVIS_BUILD_DIR/dist -bc='darwin,linux,!arm,!386' -build-ldflags "-X main.gVersion=`git
+  describe --tags --abbrev=0` -X main.gGitcommit=`git rev-parse --short HEAD` -X main.gGoversion=`go
+  version | cut -d ' ' -f3 | sed 's/^go//'`" -tasks=clean-destination,xc,archive,rmbin
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key: "$GITHUB_TOKEN"
+  file_glob: true
+  file: "$TRAVIS_BUILD_DIR/dist/**/*.{tar.gz,zip}"
+  on:
+    tags: true
+    branch: master
+    condition: "$TRAVIS_TAG =~ ^v[0-9].*$"
+notifications:
+  slack:
+    secure: lc/Qq4QbUL3AhoGCh8Frfrt5Ihfl3/52qvZsJ70SN/I3XXVUNAG/edmQm2fDAcg/58Q9F3hrQt2FnpaGHhl/sKtKsC+T1lZjfM2eATHNE9/akMfGu+pU8+JCT7ff5sosKUeQPJTdwj7Uj95H5ShV88X3BEi+GvVUF7OEQHhVOobfpq89YLdPzRIDyNxksVR1l4eiX/HGzncV9+PwhTwA4cFuOaXX5ytja2JYku+uqH8eZAen0HmhmUQ7KlaJiItoSckbefNiG9QnTNsCgLJ1rcBpailJdVGHqOhiECes/vGmv3twmKC5jMNoGjxkIGm56l2vYd0dXRnZ9dG3DhZXJFjMZH726CYBqjZ+DvwFmuRNWx5u0KZn3ovWSXvA+mOmxbB9UmrozAN+JdH6n87/kMzfliC2pswW/bUTggMLGz0iIPf7MXZq4aCPUah6vvpVZRVWxSJPb0ByIuh9CswWGeN3tNPAikHbyqJDAxwy85yeIbYyTeuXjKOn17o+E6xRYukIK89im81I1RyAfXtI/tfRoisS91ifehT4kLRaX4xtkaY/eCURff7duIX3W5APofRDomt+gzhNYd14r4AcFz+oDPV6lgp6gGNDUqZTrloOJTzgSP+Pp5bSQ79KMO9vdFPXYqVWynYQa7zs+tPI3gX7GtY8D8YsiFE48IK5/7U=
+env:
+  global:
+    secure: rGg2iR2ifRVn6a0VDF8I/TEU2M8fuU77FPmdwg5ZBp9SMPwvR9TqEvZmJqUf85AGuNHA9XyFhUnlHr5XWx+un2uIMw15Yh7oJI3KPuUXlYlVRs91W/dcwrWrcvph5trdKMdlzxxtgNfpBVx+ua3YMIbIVVNFlTOjt8qvL1GpVChBCah7wLzYA6nOgc3AypJjOmpHrt+IqoUzJWxDFmLaXz0rbUV2HRy5//oNxN4pfMfJM+y7/xhqmpmnsTHlA8Tcg7Bl8bV0ohOL+V4pajCxhiamDDZCTS8fIP9FIIezzA+ANADek4GTVIjOZI22Fn3zNtKH/JfffrjSw1JjL6uagF0h4m3CiP7Z7ubBz8zdJnSZmHbyvrTE7ismcY6ENvXbjgFuzPL04o9R5eLGG+ZxVO48uQ6Y3BDbNWw/eZEXCoqsDyZgtfnyk24qbC6Ud+PROFLTSnfF/SzKExTwUOBr3KPvpb2T72ycvzyc0NKd3bnLF+8OQ1zsQh596HsUj2sfHzzWtn1i2yQSRonGyqqKbznmkhV/AUycecG454bGwh4LQA5Zz8PahJqroI/3g+Rjs5ynpQoq0rXAZcwQYRAI1Tb3sAJOkQdeJRhyGkLhEFMFsDZdF2IOdGnQxhyFfEE/aGPZy9U4PIRj0kT7Z2vCfE5HFAPJTmhTTZl/OJIlm1g=
