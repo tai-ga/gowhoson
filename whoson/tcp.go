@@ -119,7 +119,7 @@ func (s *TCPServer) startSession(ctx context.Context, conn net.Conn) {
 		}
 
 		if err := conn.SetDeadline(time.Now().Add(s.timeOut)); err != nil {
-			err = errors.Wrap(err, "Can't set appropriate deadline!")
+			Log("error", "startSession:Error", ses, err)
 			return
 		}
 
