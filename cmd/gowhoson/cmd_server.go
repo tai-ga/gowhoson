@@ -38,7 +38,16 @@ func splitHostPort(hostPort string) (host string, port int, err error) {
 	return
 }
 
-func CmdServer(c *cli.Context) error {
+func optOverwiteServer(c *cli.Context, config *ServerConfig) {
+	if c.String("tcp") != "" {
+		config.TCP = c.String("tcp")
+	}
+	if c.String("udp") != "" {
+		config.UDP = c.String("udp")
+	}
+}
+
+func cmdServer(c *cli.Context) error {
 	/*
 		if err := agent.Listen(&agent.Options{NoShutdownCleanup: true}); err != nil {
 			log.Fatal(err)

@@ -7,7 +7,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-func CmdLogin(c *cli.Context) error {
+func cmdLogin(c *cli.Context) error {
 	config := c.App.Metadata["config"].(*ClientConfig)
 	optOverwite(c, config)
 
