@@ -159,25 +159,9 @@ func (ses *Session) startHandler() bool {
 
 	if ses.protocol == pTCP {
 		ses.setTpId()
-
 		line, err := ses.readLine()
-		if err != nil {
-			if opError, ok := err.(*net.OpError); ok && opError.Timeout() {
-				Log("debug", "StartHandler:Timeout", ses, err)
-				return false
-			} else if ok {
-				if opError2, ok2 := opError.Err.(*os.SyscallError); ok2 && opError2.Err == syscall.ECONNRESET {
-					Log("debug", "StartHandler:ResetByPeer", ses, err)
-					return false
-				}
-			} else if err.Error() == "EOF" {
-				Log("debug", "StartHandler:EOF", ses, err)
-				return false
-			}
-			expErrorsTotal.Add(1)
-			Log("error", "StartHandler:Error", ses, err)
-			ses.sendResponseBadRequest(err.Error())
-			return true
+		if !ses.tcpErrorHandling(err) {
+			return false
 		}
 		err = ses.parseCmd(line)
 		if err != nil {
@@ -214,6 +198,28 @@ func (ses *Session) startHandler() bool {
 		ses.sendResponseBadRequest(err.Error())
 	}
 	Log("debug", "SessionHandler", ses, err)
+	return true
+}
+
+func (ses *Session) tcpErrorHandling(err error) bool {
+	if err != nil {
+		if opError, ok := err.(*net.OpError); ok && opError.Timeout() {
+			Log("debug", "StartHandler:Timeout", ses, err)
+			return false
+		} else if ok {
+			if opError2, ok2 := opError.Err.(*os.SyscallError); ok2 && opError2.Err == syscall.ECONNRESET {
+				Log("debug", "StartHandler:ResetByPeer", ses, err)
+				return false
+			}
+		} else if err.Error() == "EOF" {
+			Log("debug", "StartHandler:EOF", ses, err)
+			return false
+		}
+		expErrorsTotal.Add(1)
+		Log("error", "StartHandler:Error", ses, err)
+		ses.sendResponseBadRequest(err.Error())
+		return true
+	}
 	return true
 }
 

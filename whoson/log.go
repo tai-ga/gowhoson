@@ -1,6 +1,7 @@
 package whoson
 
 import (
+	"errors"
 	"time"
 
 	"github.com/client9/reopen"
@@ -58,7 +59,7 @@ func InitLog(output, loglevel string) error {
 	return nil
 }
 
-func Log(status, msg string, ses *Session, err error) {
+func switchLogger(status string) (func(string, ...zapcore.Field), error) {
 	var logger func(string, ...zapcore.Field)
 
 	switch status {
@@ -77,6 +78,14 @@ func Log(status, msg string, ses *Session, err error) {
 	case "fatal":
 		logger = Logger.Fatal
 	default:
+		return nil, errors.New("Log status not found")
+	}
+	return logger, nil
+}
+
+func Log(status, msg string, ses *Session, err error) {
+	logger, err := switchLogger(status)
+	if err != nil {
 		return
 	}
 
