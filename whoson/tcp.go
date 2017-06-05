@@ -119,7 +119,7 @@ func (s *TCPServer) startSession(ctx context.Context, conn net.Conn) {
 		}
 
 		if err := conn.SetDeadline(time.Now().Add(s.timeOut)); err != nil {
-			Log("error", "startSession:Error", ses, err)
+			Log("debug", "startSession:Error", ses, err)
 			return
 		}
 
