@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"github.com/tai-ga/gowhoson/whoson"
 	"github.com/urfave/cli"
 )
 
@@ -68,7 +69,7 @@ func GetClientConfigDir() string {
 	return dir
 }
 
-func GetClientConfig(c *cli.Context) (string, *ClientConfig, error) {
+func GetClientConfig(c *cli.Context) (string, *whoson.ClientConfig, error) {
 	var file string
 	if c.String("config") == "" {
 		dir := GetClientConfigDir()
@@ -83,7 +84,7 @@ func GetClientConfig(c *cli.Context) (string, *ClientConfig, error) {
 	if err != nil && !os.IsNotExist(err) {
 		return "", nil, err
 	}
-	config := &ClientConfig{
+	config := &whoson.ClientConfig{
 		Mode:   "udp",
 		Server: "127.0.0.1:9876",
 	}

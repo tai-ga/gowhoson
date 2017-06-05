@@ -38,7 +38,7 @@ func splitHostPort(hostPort string) (host string, port int, err error) {
 	return
 }
 
-func optOverwiteServer(c *cli.Context, config *ServerConfig) {
+func optOverwiteServer(c *cli.Context, config *whoson.ServerConfig) {
 	if c.String("tcp") != "" {
 		config.TCP = c.String("tcp")
 	}
@@ -54,7 +54,7 @@ func cmdServer(c *cli.Context) error {
 		}
 	*/
 
-	config := c.App.Metadata["config"].(*ServerConfig)
+	config := c.App.Metadata["config"].(*whoson.ServerConfig)
 	optOverwiteServer(c, config)
 
 	wg := new(sync.WaitGroup)

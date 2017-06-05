@@ -8,10 +8,11 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/tai-ga/gowhoson/whoson"
 	"github.com/urfave/cli"
 )
 
-func GetServerConfig(c *cli.Context) (string, *ServerConfig, error) {
+func GetServerConfig(c *cli.Context) (string, *whoson.ServerConfig, error) {
 	var file string
 	if c.String("config") == "" {
 		file = filepath.Join("/etc", SERVER_CONFIG)
@@ -23,7 +24,7 @@ func GetServerConfig(c *cli.Context) (string, *ServerConfig, error) {
 	if err != nil && !os.IsNotExist(err) {
 		return "", nil, err
 	}
-	config := &ServerConfig{
+	config := &whoson.ServerConfig{
 		TCP: "127.0.0.1:9876",
 		UDP: "127.0.0.1:9876",
 	}
@@ -36,7 +37,7 @@ func GetServerConfig(c *cli.Context) (string, *ServerConfig, error) {
 	return file, config, nil
 }
 
-func optOverwite(c *cli.Context, config *ClientConfig) {
+func optOverwite(c *cli.Context, config *whoson.ClientConfig) {
 	if c.String("mode") != "" {
 		config.Mode = c.String("mode")
 	}

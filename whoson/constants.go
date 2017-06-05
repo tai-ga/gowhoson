@@ -14,6 +14,16 @@ type ProtocolType int
 type MethodType int
 type ResultType int
 
+type ClientConfig struct {
+	Mode   string
+	Server string
+}
+
+type ServerConfig struct {
+	TCP string
+	UDP string
+}
+
 const (
 	/*
 		" 1<<10"    1024

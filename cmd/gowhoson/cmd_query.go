@@ -8,7 +8,7 @@ import (
 )
 
 func cmdQuery(c *cli.Context) error {
-	config := c.App.Metadata["config"].(*ClientConfig)
+	config := c.App.Metadata["config"].(*whoson.ClientConfig)
 	optOverwite(c, config)
 
 	if !c.Args().Present() || len(c.Args()) != 1 {
