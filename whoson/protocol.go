@@ -191,6 +191,7 @@ func (ses *Session) startHandler() bool {
 	case mQuit:
 		expCommandQuitTotal.Add(1)
 		ses.methodQuit()
+		return false
 	default:
 		err := errors.New("handler error")
 		expErrorsTotal.Add(1)
