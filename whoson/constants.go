@@ -117,4 +117,5 @@ func init() {
 	ExpvarMap.Set("NumCPU", expvar.Func(func() interface{} { return runtime.NumCPU() }))
 	ExpvarMap.Set("OSThreads", expvar.Func(func() interface{} { return pprof.Lookup("threadcreate").Count() }))
 	ExpvarMap.Set("UpTime", expvar.Func(func() interface{} { return int64(time.Since(startTime)) }))
+	ExpvarMap.Set("StoreCount", expvar.Func(func() interface{} { return int64(MainStore.Count()) }))
 }

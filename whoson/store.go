@@ -15,6 +15,7 @@ type Store interface {
 	Get(k string) (*StoreData, error)
 	Del(k string) bool
 	Items() map[string]interface{}
+	Count() int
 }
 
 type MemStore struct {
@@ -64,6 +65,10 @@ func (ms MemStore) Del(k string) bool {
 
 func (ms MemStore) Items() map[string]interface{} {
 	return ms.cmap.Items()
+}
+
+func (ms MemStore) Count() int {
+	return ms.cmap.Count()
 }
 
 type StoreData struct {
