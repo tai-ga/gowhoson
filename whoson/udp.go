@@ -72,6 +72,7 @@ func (s *UDPServer) ListenAndServe() error {
 func (s *UDPServer) ServeUDP(c *net.UDPConn) error {
 	var err error
 
+	ctx, ctxCancel := context.WithCancel(context.Background())
 	NewMainStore()
 	NewLogger("stdout", "warn")
 	err = NewIDGenerator(uint32(1))
@@ -82,7 +83,6 @@ func (s *UDPServer) ServeUDP(c *net.UDPConn) error {
 	if s.conn == nil {
 		s.conn = c
 	}
-	ctx, ctxCancel := context.WithCancel(context.Background())
 
 	maxWorkers := runtime.NumCPU()
 	s.workers = make([]*Worker, maxWorkers)

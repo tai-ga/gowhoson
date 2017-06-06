@@ -1,6 +1,8 @@
 package whoson
 
 import (
+	"context"
+	"fmt"
 	"net"
 	"time"
 
@@ -12,6 +14,7 @@ type Store interface {
 	Set(k string, w *StoreData)
 	Get(k string) (*StoreData, error)
 	Del(k string) bool
+	Items() map[string]interface{}
 }
 
 type MemStore struct {
@@ -25,11 +28,10 @@ func NewMemStore() Store {
 	}
 }
 
-func NewMainStore() Store {
+func NewMainStore() {
 	if MainStore == nil {
 		MainStore = NewMemStore()
 	}
-	return MainStore
 }
 
 func (ms MemStore) Set(k string, w *StoreData) {
@@ -60,6 +62,10 @@ func (ms MemStore) Del(k string) bool {
 	}
 }
 
+func (ms MemStore) Items() map[string]interface{} {
+	return ms.cmap.Items()
+}
+
 type StoreData struct {
 	Expire time.Time
 	IP     net.IP
@@ -72,4 +78,32 @@ func (sd *StoreData) UpdateExpire() {
 
 func (sd *StoreData) Key() string {
 	return sd.IP.String()
+}
+
+func deleteExpireData(store Store) {
+	for k, v := range store.Items() {
+		if w, ok := v.(*StoreData); ok {
+			if w.Expire.Before(time.Now()) {
+				msg := fmt.Sprintf("ExpireData:%s", k)
+				Log("info", msg, nil, nil)
+				store.Del(k)
+			}
+		}
+	}
+}
+
+func RunExpireChecker(ctx context.Context) {
+	t := time.NewTicker(1 * time.Second)
+	Log("info", "runExpireCheckerStart", nil, nil)
+	for {
+		select {
+		case <-ctx.Done():
+			Log("info", "runExpireCheckerStop", nil, nil)
+			return
+		case <-t.C:
+			if MainStore != nil {
+				deleteExpireData(MainStore)
+			}
+		}
+	}
 }

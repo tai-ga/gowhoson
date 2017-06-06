@@ -1,6 +1,7 @@
 package gowhoson
 
 import (
+	"context"
 	"errors"
 	"net"
 	"net/http"
@@ -58,6 +59,7 @@ func cmdServer(c *cli.Context) error {
 	optOverwiteServer(c, config)
 
 	wg := new(sync.WaitGroup)
+	ctx, ctxCancel := context.WithCancel(context.Background())
 	sigChan := make(chan os.Signal, 1)
 	defer close(sigChan)
 
@@ -129,6 +131,12 @@ func cmdServer(c *cli.Context) error {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
+		whoson.RunExpireChecker(ctx)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
 		http.Serve(lishttp, nil)
 	}()
 
@@ -142,6 +150,7 @@ func cmdServer(c *cli.Context) error {
 			if config.TCP != "nostart" {
 				lis.Close()
 			}
+			ctxCancel()
 			lishttp.Close()
 		})
 	}
