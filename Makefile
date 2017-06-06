@@ -1,6 +1,6 @@
 NAME      := gowhoson
 SRCS      := $(shell git ls-files '*.go')
-PKGS      := ./whoson
+PKGS      := ./cmd/gowhoson ./whoson
 VERSION   := $(shell git describe --tags --abbrev=0)
 REVISION  := $(shell git rev-parse --short HEAD)
 GOVERSION := $(shell go version | cut -d ' ' -f3 | sed 's/^go//')
