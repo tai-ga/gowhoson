@@ -72,7 +72,6 @@ func cmdServer(c *cli.Context) error {
 	optOverwiteServer(c, config)
 
 	wg := new(sync.WaitGroup)
-	ctx, ctxCancel := context.WithCancel(context.Background())
 	sigChan := make(chan os.Signal, 1)
 	defer close(sigChan)
 
@@ -130,12 +129,6 @@ func cmdServer(c *cli.Context) error {
 		serverCount++
 	}
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		whoson.RunExpireChecker(ctx)
-	}()
-
 	var lishttp net.Listener
 	var err error
 	if config.Expvar {
@@ -152,6 +145,14 @@ func cmdServer(c *cli.Context) error {
 	}
 
 	if serverCount > 0 {
+		ctx, ctxCancel := context.WithCancel(context.Background())
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			whoson.RunExpireChecker(ctx)
+		}()
+
 		wg.Add(1)
 		signal.Notify(sigChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 		go signalHandler(sigChan, wg, c, func() {

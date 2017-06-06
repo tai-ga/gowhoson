@@ -27,10 +27,10 @@ depup: ## dep -update
 	dep ensure -update
 
 vet:
-	$(foreach pkg,$(PKGS),go vet $(pkg);)
+	$(foreach pkg,$(PKGS),go vet $(pkg) || exit;)
 
 fmt:
-	$(foreach file,$(SRCS),go fmt $(file);)
+	$(foreach file,$(SRCS),go fmt $(file) || exit;)
 
 #test: lint vet  fmt ## Test
 test: vet  fmt ## Test

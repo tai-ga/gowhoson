@@ -61,7 +61,6 @@ func (s *TCPServer) ListenAndServe() error {
 
 func (s *TCPServer) ServeTCP(l *net.TCPListener) error {
 	var err error
-	ctx, ctxCancel := context.WithCancel(context.Background())
 	NewMainStore()
 	NewLogger("stdout", "warn")
 	err = NewIDGenerator(uint32(1))
@@ -69,6 +68,7 @@ func (s *TCPServer) ServeTCP(l *net.TCPListener) error {
 		return errors.Wrap(err, "IDGenerator failed")
 	}
 
+	ctx, ctxCancel := context.WithCancel(context.Background())
 	Log("info", "TCPServerStart", nil, nil)
 	if s.listener == nil {
 		s.listener = l
