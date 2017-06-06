@@ -3,6 +3,7 @@ package gowhoson
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net"
 	"net/http"
 	"os"
@@ -46,6 +47,18 @@ func optOverwiteServer(c *cli.Context, config *whoson.ServerConfig) {
 	if c.String("udp") != "" {
 		config.UDP = c.String("udp")
 	}
+	if c.String("log") != "" {
+		config.Log = c.String("log")
+	}
+	if c.String("loglevel") != "" {
+		config.Loglevel = c.String("loglevel")
+	}
+	if c.Int("serverid") != 0 {
+		config.ServerID = c.Int("serverid")
+	}
+	if c.Bool("expvar") != false {
+		config.Expvar = c.Bool("expvar")
+	}
 }
 
 func cmdServer(c *cli.Context) error {
@@ -63,15 +76,10 @@ func cmdServer(c *cli.Context) error {
 	sigChan := make(chan os.Signal, 1)
 	defer close(sigChan)
 
-	//
-	// Setup
-	//
 	whoson.NewMainStore()
-	whoson.NewLogger("stdout", "error")
-	//whoson.NewLogger("stdout", "debug")
-	//whoson.NewLogger("/tmp/gowhoson.log", "debug")
-	//whoson.NewLogger("discard", "error")
-	whoson.NewIDGenerator(uint32(1))
+	whoson.NewLogger(config.Log, config.Loglevel)
+	whoson.Log("info", fmt.Sprintf("ServerID:%d", config.ServerID), nil, nil)
+	whoson.NewIDGenerator(uint32(config.ServerID))
 
 	var serverCount = 0
 	var con *net.UDPConn
@@ -122,23 +130,26 @@ func cmdServer(c *cli.Context) error {
 		serverCount++
 	}
 
-	lishttp, err := net.Listen("tcp", ":8080")
-	if err != nil {
-		displayError(c.App.ErrWriter, err)
-		return err
-	}
-
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		whoson.RunExpireChecker(ctx)
 	}()
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		http.Serve(lishttp, nil)
-	}()
+	var lishttp net.Listener
+	var err error
+	if config.Expvar {
+		lishttp, err = net.Listen("tcp", ":8080")
+		if err != nil {
+			displayError(c.App.ErrWriter, err)
+			return err
+		}
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			http.Serve(lishttp, nil)
+		}()
+	}
 
 	if serverCount > 0 {
 		wg.Add(1)
@@ -150,8 +161,10 @@ func cmdServer(c *cli.Context) error {
 			if config.TCP != "nostart" {
 				lis.Close()
 			}
+			if config.Expvar {
+				lishttp.Close()
+			}
 			ctxCancel()
-			lishttp.Close()
 		})
 	}
 

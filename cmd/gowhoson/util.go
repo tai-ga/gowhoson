@@ -25,8 +25,12 @@ func GetServerConfig(c *cli.Context) (string, *whoson.ServerConfig, error) {
 		return "", nil, err
 	}
 	config := &whoson.ServerConfig{
-		TCP: "127.0.0.1:9876",
-		UDP: "127.0.0.1:9876",
+		TCP:      "127.0.0.1:9876",
+		UDP:      "127.0.0.1:9876",
+		Log:      "stdout",
+		Loglevel: "error",
+		ServerID: 1000,
+		Expvar:   false,
 	}
 	if err == nil {
 		err = json.Unmarshal(b, &config)

@@ -20,8 +20,12 @@ type ClientConfig struct {
 }
 
 type ServerConfig struct {
-	TCP string
-	UDP string
+	TCP      string
+	UDP      string
+	Log      string
+	Loglevel string
+	ServerID int
+	Expvar   bool
 }
 
 const (

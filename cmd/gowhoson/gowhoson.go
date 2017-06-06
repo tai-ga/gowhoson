@@ -74,6 +74,26 @@ func makeApp() *cli.App {
 					Usage:  "e.g. [ServerIP:Port|nostart]",
 					EnvVar: "GOWHOSON_SERVER_UDP",
 				},
+				cli.StringFlag{
+					Name:   "log",
+					Usage:  "e.g. [stdout|stderr|discard] or \"/var/log/filename.log\"",
+					EnvVar: "GOWHOSON_SERVER_LOG",
+				},
+				cli.StringFlag{
+					Name:   "loglevel",
+					Usage:  "e.g. [debug|info|warn|error|dpanic|panic|fatal]",
+					EnvVar: "GOWHOSON_SERVER_LOGLEVEL",
+				},
+				cli.IntFlag{
+					Name:   "serverid",
+					Usage:  "e.g. [1000]",
+					EnvVar: "GOWHOSON_SERVER_SERVERID",
+				},
+				cli.BoolFlag{
+					Name:   "expvar",
+					Usage:  "e.g. (default: false)",
+					EnvVar: "GOWHOSON_SERVER_EXPVAR",
+				},
 			},
 			Action: cmdServer,
 		},
