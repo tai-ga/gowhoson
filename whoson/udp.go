@@ -11,6 +11,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// UDPServer hold information for udp server.
 type UDPServer struct {
 	conn    *net.UDPConn
 	bp      *BufferPool
@@ -21,6 +22,7 @@ type UDPServer struct {
 	Addr    string
 }
 
+// NewUDPServer return new UDPServer struct pointer.
 func NewUDPServer() *UDPServer {
 	return &UDPServer{
 		bp:      NewBufferPool(),
@@ -34,12 +36,14 @@ func (s *UDPServer) enqueue(v interface{}) {
 	s.queue <- v
 }
 
+// ServeUDP is start udp server serve.
 func ServeUDP(c *net.UDPConn) error {
 	s := NewUDPServer()
 	s.conn = c
 	return s.ServeUDP(c)
 }
 
+//ListenAndServe simple start udp server.
 func (s *UDPServer) ListenAndServe() error {
 	var addrudp net.UDPAddr
 	addr := s.Addr
@@ -69,6 +73,7 @@ func (s *UDPServer) ListenAndServe() error {
 	return s.ServeUDP(c)
 }
 
+// ServeUDP is start udp server serve.
 func (s *UDPServer) ServeUDP(c *net.UDPConn) error {
 	var err error
 
@@ -152,10 +157,12 @@ func (s *UDPServer) wait() {
 	s.wg.Wait()
 }
 
+// Worker hold information for udp server processing workers.
 type Worker struct {
 	s *UDPServer
 }
 
+// Run start worker processing.
 func (w *Worker) Run(ctx context.Context) {
 	defer w.s.wg.Done()
 
@@ -174,10 +181,10 @@ func (w *Worker) work(v interface{}) {
 	if ses, ok := v.(*Session); ok {
 		defer func() {
 			ses.close()
-			expConnectsUdpCurrent.Add(-1)
+			expConnectsUDPCurrent.Add(-1)
 		}()
-		expConnectsUdpTotal.Add(1)
-		expConnectsUdpCurrent.Add(1)
+		expConnectsUDPTotal.Add(1)
+		expConnectsUDPCurrent.Add(1)
 		ses.startHandler()
 	} else {
 		panic(v)

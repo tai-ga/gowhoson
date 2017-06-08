@@ -12,10 +12,11 @@ import (
 	"github.com/urfave/cli"
 )
 
+// GetServerConfig return server config file and new ServerConfig struct pointer and error.
 func GetServerConfig(c *cli.Context) (string, *whoson.ServerConfig, error) {
 	var file string
 	if c.String("config") == "" {
-		file = filepath.Join("/etc", SERVER_CONFIG)
+		file = filepath.Join("/etc", ServerConfig)
 	} else {
 		file = c.String("config")
 	}

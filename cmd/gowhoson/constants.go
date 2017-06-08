@@ -1,6 +1,8 @@
 package gowhoson
 
 const (
-	CLIENT_CONFIG = "client.json"
-	SERVER_CONFIG = "gowhoson.json"
+	// ClientConfig is a config file name for client.
+	ClientConfig = "client.json"
+	// ServerConfig is a config file name for server.
+	ServerConfig = "gowhoson.json"
 )

@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Response hold information for response values.
 type Response struct {
 	result ResultType
 	Msg    string
@@ -18,6 +19,7 @@ func (r *Response) String() string {
 	return fmt.Sprintf("%s%s", result[r.result], r.Msg)
 }
 
+// Parse set values for Response.
 func (r *Response) Parse(req string) error {
 	switch string(req[0]) {
 	case result[rPositive]:
@@ -47,12 +49,14 @@ func newRespNegative(m string) *Response {
 	}
 }
 
+// Client hold information for whoson API client.
 type Client struct {
 	tp         *textproto.Conn
 	conn       net.Conn
 	serverName string
 }
 
+// Dial creates a new client connection.
 func Dial(proto string, addr string) (*Client, error) {
 	proto = strings.ToLower(proto)
 	if proto != "tcp" && proto != "udp" {
@@ -66,6 +70,7 @@ func Dial(proto string, addr string) (*Client, error) {
 	return NewClient(conn, host)
 }
 
+// NewClient return new Client struct pointer and error.
 func NewClient(conn net.Conn, host string) (*Client, error) {
 	tp := textproto.NewConn(conn)
 	c := &Client{tp: tp, conn: conn, serverName: host}
@@ -77,6 +82,7 @@ func (c *Client) Close() error {
 	return c.tp.Close()
 }
 
+// Login access to LOGIN API.
 func (c *Client) Login(ip string, args string) (*Response, error) {
 	resp, err := c.doAPI("LOGIN %s %s", ip, args)
 	if err != nil {
@@ -85,6 +91,7 @@ func (c *Client) Login(ip string, args string) (*Response, error) {
 	return resp, nil
 }
 
+// Logout access to LOGOUT API.
 func (c *Client) Logout(ip string) (*Response, error) {
 	resp, err := c.doAPI("LOGOUT %s", ip)
 	if err != nil {
@@ -93,6 +100,7 @@ func (c *Client) Logout(ip string) (*Response, error) {
 	return resp, nil
 }
 
+// Query access to QUERY API.
 func (c *Client) Query(ip string) (*Response, error) {
 	resp, err := c.doAPI("QUERY %s", ip)
 	if err != nil {
@@ -101,6 +109,7 @@ func (c *Client) Query(ip string) (*Response, error) {
 	return resp, nil
 }
 
+// Quit access to QUIT API.
 func (c *Client) Quit() (*Response, error) {
 	resp, err := c.doAPI("QUIT")
 	if err != nil {
@@ -110,7 +119,7 @@ func (c *Client) Quit() (*Response, error) {
 }
 
 func (c *Client) doAPI(format string, args ...interface{}) (*Response, error) {
-	id, err := c.tp.Cmd(fmt.Sprintf("%s%s", format, CRLF), args...)
+	id, err := c.tp.Cmd(fmt.Sprintf("%s%s", format, charCRLF), args...)
 	if err != nil {
 		return nil, err
 	}
@@ -134,9 +143,8 @@ func (c *Client) doAPI(format string, args ...interface{}) (*Response, error) {
 			return nil, err
 		}
 		return r, nil
-	} else {
-		return nil, errors.New("Response parse error")
 	}
+	return nil, errors.New("Response parse error")
 }
 
 func (c *Client) newResponse(req string) (*Response, error) {

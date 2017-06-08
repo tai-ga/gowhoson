@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// TestNewUDPServer is test code for NewUDPServer().
 func TestNewUDPServer(t *testing.T) {
 	s := NewUDPServer()
 	actual := reflect.TypeOf(s).String()

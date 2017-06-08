@@ -12,6 +12,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Session hold information for whoson session.
 type Session struct {
 	protocol ProtocolType
 	id       uint64
@@ -26,10 +27,11 @@ type Session struct {
 	tpid      uint
 
 	cmdMethod MethodType
-	cmdIp     net.IP
+	cmdIP     net.IP
 	cmdArgs   string
 }
 
+// NewSessionUDP return new Session struct pointer for UDP.
 func NewSessionUDP(c *net.UDPConn, r *net.UDPAddr, b *Buffer) (*Session, error) {
 	id, err := IDGenerator.NextID()
 	if err != nil {
@@ -45,6 +47,7 @@ func NewSessionUDP(c *net.UDPConn, r *net.UDPAddr, b *Buffer) (*Session, error) 
 	}, nil
 }
 
+// NewSessionTCP return new Session struct pointer for TCP.
 func NewSessionTCP(s *TCPServer, c net.Conn) (*Session, error) {
 	id, err := IDGenerator.NextID()
 	if err != nil {
@@ -60,16 +63,15 @@ func NewSessionTCP(s *TCPServer, c net.Conn) (*Session, error) {
 	}, nil
 }
 
-func (ses *Session) setTpId() {
+func (ses *Session) setTpID() {
 	ses.tpid = ses.tp.Next()
 }
 
 func (ses *Session) methodType(m string) MethodType {
 	if v, ok := methodFromString[m]; ok {
 		return v
-	} else {
-		return mUnkownMethod
 	}
+	return mUnkownMethod
 }
 
 func (ses *Session) parseCmd(line string) error {
@@ -89,7 +91,7 @@ func (ses *Session) parseCmd(line string) error {
 	ses.cmdMethod = ses.methodType(strings.ToUpper(cmd[0]))
 	switch ses.cmdMethod {
 	case mLogin, mLogout, mQuery:
-		if ses.cmdIp = net.ParseIP(cmd[1]); ses.cmdIp == nil {
+		if ses.cmdIP = net.ParseIP(cmd[1]); ses.cmdIP == nil {
 			return errors.New("command parse error")
 		}
 		ses.cmdArgs = strings.Join(cmd[2:], " ")
@@ -117,19 +119,18 @@ func (ses *Session) readLine() (string, error) {
 
 	if l1 != "" && l2 == "" {
 		return l1, nil
-	} else {
-		return "", errors.New("session read error")
 	}
+	return "", errors.New("session read error")
 }
 
 func (ses *Session) sendLine(str string) error {
 	var err error
 	if ses.protocol == pTCP {
 		ses.tp.StartResponse(ses.tpid)
-		err = ses.tp.PrintfLine(str + CRLF)
+		err = ses.tp.PrintfLine(str + charCRLF)
 		ses.tp.EndResponse(ses.tpid)
 	} else {
-		b := []byte(str + CRLF + CRLF)
+		b := []byte(str + charCRLF + charCRLF)
 		_, err = ses.udpconn.WriteToUDP(b, ses.remoteAddr)
 	}
 	return err
@@ -149,7 +150,7 @@ func (ses *Session) sendResponseBadRequest(str string) error {
 
 func (ses *Session) resetCmd() {
 	ses.cmdMethod = mUnkownMethod
-	ses.cmdIp = nil
+	ses.cmdIP = nil
 	ses.cmdArgs = ""
 }
 
@@ -158,7 +159,7 @@ func (ses *Session) startHandler() bool {
 	var err error
 
 	if ses.protocol == pTCP {
-		ses.setTpId()
+		ses.setTpID()
 		line, err := ses.readLine()
 		if !ses.tcpErrorHandling(err) {
 			return false
@@ -230,7 +231,7 @@ func (ses *Session) tcpErrorHandling(err error) bool {
 func (ses *Session) methodLogin() {
 	sd := &StoreData{
 		Expire: time.Now().Add(StoreDataExpire),
-		IP:     ses.cmdIp,
+		IP:     ses.cmdIP,
 		Data:   ses.cmdArgs,
 	}
 	MainStore.Set(sd.Key(), sd)
@@ -238,7 +239,7 @@ func (ses *Session) methodLogin() {
 }
 
 func (ses *Session) methodLogout() {
-	ok := MainStore.Del(ses.cmdIp.String())
+	ok := MainStore.Del(ses.cmdIP.String())
 	if ok {
 		ses.sendResponsePositive("LOGOUT record deleted")
 	} else {
@@ -247,7 +248,7 @@ func (ses *Session) methodLogout() {
 }
 
 func (ses *Session) methodQuery() {
-	sd, err := MainStore.Get(ses.cmdIp.String())
+	sd, err := MainStore.Get(ses.cmdIP.String())
 	if err != nil {
 		ses.sendResponseNegative("Not Logged in")
 	} else {

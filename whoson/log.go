@@ -9,6 +9,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+// NewLogger return new zap.Logger struct pointer.
 func NewLogger(output, loglevel string) *zap.Logger {
 	if Logger == nil {
 		InitLog(output, loglevel)
@@ -16,6 +17,7 @@ func NewLogger(output, loglevel string) *zap.Logger {
 	return Logger
 }
 
+// InitLog initial setup for Logger.
 func InitLog(output, loglevel string) error {
 	var writer reopen.Writer
 	switch output {
@@ -83,6 +85,7 @@ func switchLogger(status string) (func(string, ...zapcore.Field), error) {
 	return logger, nil
 }
 
+// Log is API entry point of Logging.
 func Log(status, msg string, ses *Session, err error) {
 	logger, err := switchLogger(status)
 	if err != nil {
@@ -93,7 +96,7 @@ func Log(status, msg string, ses *Session, err error) {
 	protocol := zap.Skip()
 	remote := zap.Skip()
 	cmdMethod := zap.Skip()
-	cmdIp := zap.Skip()
+	cmdIP := zap.Skip()
 	cmdArgs := zap.Skip()
 	if ses != nil && ses.id != 0 {
 		id = zap.Uint64("id", ses.id)
@@ -107,8 +110,8 @@ func Log(status, msg string, ses *Session, err error) {
 		if method[ses.cmdMethod] != "" {
 			cmdMethod = zap.String("cmd", method[ses.cmdMethod])
 		}
-		if ses.cmdIp != nil {
-			cmdIp = zap.String("cmdip", ses.cmdIp.String())
+		if ses.cmdIP != nil {
+			cmdIP = zap.String("cmdip", ses.cmdIP.String())
 		}
 		if ses.cmdArgs != "" {
 			cmdArgs = zap.String("cmdargs", ses.cmdArgs)
@@ -124,7 +127,7 @@ func Log(status, msg string, ses *Session, err error) {
 		protocol,
 		remote,
 		cmdMethod,
-		cmdIp,
+		cmdIP,
 		cmdArgs,
 		errMsg,
 	)

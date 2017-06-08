@@ -10,6 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// TCPServer hold information for tcp server.
 type TCPServer struct {
 	listener *net.TCPListener
 	timeOut  time.Duration
@@ -17,6 +18,7 @@ type TCPServer struct {
 	Addr     string
 }
 
+//NewTCPServer return new TCPServer struct pointer.
 func NewTCPServer() *TCPServer {
 	return &TCPServer{
 		timeOut: SessionTimeOut,
@@ -24,12 +26,14 @@ func NewTCPServer() *TCPServer {
 	}
 }
 
+// ServeTCP is start tcp server serve.
 func ServeTCP(l *net.TCPListener) error {
 	s := NewTCPServer()
 	s.listener = l
 	return s.ServeTCP(l)
 }
 
+// ListenAndServe simple start tcp server.
 func (s *TCPServer) ListenAndServe() error {
 	var addrudp net.TCPAddr
 	addr := s.Addr
@@ -59,6 +63,7 @@ func (s *TCPServer) ListenAndServe() error {
 	return s.ServeTCP(l)
 }
 
+// ServeTCP is start tcp server serve
 func (s *TCPServer) ServeTCP(l *net.TCPListener) error {
 	var err error
 	NewMainStore()
@@ -99,11 +104,11 @@ func (s *TCPServer) startSession(ctx context.Context, conn net.Conn) {
 	defer func() {
 		conn.Close()
 		s.wg.Done()
-		expConnectsTcpCurrent.Add(-1)
+		expConnectsTCPCurrent.Add(-1)
 	}()
 
-	expConnectsTcpTotal.Add(1)
-	expConnectsTcpCurrent.Add(1)
+	expConnectsTCPTotal.Add(1)
+	expConnectsTCPCurrent.Add(1)
 	ses, err := NewSessionTCP(s, conn)
 	if err != nil {
 		expErrorsTotal.Add(1)

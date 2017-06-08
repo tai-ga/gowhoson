@@ -10,15 +10,22 @@ import (
 	"go.uber.org/zap"
 )
 
+// ProtocolType is whoson protocol types.
 type ProtocolType int
+
+// MethodType is whoson protocol methods.
 type MethodType int
+
+// ResultType is whoson protocol results.
 type ResultType int
 
+// ClientConfig hold information for client configration.
 type ClientConfig struct {
 	Mode   string
 	Server string
 }
 
+// ServerConfig hold information for server configration.
 type ServerConfig struct {
 	TCP      string
 	UDP      string
@@ -39,11 +46,15 @@ const (
 		"64<<10"   65536
 		" 1<<20" 1048576 1M
 	*/
-	maxQueues       = 8 << 10
-	udpByteSize     = 1472
-	CRLF            = "\r\n"
-	SessionTimeOut  = 10 * time.Second
+	maxQueues   = 8 << 10
+	udpByteSize = 1472
+	charCRLF    = "\r\n"
+	// SessionTimeOut is tcp session timeout limit.
+	SessionTimeOut = 10 * time.Second
+	// StoreDataExpire is stored data expire limit.
 	StoreDataExpire = 30 * time.Minute
+	// ExpireCheckInterval is expire check interval for stored data.
+	ExpireCheckInterval = 5 * time.Minute
 
 	pUnkownProtocol ProtocolType = iota
 	pTCP
@@ -61,21 +72,24 @@ const (
 )
 
 var (
-	MainStore   Store = nil
-	Logger      *zap.Logger
+	// MainStore holds main store.
+	MainStore Store
+	// Logger halds logging.
+	Logger *zap.Logger
+	// IDGenerator halds id generator.
 	IDGenerator *katsubushi.Generator
 
 	// start time
 	startTime = time.Now().UTC()
 
-	// expvar Map
+	// ExpvarMap halds expvar map.
 	ExpvarMap = expvar.NewMap("gowhoson")
 
 	// Raw stat collectors
-	expConnectsTcpTotal   = new(expvar.Int)
-	expConnectsUdpTotal   = new(expvar.Int)
-	expConnectsTcpCurrent = new(expvar.Int)
-	expConnectsUdpCurrent = new(expvar.Int)
+	expConnectsTCPTotal   = new(expvar.Int)
+	expConnectsUDPTotal   = new(expvar.Int)
+	expConnectsTCPCurrent = new(expvar.Int)
+	expConnectsUDPCurrent = new(expvar.Int)
 	expCommandLoginTotal  = new(expvar.Int)
 	expCommandLogoutTotal = new(expvar.Int)
 	expCommandQueryTotal  = new(expvar.Int)
@@ -104,10 +118,10 @@ func init() {
 		methodFromString[v] = i
 	}
 
-	ExpvarMap.Set("ConnectsTcpTotal", expConnectsTcpTotal)
-	ExpvarMap.Set("ConnectsUdpTotal", expConnectsUdpTotal)
-	ExpvarMap.Set("ConnectsTcpCurrent", expConnectsTcpCurrent)
-	ExpvarMap.Set("ConnectsUdpCurrent", expConnectsUdpCurrent)
+	ExpvarMap.Set("ConnectsTCPTotal", expConnectsTCPTotal)
+	ExpvarMap.Set("ConnectsUDPTotal", expConnectsUDPTotal)
+	ExpvarMap.Set("ConnectsTCPCurrent", expConnectsTCPCurrent)
+	ExpvarMap.Set("ConnectsUDPCurrent", expConnectsUDPCurrent)
 	ExpvarMap.Set("CommandLoginTotal", expCommandLoginTotal)
 	ExpvarMap.Set("CommandLogoutTotal", expCommandLogoutTotal)
 	ExpvarMap.Set("CommandQueryTotal", expCommandQueryTotal)

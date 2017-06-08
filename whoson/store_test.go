@@ -44,19 +44,19 @@ func TestMemStore_SetGetDel(t *testing.T) {
 	for _, tt := range tests {
 		sd := newStoreData(tt.value)
 		store.Set(tt.key, sd)
-		actual_get, err := store.Get(tt.key)
+		actualGet, err := store.Get(tt.key)
 		if err != nil {
 			t.Fatalf("Error %v", err)
 		}
-		if tt.expected != actual_get.Data {
-			t.Fatalf("expected %v, actual %v", tt.expected, actual_get)
+		if tt.expected != actualGet.Data {
+			t.Fatalf("expected %v, actual %v", tt.expected, actualGet)
 		}
-		actual_del := store.Del(tt.key)
+		actualDel := store.Del(tt.key)
 		if err != nil {
 			t.Fatalf("Error %v", err)
 		}
-		if actual_del != true {
-			t.Fatalf("expected %v, actual %v", tt.expected, actual_del)
+		if actualDel != true {
+			t.Fatalf("expected %v, actual %v", tt.expected, actualDel)
 		}
 	}
 }

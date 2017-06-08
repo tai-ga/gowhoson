@@ -9,12 +9,14 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Versions hold information for program and git and go versions.
 type Versions struct {
 	Version   string
 	Gitcommit string
 	Goversion string
 }
 
+// NewVersions return new Versions struct pointer.
 func NewVersions(v, git, gov string) *Versions {
 	return &Versions{
 		Version:   v,
@@ -24,6 +26,7 @@ func NewVersions(v, git, gov string) *Versions {
 }
 
 var (
+	// AppVersions is a application version.
 	AppVersions *Versions
 )
 
@@ -136,6 +139,7 @@ func fileExists(filename string) bool {
 	return err == nil
 }
 
+// Run cmd/gowhoson package entry point.
 func Run() int {
 	app := makeApp()
 

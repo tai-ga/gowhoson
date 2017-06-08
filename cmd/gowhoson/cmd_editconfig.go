@@ -15,13 +15,14 @@ import (
 )
 
 func cmdEditConfig(c *cli.Context) error {
-	file := filepath.Join(GetClientConfigDir(), CLIENT_CONFIG)
+	file := filepath.Join(GetClientConfigDir(), ClientConfig)
 	e := NewFileEdit(file)
 	e.Edit()
 
 	return nil
 }
 
+// FileEdit hold information for editablefile.
 type FileEdit struct {
 	file   string
 	Editor string
@@ -29,6 +30,7 @@ type FileEdit struct {
 	Writer io.Writer
 }
 
+// NewFileEdit return new FileEdit struct pointer.
 func NewFileEdit(file string) *FileEdit {
 	e := &FileEdit{
 		Reader: os.Stdin,
@@ -54,21 +56,25 @@ func (f *FileEdit) setEditor() {
 	}
 }
 
+// SetFile set file path to variable.
 func (f *FileEdit) SetFile(file string) {
 	f.file = file
 }
 
+// Edit start edit command.
 func (f *FileEdit) Edit() error {
 	cmd := f.Editor + " " + f.file
 	return f.run(cmd, f.Reader, f.Writer)
 }
 
+// GetClientConfigDir return config file directory.
 func GetClientConfigDir() string {
 	dir := os.Getenv("HOME")
 	dir = filepath.Join(dir, ".config", "gowhoson")
 	return dir
 }
 
+// GetClientConfig return client config file and new ClientConfig struct pointer and error.
 func GetClientConfig(c *cli.Context) (string, *whoson.ClientConfig, error) {
 	var file string
 	if c.String("config") == "" {
@@ -76,7 +82,7 @@ func GetClientConfig(c *cli.Context) (string, *whoson.ClientConfig, error) {
 		if err := os.MkdirAll(dir, 0700); err != nil {
 			return "", nil, err
 		}
-		file = filepath.Join(dir, CLIENT_CONFIG)
+		file = filepath.Join(dir, ClientConfig)
 	} else {
 		file = c.String("config")
 	}
