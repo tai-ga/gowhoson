@@ -71,8 +71,12 @@ USAGE:
    gowhoson server [command options] [arguments...]
 
 OPTIONS:
-   --tcp value  e.g. [ServerIP:Port|nostart] [$GOWHOSON_SERVER_TCP]
-   --udp value  e.g. [ServerIP:Port|nostart] [$GOWHOSON_SERVER_UDP]
+   --tcp value       e.g. [ServerIP:Port|nostart] [$GOWHOSON_SERVER_TCP]
+   --udp value       e.g. [ServerIP:Port|nostart] [$GOWHOSON_SERVER_UDP]
+   --log value       e.g. [stdout|stderr|discard] or "/var/log/filename.log" [$GOWHOSON_SERVER_LOG]
+   --loglevel value  e.g. [debug|info|warn|error|dpanic|panic|fatal] [$GOWHOSON_SERVER_LOGLEVEL]
+   --serverid value  e.g. [1000] (default: 0) [$GOWHOSON_SERVER_SERVERID]
+   --expvar          e.g. (default: false) [$GOWHOSON_SERVER_EXPVAR]
 ```
 
 Client
