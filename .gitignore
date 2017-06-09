@@ -1,4 +1,5 @@
 gowhoson
+goviz.png
 !cmd/gowhoson
 *.txt
 vendor/

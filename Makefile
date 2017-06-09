@@ -56,7 +56,8 @@ build: ## Build program
 clean: ## Clean up
 	@rm -f $(NAME)
 	@rm -rf vendor
-	@rm -rf _coverage.out coverage.out
+	@rm -f _coverage.out coverage.out
+	@rm -f goviz.png 
 
 cover: ## Update coverage.out
 	@$(foreach pkg,$(PKGS),cd $(pkg); go test -coverprofile=coverage.out;cd $(PWD) || exit;)
@@ -67,7 +68,10 @@ cover: ## Update coverage.out
 coverview: ## Coverage view
 	@go tool cover -html=coverage.out
 
+goviz: ## Create struct map
+	@goviz -i github.com/tai-ga/gowhoson | dot -Tpng -o goviz.png
+
 help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: all setup deps lint misspell ineffassign gocyclo dep depup vet fmt test build clean cover coverview help
+.PHONY: all setup deps lint misspell ineffassign gocyclo dep depup vet fmt test build clean cover coverview goviz help
