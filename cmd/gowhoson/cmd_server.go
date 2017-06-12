@@ -62,12 +62,6 @@ func optOverwiteServer(c *cli.Context, config *whoson.ServerConfig) {
 }
 
 func cmdServer(c *cli.Context) error {
-	/*
-		if err := agent.Listen(&agent.Options{NoShutdownCleanup: true}); err != nil {
-			log.Fatal(err)
-		}
-	*/
-
 	config := c.App.Metadata["config"].(*whoson.ServerConfig)
 	optOverwiteServer(c, config)
 
