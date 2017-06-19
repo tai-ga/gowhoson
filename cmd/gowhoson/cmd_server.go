@@ -40,18 +40,18 @@ func splitHostPort(hostPort string) (host string, port int, err error) {
 	return
 }
 
-func optOverwiteServer(c *cli.Context, config *whoson.ServerConfig) {
-	if c.String("tcp") != "" {
-		config.TCP = c.String("tcp")
-	}
-	if c.String("udp") != "" {
-		config.UDP = c.String("udp")
+func cmdServerValidate(c *cli.Context) (*whoson.ServerConfig, error) {
+	config := c.App.Metadata["config"].(*whoson.ServerConfig)
+	if c.String("loglevel") != "" {
+		config.Loglevel = c.String("loglevel")
+		switch config.Loglevel {
+		case "debug", "info", "warn", "error", "dpanic", "panic", "fatal":
+		default:
+			return nil, fmt.Errorf("\"--loglevel %s\" not support loglevel", config.Loglevel)
+		}
 	}
 	if c.String("log") != "" {
 		config.Log = c.String("log")
-	}
-	if c.String("loglevel") != "" {
-		config.Loglevel = c.String("loglevel")
 	}
 	if c.Int("serverid") != 0 {
 		config.ServerID = c.Int("serverid")
@@ -59,18 +59,51 @@ func optOverwiteServer(c *cli.Context, config *whoson.ServerConfig) {
 	if c.Bool("expvar") != false {
 		config.Expvar = c.Bool("expvar")
 	}
+	if c.String("tcp") != "" {
+		config.TCP = c.String("tcp")
+		if config.TCP != "nostart" {
+			host, _, err := splitHostPort(config.TCP)
+			if err != nil {
+				return nil, err
+			}
+			if net.ParseIP(host) == nil {
+				return nil, fmt.Errorf("\"--tcp %s\" parse error", config.TCP)
+			}
+		}
+	}
+	if c.String("udp") != "" {
+		config.UDP = c.String("udp")
+		if config.UDP != "nostart" {
+			host, _, err := splitHostPort(config.UDP)
+			if err != nil {
+				return nil, err
+			}
+			if net.ParseIP(host) == nil {
+				return nil, fmt.Errorf("\"--udp %s\" parse error", config.UDP)
+			}
+		}
+	}
+	return config, nil
 }
 
 func cmdServer(c *cli.Context) error {
-	config := c.App.Metadata["config"].(*whoson.ServerConfig)
-	optOverwiteServer(c, config)
+	var err error
+	config, err := cmdServerValidate(c)
+	if err != nil {
+		displayError(c.App.ErrWriter, err)
+		return err
+	}
 
 	wg := new(sync.WaitGroup)
 	sigChan := make(chan os.Signal, 1)
 	defer close(sigChan)
 
 	whoson.NewMainStore()
-	whoson.NewLogger(config.Log, config.Loglevel)
+	err = whoson.NewLogger(config.Log, config.Loglevel)
+	if err != nil {
+		displayError(c.App.ErrWriter, err)
+		return err
+	}
 	whoson.Log("info", fmt.Sprintf("ServerID:%d", config.ServerID), nil, nil)
 	whoson.NewIDGenerator(uint32(config.ServerID))
 
@@ -124,7 +157,6 @@ func cmdServer(c *cli.Context) error {
 	}
 
 	var lishttp net.Listener
-	var err error
 	if config.Expvar {
 		lishttp, err = net.Listen("tcp", ":8080")
 		if err != nil {

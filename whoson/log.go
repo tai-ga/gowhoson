@@ -10,11 +10,14 @@ import (
 )
 
 // NewLogger return new zap.Logger struct pointer.
-func NewLogger(output, loglevel string) *zap.Logger {
+func NewLogger(output, loglevel string) error {
 	if Logger == nil {
-		InitLog(output, loglevel)
+		err := InitLog(output, loglevel)
+		if err != nil {
+			return err
+		}
 	}
-	return Logger
+	return nil
 }
 
 // InitLog initial setup for Logger.
