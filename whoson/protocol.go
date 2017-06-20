@@ -96,7 +96,6 @@ func (ses *Session) parseCmd(line string) error {
 		}
 		ses.cmdArgs = strings.Join(cmd[2:], " ")
 	case mQuit:
-		//pp.Println("Quit")
 		ses.cmdArgs = strings.Join(cmd[1:], " ")
 	default:
 		return errors.New("command not found")
