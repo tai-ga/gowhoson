@@ -145,7 +145,6 @@ func (s *UDPServer) startSession(ctx context.Context) error {
 		}
 
 		s.enqueue(ses)
-		Log("debug", "Session start", ses, nil)
 	}
 DONE:
 	Log("info", "UDPServerStop", nil, nil)
