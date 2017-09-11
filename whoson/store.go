@@ -77,8 +77,6 @@ func (ms MemStore) Set(k string, w *StoreData) {
 
 // SyncSet data to remote host store.
 func (ms MemStore) SyncSet(k string, w *StoreData) {
-	//pp.Println(k)
-	//pp.Println(w)
 	ms.cmap.Set(k, w)
 }
 
@@ -116,7 +114,6 @@ func (ms MemStore) Del(k string) bool {
 
 // SyncDel data from remote host store.
 func (ms MemStore) SyncDel(k string) bool {
-	//pp.Println(k)
 	if ms.cmap.Has(k) {
 		ms.cmap.Remove(k)
 		return true
