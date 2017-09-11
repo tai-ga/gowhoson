@@ -110,22 +110,6 @@ func cmdServer(c *cli.Context) error {
 	whoson.Log("info", fmt.Sprintf("ServerID:%d", config.ServerID), nil, nil)
 	whoson.NewIDGenerator(uint(config.ServerID))
 
-	ctx, ctxCancel := context.WithCancel(context.Background())
-	if config.UDP != "nostart" || config.TCP != "nostart" {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			whoson.RunExpireChecker(ctx)
-		}()
-
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			hosts := strings.Split(config.SyncRemote, ",")
-			whoson.RunSyncRemote(ctx, hosts)
-		}()
-	}
-
 	var con *net.UDPConn
 	if config.UDP != "nostart" {
 		host, port, err := splitHostPort(config.UDP)
@@ -186,24 +170,36 @@ func cmdServer(c *cli.Context) error {
 		return err
 	}
 
-	if config.UDP != "nostart" || config.TCP != "nostart" {
-		wg.Add(1)
-		signal.Notify(sigChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
-		go signalHandler(sigChan, wg, c, func() {
-			if config.UDP != "nostart" {
-				con.Close()
-			}
-			if config.TCP != "nostart" {
-				lis.Close()
-			}
-			if config.Expvar {
-				lishttp.Close()
-			}
-			lisgrpc.Close()
-			g.Stop()
-			ctxCancel()
-		})
-	}
+	ctx, ctxCancel := context.WithCancel(context.Background())
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		whoson.RunExpireChecker(ctx)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		hosts := strings.Split(config.SyncRemote, ",")
+		whoson.RunSyncRemote(ctx, hosts)
+	}()
+
+	wg.Add(1)
+	signal.Notify(sigChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	go signalHandler(sigChan, wg, c, func() {
+		defer ctxCancel()
+		if config.UDP != "nostart" {
+			con.Close()
+		}
+		if config.TCP != "nostart" {
+			lis.Close()
+		}
+		if config.Expvar {
+			lishttp.Close()
+		}
+		lisgrpc.Close()
+		g.Stop()
+	})
 
 	wg.Wait()
 	return nil
