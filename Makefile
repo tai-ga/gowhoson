@@ -1,5 +1,5 @@
 NAME      := gowhoson
-SRCS      := $(shell git ls-files '*.go')
+SRCS      := $(shell git ls-files '*.go' | grep -v '.pb.go')
 PWD       := $(shell pwd)
 PKGS      := ./cmd/gowhoson ./whoson
 DOCS      := README.md
@@ -18,6 +18,9 @@ setup:
 	go get -u github.com/client9/misspell/cmd/misspell
 	go get -u github.com/gordonklaus/ineffassign
 	go get -u github.com/fzipp/gocyclo
+
+pb:
+	protoc --go_out=plugins=grpc:. whoson/sync.proto
 
 deps: setup
 	dep ensure
