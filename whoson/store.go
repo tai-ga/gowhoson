@@ -55,6 +55,9 @@ func NewMainStoreEnableSyncRemote() {
 			SyncRemote: true,
 		}
 	}
+	if syncChan == nil {
+		syncChan = make(chan *WSRequest, 32)
+	}
 }
 
 // Set data to cmap store.
@@ -179,7 +182,6 @@ func RunExpireChecker(ctx context.Context) {
 
 // RunSyncRemote is sync data to remote grpc servers.
 func RunSyncRemote(ctx context.Context, hosts []string) {
-	syncChan = make(chan *WSRequest, 32)
 	defer close(syncChan)
 
 	Log("info", "RunSyncRemoteStart", nil, nil)
