@@ -110,7 +110,22 @@ func cmdServer(c *cli.Context) error {
 	whoson.Log("info", fmt.Sprintf("ServerID:%d", config.ServerID), nil, nil)
 	whoson.NewIDGenerator(uint(config.ServerID))
 
-	var serverCount = 0
+	ctx, ctxCancel := context.WithCancel(context.Background())
+	if config.UDP != "nostart" || config.TCP != "nostart" {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			whoson.RunExpireChecker(ctx)
+		}()
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			hosts := strings.Split(config.SyncRemote, ",")
+			whoson.RunSyncRemote(ctx, hosts)
+		}()
+	}
+
 	var con *net.UDPConn
 	if config.UDP != "nostart" {
 		host, port, err := splitHostPort(config.UDP)
@@ -132,7 +147,6 @@ func cmdServer(c *cli.Context) error {
 			defer wg.Done()
 			whoson.ServeUDP(con)
 		}()
-		serverCount++
 	}
 
 	var lis *net.TCPListener
@@ -156,7 +170,6 @@ func cmdServer(c *cli.Context) error {
 			defer wg.Done()
 			whoson.ServeTCP(lis)
 		}()
-		serverCount++
 	}
 
 	var lishttp net.Listener
@@ -173,22 +186,7 @@ func cmdServer(c *cli.Context) error {
 		return err
 	}
 
-	if serverCount > 0 {
-		ctx, ctxCancel := context.WithCancel(context.Background())
-
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			whoson.RunExpireChecker(ctx)
-		}()
-
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			hosts := strings.Split(config.SyncRemote, ",")
-			whoson.RunSyncRemote(ctx, hosts)
-		}()
-
+	if config.UDP != "nostart" || config.TCP != "nostart" {
 		wg.Add(1)
 		signal.Notify(sigChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 		go signalHandler(sigChan, wg, c, func() {
