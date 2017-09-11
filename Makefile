@@ -1,14 +1,19 @@
-NAME      := gowhoson
-SRCS      := $(shell git ls-files '*.go' | grep -v '.pb.go')
-PWD       := $(shell pwd)
-PKGS      := ./cmd/gowhoson ./whoson
-DOCS      := README.md
-VERSION   := $(shell git describe --tags --abbrev=0)
-REVISION  := $(shell git rev-parse --short HEAD)
-GOVERSION := $(shell go version | cut -d ' ' -f3 | sed 's/^go//')
-LDFLAGS   := -s -X 'main.gVersion=$(VERSION)' \
-                -X 'main.gGitcommit=$(REVISION)' \
-                -X 'main.gGoversion=$(GOVERSION)'
+NAME       := gowhoson
+SRCS       := $(shell git ls-files '*.go' | grep -v '.pb.go')
+PWD        := $(shell pwd)
+PKGS       := ./cmd/gowhoson ./whoson
+DOCS       := README.md
+VERSION    := $(shell git describe --tags --abbrev=0)
+REVISION   := $(shell git rev-parse --short HEAD)
+GOVERSION  := $(shell go version | cut -d ' ' -f3 | sed 's/^go//')
+SRCDIR     := rpmbuild/SOURCES
+RELEASE    := 1
+IMAGE_NAME := $(NAME)-build
+TARGZ_FILE := $(NAME).tar.gz
+UID        := $(shell id -u)
+LDFLAGS    := -s -X 'main.gVersion=$(VERSION)' \
+                 -X 'main.gGitcommit=$(REVISION)' \
+                 -X 'main.gGoversion=$(GOVERSION)'
 
 all: deps test build
 
@@ -56,12 +61,6 @@ test: lint misspell ineffassign gocyclo vet fmt ## Test
 build: ## Build program
 	go build -ldflags "$(LDFLAGS)" -o $(NAME) $<
 
-clean: ## Clean up
-	@rm -f $(NAME)
-	@rm -rf vendor
-	@rm -f _coverage.out coverage.out
-	@rm -f goviz.png 
-
 cover: ## Update coverage.out
 	@$(foreach pkg,$(PKGS),cd $(pkg); go test -coverprofile=coverage.out;cd $(PWD) || exit;)
 	@$(foreach pkg,$(PKGS),cat $(pkg)/coverage.out >> _coverage.out; rm -f $(pkg)/coverage.out || exit;)
@@ -73,6 +72,40 @@ coverview: ## Coverage view
 
 goviz: ## Create struct map
 	@goviz -i github.com/tai-ga/gowhoson | dot -Tpng -o goviz.png
+
+$(SRCDIR)/$(NAME):
+	GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -o $(SRCDIR)/$(NAME)
+	@docker images | grep -q $(IMAGE_NAME) && docker rmi $(IMAGE_NAME) || true;
+
+%.bin: rpmbuild/SPECS/$(NAME).spec $(SRCDIR)/$(NAME)
+	docker build --build-arg UID=$(UID) --build-arg NAME=$(NAME) --build-arg VERSION=$(VERSION) \
+		--build-arg RELEASE=$(RELEASE) -t $(IMAGE_NAME) -f Dockerfile.$* .
+	@docker run --name $(IMAGE_NAME)-tmp $(IMAGE_NAME)
+	@docker wait $(IMAGE_NAME)-tmp
+	@docker cp $(IMAGE_NAME)-tmp:/tmp/$(TARGZ_FILE) /tmp
+	@docker rm $(IMAGE_NAME)-tmp
+	@[ ! -d $@ ] && mkdir $@ || :
+	@tar zxf /tmp/$(TARGZ_FILE) -C $@
+	@[ -f /tmp/$(TARGZ_FILE) ] && rm -f /tmp/$(TARGZ_FILE) || :
+
+rpm: IMAGE_NAME := $(IMAGE_NAME)-ce6
+rpm: rpm.bin ## Build rpms for CentOS6
+rpm-login: rpm ## Login build environment for CentOS6
+	docker run --rm  -v $(PWD)/rpmbuild/SOURCES:/rpmbuild/SOURCES \
+	-v $(PWD)/rpmbuild/SPECS:/rpmbuild/SPECS \
+	-it $(IMAGE_NAME)-ce6 /bin/bash
+
+clean: ## Clean up
+	@rm -f $(NAME)
+	@rm -f _coverage.out coverage.out
+	@rm -f goviz.png
+	@rm -f rpmbuild/SOURCES/$(NAME)
+	@rm -rf vendor
+	@rm -rf rpm.bin
+	@LIST="ce6";\
+	for x in $$LIST; do \
+		docker images | grep -q $(IMAGE_NAME)-$$x && docker rmi $(IMAGE_NAME)-$$x || true; \
+	done
 
 help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

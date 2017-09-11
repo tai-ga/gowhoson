@@ -5,3 +5,5 @@ goviz.png
 vendor/
 dist/
 *coverage.out
+rpm.bin
+.bin

@@ -1,0 +1,21 @@
+FROM centos:6
+ENV HOME /
+ARG UID=${UID}
+ARG NAME=${NAME}
+ARG VERSION=${VERSION}
+ARG RELEASE=${RELEASE}
+RUN yum install -y yum-plugin-fastestmirror \
+  && yum update -y \
+  && yum install -y yum-utils rpm-build chkconfig
+ADD ./rpmbuild/ /rpmbuild/
+RUN groupadd builduser \
+  && useradd -u ${UID} builduser -g builduser \
+  && echo '%debug_package %{nil}' > /.rpmmacros \
+  && chown -R builduser:builduser /rpmbuild \
+  && yum-builddep -y /rpmbuild/SPECS/${NAME}.spec \
+  && yum clean all
+USER builduser
+RUN NAME=${NAME} VERSION=${VERSION} RELEASE=${RELEASE} rpmbuild -ba /rpmbuild/SPECS/${NAME}.spec \
+  &&  tar -czf /tmp/${NAME}.tar.gz -C /rpmbuild RPMS SRPMS \
+  && rm -rf /rpmbuild/*
+CMD ["/bin/true"]
