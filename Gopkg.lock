@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/Songmu/retry"
+  packages = ["."]
+  revision = "3a202b1bab4254860f7f71d04c28133026100493"
+  version = "v0.0.1"
+
+[[projects]]
   branch = "master"
   name = "github.com/client9/reopen"
   packages = ["."]
@@ -9,9 +15,15 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/golang/protobuf"
+  packages = ["proto","ptypes","ptypes/any","ptypes/duration","ptypes/timestamp"]
+  revision = "17ce1425424ab154092bbb43af630bd647f3bb0d"
+
+[[projects]]
   name = "github.com/kayac/go-katsubushi"
   packages = ["."]
-  revision = "84fafd7ce465f66e870f65d3a1dc0816aac6dc8a"
+  revision = "ec38f7a524859e2b1abdb4fdc6b9e61c904eb46b"
+  version = "v1.4.1"
 
 [[projects]]
   branch = "master"
@@ -23,41 +35,59 @@
   branch = "master"
   name = "github.com/pkg/errors"
   packages = ["."]
-  revision = "248dadf4e9068a0b3e79f02ed0a610d935de5302"
+  revision = "2b3a18b5f0fb6b4f9190549597d3f962c02bc5eb"
 
 [[projects]]
   branch = "master"
   name = "github.com/urfave/cli"
   packages = ["."]
-  revision = "d70f47eeca3afd795160003bc6e28b001d60c67c"
+  revision = "7fb9c86b14e6a702a4157ccb5a863f07d844a207"
 
 [[projects]]
-  branch = "master"
   name = "go.uber.org/atomic"
   packages = ["."]
-  revision = "3b8db5e93c4c02efbc313e17b2e796b0914a01fb"
+  revision = "4e336646b2ef9fc6e47be8e21594178f98e5ebcf"
+  version = "v1.2.0"
 
 [[projects]]
-  branch = "master"
-  name = "go.uber.org/zap"
-  packages = [".","buffer","internal/bufferpool","internal/color","internal/exit","internal/multierror","zapcore"]
-  revision = "a2773be06b9ac7c318a3a105b5c310af5730c6b4"
-
-[[projects]]
-  branch = "master"
-  name = "golang.org/x/sys"
-  packages = ["unix"]
-  revision = "b699b7032584f0953262cb2788a0ca19bb494703"
-
-[[projects]]
-  branch = "master"
-  name = "gopkg.in/Sirupsen/logrus.v0"
+  name = "go.uber.org/multierr"
   packages = ["."]
-  revision = "d26492970760ca5d33129d2d799e34be5c4782eb"
+  revision = "3c4937480c32f4c13a875a1829af76c98ca3d40a"
+  version = "v1.1.0"
+
+[[projects]]
+  name = "go.uber.org/zap"
+  packages = [".","buffer","internal/bufferpool","internal/color","internal/exit","zapcore"]
+  revision = "3216c4c73e8ebbafff73c456dd27143f4a7c1f94"
+  version = "v1.6.0"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context","http2","http2/hpack","idna","internal/timeseries","lex/httplex","trace"]
+  revision = "66aacef3dd8a676686c7ae3716979581e8b03c47"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/text"
+  packages = ["internal/gen","internal/triegen","internal/ucd","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
+  revision = "bd91bbf73e9a4a801adbfb97133c992678533126"
+
+[[projects]]
+  branch = "master"
+  name = "google.golang.org/genproto"
+  packages = ["googleapis/rpc/status"]
+  revision = "595979c8a7bf586b2d293fb42246bf91a0b893d9"
+
+[[projects]]
+  name = "google.golang.org/grpc"
+  packages = [".","codes","connectivity","credentials","grpclb/grpc_lb_v1/messages","grpclog","internal","keepalive","metadata","naming","peer","stats","status","tap","transport"]
+  revision = "f92cdcd7dcdc69e81b2d7b338479a19a8723cfa3"
+  version = "v1.6.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "dae8ecfa103794c699e2f571921f8288e92664630d0bcfc45440d6455b68fa30"
+  inputs-digest = "635d348a914104493df4c9a0ebba81c433c8d95ed1a84619340bac91f14ef648"
   solver-name = "gps-cdcl"
   solver-version = 1
