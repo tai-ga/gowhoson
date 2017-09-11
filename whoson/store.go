@@ -6,9 +6,13 @@ import (
 	"net"
 	"time"
 
+	"google.golang.org/grpc"
+
 	"github.com/orcaman/concurrent-map"
 	"github.com/pkg/errors"
 )
+
+var syncChan chan *WSRequest
 
 // Store is hold Store API.
 type Store interface {
@@ -17,18 +21,22 @@ type Store interface {
 	Del(k string) bool
 	Items() map[string]interface{}
 	Count() int
+	SyncSet(k string, w *StoreData)
+	SyncDel(k string) bool
 }
 
 // MemStore hold information for cmap.
 type MemStore struct {
-	cmap cmap.ConcurrentMap
+	cmap       cmap.ConcurrentMap
+	SyncRemote bool
 	Store
 }
 
 // NewMemStore return new MemStore.
 func NewMemStore() Store {
 	return MemStore{
-		cmap: cmap.New(),
+		cmap:       cmap.New(),
+		SyncRemote: false,
 	}
 }
 
@@ -39,8 +47,35 @@ func NewMainStore() {
 	}
 }
 
+// NewMainStoreEnableSyncRemote set MemStore to MainStore, enable sync remote.
+func NewMainStoreEnableSyncRemote() {
+	if MainStore == nil {
+		MainStore = MemStore{
+			cmap:       cmap.New(),
+			SyncRemote: true,
+		}
+	}
+}
+
 // Set data to cmap store.
 func (ms MemStore) Set(k string, w *StoreData) {
+	ms.cmap.Set(k, w)
+
+	if ms.SyncRemote {
+		r := &WSRequest{
+			Expire: w.Expire.Unix(),
+			IP:     w.IP.String(),
+			Data:   w.Data,
+			Method: "Set",
+		}
+		syncChan <- r
+	}
+}
+
+// SyncSet data to remote host store.
+func (ms MemStore) SyncSet(k string, w *StoreData) {
+	//pp.Println(k)
+	//pp.Println(w)
 	ms.cmap.Set(k, w)
 }
 
@@ -51,7 +86,7 @@ func (ms MemStore) Get(k string) (*StoreData, error) {
 			if w.Expire.After(time.Now()) {
 				return w, nil
 			}
-			ms.Del(k)
+			ms.SyncDel(k)
 			return nil, errors.New("data not found")
 		}
 		return nil, errors.New("type assertion error")
@@ -61,6 +96,24 @@ func (ms MemStore) Get(k string) (*StoreData, error) {
 
 // Del delete data from cmap store.
 func (ms MemStore) Del(k string) bool {
+	if ms.SyncRemote {
+		r := &WSRequest{
+			IP:     k,
+			Method: "Del",
+		}
+		syncChan <- r
+	}
+
+	if ms.cmap.Has(k) {
+		ms.cmap.Remove(k)
+		return true
+	}
+	return false
+}
+
+// SyncDel data from remote host store.
+func (ms MemStore) SyncDel(k string) bool {
+	//pp.Println(k)
 	if ms.cmap.Has(k) {
 		ms.cmap.Remove(k)
 		return true
@@ -122,4 +175,53 @@ func RunExpireChecker(ctx context.Context) {
 			}
 		}
 	}
+}
+
+// RunSyncRemote is sync data to remote grpc servers.
+func RunSyncRemote(ctx context.Context, hosts []string) {
+	syncChan = make(chan *WSRequest, 32)
+	defer close(syncChan)
+
+	Log("info", "RunSyncRemoteStart", nil, nil)
+	for {
+		select {
+		case <-ctx.Done():
+			Log("info", "RunSyncRemoteStop", nil, nil)
+			return
+		case req, ok := <-syncChan:
+			if !ok {
+				return
+			}
+			for _, h := range hosts {
+				if h != "" {
+					go execSyncRemote(req, h)
+				}
+			}
+		}
+	}
+}
+
+func execSyncRemote(req *WSRequest, remotehost string) {
+	l, err := grpc.Dial(remotehost,
+		grpc.WithInsecure(),
+		grpc.WithBlock(),
+		grpc.WithTimeout(time.Duration(15*time.Second)))
+	if err != nil {
+		Log("error", "execSyncRemote:Error", nil, err)
+		return
+	}
+	client := NewSyncClient(l)
+
+	switch req.Method {
+	case "Set":
+		_, err = client.Set(context.Background(), req)
+		Log("debug", "execSyncRemote:Set", nil, nil)
+	case "Del":
+		_, err = client.Del(context.Background(), req)
+		Log("debug", "execSyncRemote:Del", nil, nil)
+	}
+	if err != nil {
+		Log("error", "execSyncRemote:Error", nil, err)
+	}
+	l.Close()
 }

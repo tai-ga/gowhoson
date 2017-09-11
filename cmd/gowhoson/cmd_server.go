@@ -9,9 +9,12 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
+
+	"google.golang.org/grpc"
 
 	"github.com/tai-ga/gowhoson/whoson"
 	"github.com/urfave/cli"
@@ -98,14 +101,14 @@ func cmdServer(c *cli.Context) error {
 	sigChan := make(chan os.Signal, 1)
 	defer close(sigChan)
 
-	whoson.NewMainStore()
+	whoson.NewMainStoreEnableSyncRemote()
 	err = whoson.NewLogger(config.Log, config.Loglevel)
 	if err != nil {
 		displayError(c.App.ErrWriter, err)
 		return err
 	}
 	whoson.Log("info", fmt.Sprintf("ServerID:%d", config.ServerID), nil, nil)
-	whoson.NewIDGenerator(uint32(config.ServerID))
+	whoson.NewIDGenerator(uint(config.ServerID))
 
 	var serverCount = 0
 	var con *net.UDPConn
@@ -157,17 +160,17 @@ func cmdServer(c *cli.Context) error {
 	}
 
 	var lishttp net.Listener
-	if config.Expvar {
-		lishttp, err = net.Listen("tcp", ":8080")
-		if err != nil {
-			displayError(c.App.ErrWriter, err)
-			return err
-		}
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			http.Serve(lishttp, nil)
-		}()
+	lishttp, err = runExpvar(config, wg, c)
+	if err != nil {
+		return err
+	}
+
+	var g *grpc.Server
+	var lisgrpc net.Listener
+	g = grpc.NewServer()
+	lisgrpc, err = runGrpc(g, config, wg, c)
+	if err != nil {
+		return err
 	}
 
 	if serverCount > 0 {
@@ -177,6 +180,13 @@ func cmdServer(c *cli.Context) error {
 		go func() {
 			defer wg.Done()
 			whoson.RunExpireChecker(ctx)
+		}()
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			hosts := strings.Split(config.SyncRemote, ",")
+			whoson.RunSyncRemote(ctx, hosts)
 		}()
 
 		wg.Add(1)
@@ -191,10 +201,52 @@ func cmdServer(c *cli.Context) error {
 			if config.Expvar {
 				lishttp.Close()
 			}
+			lisgrpc.Close()
+			g.Stop()
 			ctxCancel()
 		})
 	}
 
 	wg.Wait()
 	return nil
+}
+
+func getListener(c *cli.Context, host string) (net.Listener, error) {
+	l, err := net.Listen("tcp", host)
+	if err != nil {
+		displayError(c.App.ErrWriter, err)
+		return nil, err
+	}
+	return l, nil
+}
+
+func runExpvar(config *whoson.ServerConfig, wg *sync.WaitGroup, c *cli.Context) (net.Listener, error) {
+	var lishttp net.Listener
+	var err error
+	if config.Expvar {
+		if lishttp, err = getListener(c, ":8080"); err != nil {
+			return nil, err
+		}
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			http.Serve(lishttp, nil)
+		}()
+	}
+	return lishttp, nil
+}
+
+func runGrpc(g *grpc.Server, config *whoson.ServerConfig, wg *sync.WaitGroup, c *cli.Context) (net.Listener, error) {
+	var lisgrpc net.Listener
+	var err error
+	if lisgrpc, err = getListener(c, config.GRPCPort); err != nil {
+		return nil, err
+	}
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		whoson.RegisterSyncServer(g, &whoson.Sync{})
+		g.Serve(lisgrpc)
+	}()
+	return lisgrpc, nil
 }

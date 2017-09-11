@@ -27,12 +27,14 @@ type ClientConfig struct {
 
 // ServerConfig hold information for server configration.
 type ServerConfig struct {
-	TCP      string
-	UDP      string
-	Log      string
-	Loglevel string
-	ServerID int
-	Expvar   bool
+	TCP        string
+	UDP        string
+	Log        string
+	Loglevel   string
+	ServerID   int
+	Expvar     bool
+	GRPCPort   string
+	SyncRemote string
 }
 
 const (

@@ -79,7 +79,7 @@ func (s *UDPServer) ServeUDP(c *net.UDPConn) error {
 
 	NewMainStore()
 	NewLogger("stdout", "warn")
-	err = NewIDGenerator(uint32(1))
+	err = NewIDGenerator(uint(1))
 	if err != nil {
 		return errors.Wrap(err, "IDGenerator failed")
 	}

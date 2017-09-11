@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package whoson;
+
+service sync {
+  rpc Set(WSRequest) returns (WSResponse){}
+  rpc Del(WSRequest) returns (WSResponse){}
+  //rpc Dump(RequestDump) returns (ResponseDump){}
+}
+
+message WSRequest{
+  int64 Expire   = 1;
+  string IP      = 2;
+  string Data    = 3;
+  string Method  = 4;
+}
+
+message WSResponse{
+  int32 Rcode = 1;
+  string Msg = 2;
+}
+
+message WSRequestDump{}
+
+message WSResponseDump{
+  int32 Rcode = 1;
+  bytes json = 2;
+}

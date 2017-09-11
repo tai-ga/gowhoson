@@ -26,12 +26,14 @@ func GetServerConfig(c *cli.Context) (string, *whoson.ServerConfig, error) {
 		return "", nil, err
 	}
 	config := &whoson.ServerConfig{
-		TCP:      "127.0.0.1:9876",
-		UDP:      "127.0.0.1:9876",
-		Log:      "stdout",
-		Loglevel: "error",
-		ServerID: 1000,
-		Expvar:   false,
+		TCP:        "127.0.0.1:9876",
+		UDP:        "127.0.0.1:9876",
+		Log:        "stdout",
+		Loglevel:   "error",
+		ServerID:   1000,
+		Expvar:     false,
+		SyncRemote: "",
+		//SyncRemote: "127.0.0.1:9877,127.0.0.1:9878,127.0.0.1:9879",
 	}
 	if err == nil {
 		err = json.Unmarshal(b, &config)
@@ -59,4 +61,14 @@ func displayError(w io.Writer, e error) {
 
 func display(w io.Writer, s string) {
 	fmt.Fprintln(w, s)
+}
+
+func sliceLen(ss []string) int {
+	var ret []string
+	for _, s := range ss {
+		if s != "" {
+			ret = append(ret, s)
+		}
+	}
+	return len(ret)
 }

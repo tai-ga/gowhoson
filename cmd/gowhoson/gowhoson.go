@@ -97,6 +97,16 @@ func makeApp() *cli.App {
 					Usage:  "e.g. (default: false)",
 					EnvVar: "GOWHOSON_SERVER_EXPVAR",
 				},
+				cli.StringFlag{
+					Name:   "grpcport",
+					Usage:  "e.g. [ServerIP:Port]",
+					EnvVar: "GOWHOSON_SERVER_GRPCPORT",
+				},
+				cli.StringFlag{
+					Name:   "syncremote",
+					Usage:  "e.g. [ServerIP:Port,ServerIP:Port...]",
+					EnvVar: "GOWHOSON_SERVER_SYNCREMOTE",
+				},
 			},
 			Action: cmdServer,
 		},

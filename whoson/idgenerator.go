@@ -5,7 +5,7 @@ import (
 )
 
 // NewIDGenerator is set id generator to IDGenerator.
-func NewIDGenerator(workerID uint32) error {
+func NewIDGenerator(workerID uint) error {
 	if IDGenerator == nil {
 		idgen, err := katsubushi.NewGenerator(workerID)
 		if err != nil {
