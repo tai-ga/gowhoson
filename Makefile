@@ -76,10 +76,12 @@ goviz: ## Create struct map
 $(SRCDIR)/$(NAME):
 	GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -o $(SRCDIR)/$(NAME)
 	@docker images | grep -q $(IMAGE_NAME) && docker rmi $(IMAGE_NAME) || true;
+	@docker images | grep -q $(IMAGE_NAME)-login && docker rmi $(IMAGE_NAME)-login || true;
 
 %.bin: rpmbuild/SPECS/$(NAME).spec $(SRCDIR)/$(NAME)
-	docker build --build-arg UID=$(UID) --build-arg NAME=$(NAME) --build-arg VERSION=$(VERSION) \
-		--build-arg RELEASE=$(RELEASE) -t $(IMAGE_NAME) -f Dockerfile.$* .
+	@docker build --build-arg UID=$(UID) --build-arg NAME=$(NAME) --build-arg VERSION=$(VERSION) \
+		--build-arg RELEASE=$(RELEASE) -t $(IMAGE_NAME) -f Dockerfile.build .
+	@docker build -t $(IMAGE_NAME)-login -f Dockerfile.login .
 	@docker run --name $(IMAGE_NAME)-tmp $(IMAGE_NAME)
 	@docker wait $(IMAGE_NAME)-tmp
 	@docker cp $(IMAGE_NAME)-tmp:/tmp/$(TARGZ_FILE) /tmp
@@ -88,12 +90,13 @@ $(SRCDIR)/$(NAME):
 	@tar zxf /tmp/$(TARGZ_FILE) -C $@
 	@[ -f /tmp/$(TARGZ_FILE) ] && rm -f /tmp/$(TARGZ_FILE) || :
 
-rpm: IMAGE_NAME := $(IMAGE_NAME)-ce6
 rpm: rpm.bin ## Build rpms for CentOS6
 rpm-login: rpm ## Login build environment for CentOS6
 	docker run --rm  -v $(PWD)/rpmbuild/SOURCES:/rpmbuild/SOURCES \
 	-v $(PWD)/rpmbuild/SPECS:/rpmbuild/SPECS \
-	-it $(IMAGE_NAME)-ce6 /bin/bash
+	-v $(PWD)/rpm.bin/RPMS:/rpmbuild/RPMS \
+	-v $(PWD)/rpm.bin/SRPMS:/rpmbuild/SRPMS \
+	-it $(IMAGE_NAME)-login /bin/bash
 
 clean: ## Clean up
 	@rm -f $(NAME)
@@ -102,10 +105,8 @@ clean: ## Clean up
 	@rm -f rpmbuild/SOURCES/$(NAME)
 	@rm -rf vendor
 	@rm -rf rpm.bin
-	@LIST="ce6";\
-	for x in $$LIST; do \
-		docker images | grep -q $(IMAGE_NAME)-$$x && docker rmi $(IMAGE_NAME)-$$x || true; \
-	done
+	@docker images | grep -q $(IMAGE_NAME) && docker rmi $(IMAGE_NAME) || true;
+	@docker images | grep -q $(IMAGE_NAME)-login && docker rmi $(IMAGE_NAME)-login || true;
 
 help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
