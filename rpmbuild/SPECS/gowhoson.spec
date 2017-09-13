@@ -11,9 +11,10 @@ Group: Networking/Daemons
 Source0: %{name}
 Source1: %{name}.init
 Source2: %{name}.json
-
 URL: https://github.com/tai-ga/gowhoson
 BuildRoot: /var/tmp/%{name}-build
+BuildRequires: initscripts
+Requires: initscripts
 
 %description
 gowhoson is a golang implementation of the "Whoson" protocol.
@@ -37,6 +38,14 @@ ln -sf ../init.d/%{name} $RPM_BUILD_ROOT/etc/rc.d/rc3.d/S80%{name}
 ln -sf ../init.d/%{name} $RPM_BUILD_ROOT/etc/rc.d/rc4.d/S80%{name}
 ln -sf ../init.d/%{name} $RPM_BUILD_ROOT/etc/rc.d/rc5.d/S80%{name}
 ln -sf ../init.d/%{name} $RPM_BUILD_ROOT/etc/rc.d/rc6.d/K30%{name}
+
+%pre
+if ! grep -q "^gowhoson:" /etc/group; then
+    groupadd gowhoson
+fi
+if ! grep -q "^gowhoson:" /etc/passwd; then
+    useradd -g gowhoson gowhoson -d /var/empty
+fi
 
 %post
 
@@ -62,5 +71,8 @@ fi
 %config(missingok) /etc/rc.d/rc6.d/K30%{name}
 
 %changelog
+* Mon Sep 13 2017 Masahiro Ono <masahiro.o@gmail.com> gowhoson-v0.1.2-1
+- Update rpm.spec %pre section
+
 * Mon Sep 11 2017 Masahiro Ono <masahiro.o@gmail.com> gowhoson-v0.1.1-1
 - Initial build
