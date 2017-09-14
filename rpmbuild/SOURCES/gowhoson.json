@@ -1,7 +1,7 @@
 {
   "TCP": "0.0.0.0:9876",
   "UDP": "0.0.0.0:9876",
-  "Log": "stdout",
+  "Log": "/var/log/gowhoson/gowhoson.log",
   "Loglevel": "debug",
   "ServerID": 1,
   "Expvar": false,

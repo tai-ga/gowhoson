@@ -1,0 +1,15 @@
+/var/log/gowhoson/gowhoson.log {
+  daily
+  rotate 90
+  compress
+  create 644 gowhoson gowhoson
+  sharedscripts
+  postrotate
+    pid=/var/run/gowhoson.pid
+    if [ -s "$pid" ]
+    then
+        echo "KILL -HUP $pid"
+      kill -HUP "$(cat $pid)"
+    fi
+  endscript
+}

@@ -22,12 +22,19 @@
 # source function library
 . /etc/rc.d/init.d/functions
 
+if [ -f /etc/sysconfig/gowhoson ] ; then
+        . /etc/sysconfig/gowhoson
+else
+        LOGFILE="/var/log/gowhoson/gowhoson.log"
+fi
+
+
 prog="gowhoson"
 user="gowhoson"
 exec="/usr/sbin/$prog"
 pidfile="/var/run/$prog.pid"
 lockfile="/var/lock/subsys/$prog"
-logfile="/var/log/$prog.log"
+logfile=$LOGFILE
 conffile="/etc/gowhoson.json"
 
 # pull in sysconfig settings
@@ -41,8 +48,21 @@ start() {
 
     umask 033
 
-    touch $logfile $pidfile
-    chown $user:$user $logfile $pidfile
+    touch $pidfile
+    chown $user:$user $pidfile
+
+    if [ $logfile = "stdout" ]; then
+        LOGOPT=""
+    else
+        LOGDIR=`dirname $logfile`
+        if [ ! -d $LOGDIR ] ; then
+            mkdir -p $LOGDIR
+            chown $user:$user $LOGDIR
+        fi
+        touch $logfile
+        chown $user:$user $logfile
+        LOGOPT="--log $logfile"
+    fi
 
     echo -n $"Starting $prog: "
     
@@ -53,7 +73,7 @@ start() {
     daemon \
         --pidfile=$pidfile \
         --user=$user \
-        " { $exec --config $conffile server --log $logfile & } ; echo \$! >| $pidfile "
+        " { $exec --config $conffile server $LOGOPT & } ; echo \$! >| $pidfile "
     
     RETVAL=$?
     echo
