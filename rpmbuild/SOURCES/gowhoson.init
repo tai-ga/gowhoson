@@ -57,6 +57,7 @@ start() {
         LOGDIR=`dirname $logfile`
         if [ ! -d $LOGDIR ] ; then
             mkdir -p $LOGDIR
+            chmod 755 $LOGDIR
             chown $user:$user $LOGDIR
         fi
         touch $logfile

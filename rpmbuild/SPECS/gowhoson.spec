@@ -77,6 +77,9 @@ fi
 %config(missingok) /etc/rc.d/rc6.d/K30%{name}
 
 %changelog
+* Mon Sep 14 2017 Masahiro Ono <masahiro.o@gmail.com>
+- Fix permission for log directory
+
 * Mon Sep 14 2017 Masahiro Ono <masahiro.o@gmail.com> gowhoson-v0.1.3-1
 - Add /etc/sysconfig/gowhoson, /etc/logrotate.d/gowhoson
 
