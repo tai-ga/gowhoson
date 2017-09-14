@@ -20,7 +20,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-func signalHandler(ch <-chan os.Signal, wg *sync.WaitGroup, c *cli.Context, ctx context.Context, f func()) {
+func signalHandler(ctx context.Context, ch <-chan os.Signal, wg *sync.WaitGroup, c *cli.Context, f func()) {
 	defer wg.Done()
 
 	for {
@@ -200,7 +200,7 @@ func cmdServer(c *cli.Context) error {
 
 	wg.Add(1)
 	signal.Notify(sigChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
-	go signalHandler(sigChan, wg, c, ctx, func() {
+	go signalHandler(ctx, sigChan, wg, c, func() {
 		defer ctxCancel()
 		if config.UDP != "nostart" {
 			con.Close()
