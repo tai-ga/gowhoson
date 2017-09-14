@@ -22,20 +22,19 @@ func NewLogger(output, loglevel string) error {
 
 // InitLog initial setup for Logger.
 func InitLog(output, loglevel string) error {
-	var writer reopen.Writer
 	switch output {
 	case "stdout":
-		writer = reopen.Stdout
+		LogWriter = reopen.Stdout
 	case "stderr":
-		writer = reopen.Stderr
+		LogWriter = reopen.Stderr
 	case "discard":
-		writer = reopen.Discard
+		LogWriter = reopen.Discard
 	default:
 		f, err := reopen.NewFileWriterMode(output, 0644)
 		if err != nil {
 			return err
 		}
-		writer = f
+		LogWriter = f
 	}
 
 	var level zapcore.Level
@@ -51,7 +50,7 @@ func InitLog(output, loglevel string) error {
 	}
 
 	encoder := zapcore.NewJSONEncoder(config)
-	writeSyncer := zapcore.AddSync(writer)
+	writeSyncer := zapcore.AddSync(LogWriter)
 	Logger = zap.New(
 		zapcore.NewCore(
 			encoder,

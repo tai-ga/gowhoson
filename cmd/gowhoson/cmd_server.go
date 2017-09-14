@@ -20,15 +20,29 @@ import (
 	"github.com/urfave/cli"
 )
 
-func signalHandler(ch <-chan os.Signal, wg *sync.WaitGroup, c *cli.Context, f func()) {
+func signalHandler(ch <-chan os.Signal, wg *sync.WaitGroup, c *cli.Context, ctx context.Context, f func()) {
 	defer wg.Done()
 
-	<-ch
-	f()
-	time.AfterFunc(time.Second*8, func() {
-		displayError(c.App.ErrWriter, errors.New("Clean shutdown took too long, forcing exit"))
-		os.Exit(0)
-	})
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case s := <-ch:
+			switch s {
+			case syscall.SIGHUP:
+				err := whoson.LogWriter.Reopen()
+				if err != nil {
+					panic(err)
+				}
+			default:
+				f()
+				time.AfterFunc(time.Second*8, func() {
+					displayError(c.App.ErrWriter, errors.New("Clean shutdown took too long, forcing exit"))
+					os.Exit(0)
+				})
+			}
+		}
+	}
 }
 
 func splitHostPort(hostPort string) (host string, port int, err error) {
@@ -186,7 +200,7 @@ func cmdServer(c *cli.Context) error {
 
 	wg.Add(1)
 	signal.Notify(sigChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
-	go signalHandler(sigChan, wg, c, func() {
+	go signalHandler(sigChan, wg, c, ctx, func() {
 		defer ctxCancel()
 		if config.UDP != "nostart" {
 			con.Close()

@@ -6,6 +6,7 @@ import (
 	"runtime/pprof"
 	"time"
 
+	"github.com/client9/reopen"
 	katsubushi "github.com/kayac/go-katsubushi"
 	"go.uber.org/zap"
 )
@@ -78,6 +79,8 @@ var (
 	MainStore Store
 	// Logger halds logging.
 	Logger *zap.Logger
+	// LogWriter is IO Writer.
+	LogWriter reopen.Writer
 	// IDGenerator halds id generator.
 	IDGenerator *katsubushi.Generator
 
