@@ -5,7 +5,7 @@ package whoson;
 service sync {
   rpc Set(WSRequest) returns (WSResponse){}
   rpc Del(WSRequest) returns (WSResponse){}
-  //rpc Dump(RequestDump) returns (ResponseDump){}
+  rpc Dump(WSDumpRequest) returns (WSDumpResponse){}
 }
 
 message WSRequest{
@@ -20,9 +20,10 @@ message WSResponse{
   string Msg = 2;
 }
 
-message WSRequestDump{}
+message WSDumpRequest{}
 
-message WSResponseDump{
+message WSDumpResponse{
   int32 Rcode = 1;
-  bytes json = 2;
+  string Msg = 2;
+  bytes Json = 3;
 }

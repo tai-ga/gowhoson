@@ -30,3 +30,12 @@ func (s *Sync) Del(c context.Context, wreq *WSRequest) (*WSResponse, error) {
 	}
 	return &WSResponse{Msg: "NG", Rcode: 2}, nil
 }
+
+// Dump dump to all data
+func (s *Sync) Dump(c context.Context, wreq *WSDumpRequest) (*WSDumpResponse, error) {
+	jsonb, err := MainStore.ItemsJSON()
+	if err != nil {
+		return &WSDumpResponse{Msg: "NG", Rcode: 2, Json: []byte("{}")}, nil
+	}
+	return &WSDumpResponse{Msg: "OK", Rcode: 1, Json: jsonb}, nil
+}
