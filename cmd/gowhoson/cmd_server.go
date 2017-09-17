@@ -1,9 +1,12 @@
 package gowhoson
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
@@ -77,30 +80,49 @@ func cmdServerValidate(c *cli.Context) (*whoson.ServerConfig, error) {
 		config.Expvar = c.Bool("expvar")
 	}
 	if c.String("tcp") != "" {
-		config.TCP = c.String("tcp")
-		if config.TCP != "nostart" {
-			host, _, err := splitHostPort(config.TCP)
-			if err != nil {
-				return nil, err
-			}
-			if net.ParseIP(host) == nil {
-				return nil, fmt.Errorf("\"--tcp %s\" parse error", config.TCP)
-			}
+		err := cmdServerValidateTCP(c, config)
+		if err != nil {
+			return nil, err
 		}
 	}
 	if c.String("udp") != "" {
-		config.UDP = c.String("udp")
-		if config.UDP != "nostart" {
-			host, _, err := splitHostPort(config.UDP)
-			if err != nil {
-				return nil, err
-			}
-			if net.ParseIP(host) == nil {
-				return nil, fmt.Errorf("\"--udp %s\" parse error", config.UDP)
-			}
+		err := cmdServerValidateUDP(c, config)
+		if err != nil {
+			return nil, err
 		}
 	}
+	if c.String("savefile") != "" {
+		config.SaveFile = c.String("savefile")
+	}
 	return config, nil
+}
+
+func cmdServerValidateTCP(c *cli.Context, config *whoson.ServerConfig) error {
+	config.TCP = c.String("tcp")
+	if config.TCP != "nostart" {
+		host, _, err := splitHostPort(config.TCP)
+		if err != nil {
+			return err
+		}
+		if net.ParseIP(host) == nil {
+			return fmt.Errorf("\"--tcp %s\" parse error", config.TCP)
+		}
+	}
+	return nil
+}
+
+func cmdServerValidateUDP(c *cli.Context, config *whoson.ServerConfig) error {
+	config.UDP = c.String("udp")
+	if config.UDP != "nostart" {
+		host, _, err := splitHostPort(config.UDP)
+		if err != nil {
+			return err
+		}
+		if net.ParseIP(host) == nil {
+			return fmt.Errorf("\"--udp %s\" parse error", config.UDP)
+		}
+	}
+	return nil
 }
 
 func cmdServer(c *cli.Context) error {
@@ -116,6 +138,11 @@ func cmdServer(c *cli.Context) error {
 	defer close(sigChan)
 
 	whoson.NewMainStoreEnableSyncRemote()
+	err = loadStore(config.SaveFile)
+	if err != nil {
+		displayError(c.App.ErrWriter, err)
+		return err
+	}
 	err = whoson.NewLogger(config.Log, config.Loglevel)
 	if err != nil {
 		displayError(c.App.ErrWriter, err)
@@ -126,48 +153,12 @@ func cmdServer(c *cli.Context) error {
 
 	var con *net.UDPConn
 	if config.UDP != "nostart" {
-		host, port, err := splitHostPort(config.UDP)
-		if err != nil {
-			displayError(c.App.ErrWriter, err)
-			return err
-		}
-		addrudp := net.UDPAddr{
-			Port: port,
-			IP:   net.ParseIP(host),
-		}
-		con, err = net.ListenUDP("udp", &addrudp)
-		if err != nil {
-			displayError(c.App.ErrWriter, err)
-			return err
-		}
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			whoson.ServeUDP(con)
-		}()
+		con, err = runUDPServer(c, config, wg)
 	}
 
 	var lis *net.TCPListener
 	if config.TCP != "nostart" {
-		host, port, err := splitHostPort(config.TCP)
-		if err != nil {
-			displayError(c.App.ErrWriter, err)
-			return err
-		}
-		addrtcp := net.TCPAddr{
-			Port: port,
-			IP:   net.ParseIP(host),
-		}
-		lis, err = net.ListenTCP("tcp", &addrtcp)
-		if err != nil {
-			displayError(c.App.ErrWriter, err)
-			return err
-		}
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			whoson.ServeTCP(lis)
-		}()
+		lis, err = runTCPServer(c, config, wg)
 	}
 
 	var lishttp net.Listener
@@ -213,10 +204,63 @@ func cmdServer(c *cli.Context) error {
 		}
 		lisgrpc.Close()
 		g.Stop()
+
+		err = saveStore(config.SaveFile)
+		if err != nil {
+			displayError(c.App.ErrWriter, err)
+		}
 	})
 
 	wg.Wait()
 	return nil
+}
+
+func runUDPServer(c *cli.Context, config *whoson.ServerConfig, wg *sync.WaitGroup) (*net.UDPConn, error) {
+	host, port, err := splitHostPort(config.UDP)
+	if err != nil {
+		displayError(c.App.ErrWriter, err)
+		return nil, err
+	}
+	addrudp := net.UDPAddr{
+		Port: port,
+		IP:   net.ParseIP(host),
+	}
+	var con *net.UDPConn
+	con, err = net.ListenUDP("udp", &addrudp)
+	if err != nil {
+		displayError(c.App.ErrWriter, err)
+		return nil, err
+	}
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		whoson.ServeUDP(con)
+	}()
+	return con, nil
+}
+
+func runTCPServer(c *cli.Context, config *whoson.ServerConfig, wg *sync.WaitGroup) (*net.TCPListener, error) {
+	var lis *net.TCPListener
+	host, port, err := splitHostPort(config.TCP)
+	if err != nil {
+		displayError(c.App.ErrWriter, err)
+		return nil, err
+	}
+	addrtcp := net.TCPAddr{
+		Port: port,
+		IP:   net.ParseIP(host),
+	}
+	lis, err = net.ListenTCP("tcp", &addrtcp)
+	if err != nil {
+		displayError(c.App.ErrWriter, err)
+		return nil, err
+	}
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		whoson.ServeTCP(lis)
+	}()
+	return lis, nil
 }
 
 func getListener(c *cli.Context, host string) (net.Listener, error) {
@@ -257,4 +301,58 @@ func runGrpc(g *grpc.Server, config *whoson.ServerConfig, wg *sync.WaitGroup, c 
 		g.Serve(lisgrpc)
 	}()
 	return lisgrpc, nil
+}
+
+func loadStore(f string) error {
+	if f == "" {
+		return nil
+	}
+	b, err := ioutil.ReadFile(f)
+	if err != nil {
+		return err
+	}
+
+	var sds []*whoson.StoreData
+	err = json.Unmarshal(b, &sds)
+	if err != nil {
+		switch err.(type) {
+		case *json.SyntaxError:
+			return nil
+		}
+		return err
+	}
+	for _, sd := range sds {
+		whoson.MainStore.SyncSet(sd.IP.String(), sd)
+	}
+	return nil
+}
+
+func saveStore(f string) error {
+	if f == "" {
+		return nil
+	}
+	jsonb, err := whoson.MainStore.ItemsJSON()
+	if err != nil {
+		return err
+	}
+
+	if string(jsonb) == "null" {
+		err = ioutil.WriteFile(f, []byte(""), 0644)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	var b bytes.Buffer
+	err = json.Indent(&b, jsonb, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(f, b.Bytes(), 0644)
+	if err != nil {
+		return err
+	}
+	return nil
 }

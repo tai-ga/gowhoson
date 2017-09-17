@@ -2,6 +2,7 @@ package whoson
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net"
 	"time"
@@ -20,6 +21,7 @@ type Store interface {
 	Get(k string) (*StoreData, error)
 	Del(k string) bool
 	Items() map[string]interface{}
+	ItemsJSON() ([]byte, error)
 	Count() int
 	SyncSet(k string, w *StoreData)
 	SyncDel(k string) bool
@@ -124,6 +126,17 @@ func (ms MemStore) SyncDel(k string) bool {
 // Items return all data from cmap store.
 func (ms MemStore) Items() map[string]interface{} {
 	return ms.cmap.Items()
+}
+
+// ItemsJSON return all data of json format.
+func (ms MemStore) ItemsJSON() ([]byte, error) {
+	var sd []*StoreData
+	items := ms.Items()
+	for _, item := range items {
+		sd = append(sd, item.(*StoreData))
+	}
+	jsonb, err := json.Marshal(sd)
+	return jsonb, err
 }
 
 // Count return all data size.

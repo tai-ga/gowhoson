@@ -107,6 +107,11 @@ func makeApp() *cli.App {
 					Usage:  "e.g. [ServerIP:Port,ServerIP:Port...]",
 					EnvVar: "GOWHOSON_SERVER_SYNCREMOTE",
 				},
+				cli.StringFlag{
+					Name:   "savefile",
+					Usage:  "e.g. [/var/lib/gowhoson.json]",
+					EnvVar: "GOWHOSON_SERVER_SAVEFILE",
+				},
 			},
 			Action: cmdServer,
 		},

@@ -36,6 +36,7 @@ type ServerConfig struct {
 	Expvar     bool
 	GRPCPort   string
 	SyncRemote string
+	SaveFile   string
 }
 
 const (
