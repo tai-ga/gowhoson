@@ -78,6 +78,7 @@ fi
 
 %changelog
 * Mon Sep 14 2017 Masahiro Ono <masahiro.o@gmail.com>
+- Rename option GRPCPort to ControlPort
 - Add command option savefile for server mode
 - Fix permission for log directory
 

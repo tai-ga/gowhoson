@@ -98,9 +98,9 @@ func makeApp() *cli.App {
 					EnvVar: "GOWHOSON_SERVER_EXPVAR",
 				},
 				cli.StringFlag{
-					Name:   "grpcport",
+					Name:   "controlport",
 					Usage:  "e.g. [ServerIP:Port]",
-					EnvVar: "GOWHOSON_SERVER_GRPCPORT",
+					EnvVar: "GOWHOSON_SERVER_CONTROLPORT",
 				},
 				cli.StringFlag{
 					Name:   "syncremote",

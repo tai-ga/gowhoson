@@ -291,7 +291,7 @@ func runExpvar(config *whoson.ServerConfig, wg *sync.WaitGroup, c *cli.Context) 
 func runGrpc(g *grpc.Server, config *whoson.ServerConfig, wg *sync.WaitGroup, c *cli.Context) (net.Listener, error) {
 	var lisgrpc net.Listener
 	var err error
-	if lisgrpc, err = getListener(c, config.GRPCPort); err != nil {
+	if lisgrpc, err = getListener(c, config.ControlPort); err != nil {
 		return nil, err
 	}
 	wg.Add(1)
