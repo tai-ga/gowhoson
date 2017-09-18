@@ -26,6 +26,7 @@ if [ -f /etc/sysconfig/gowhoson ] ; then
         . /etc/sysconfig/gowhoson
 else
         LOGFILE="/var/log/gowhoson/gowhoson.log"
+        SAVEFILE="/var/lib/gowhoson/gowhoson.json"
 fi
 
 
@@ -35,6 +36,7 @@ exec="/usr/sbin/$prog"
 pidfile="/var/run/$prog.pid"
 lockfile="/var/lock/subsys/$prog"
 logfile=$LOGFILE
+savefile=$SAVEFILE
 conffile="/etc/gowhoson.json"
 
 # pull in sysconfig settings
@@ -63,6 +65,17 @@ start() {
         touch $logfile
         chown $user:$user $logfile
         LOGOPT="--log $logfile"
+    fi
+
+    if [ $savefile != "" ]; then
+        SAVEDIR=`dirname $savefile`
+        if [ ! -d $SAVEDIR ] ; then
+            mkdir -p $SAVEDIR
+            chmod 755 $SAVEDIR
+            chown $user:$user $SAVEDIR
+        fi
+        touch $savefile
+        chown $user:$user $savefile
     fi
 
     echo -n $"Starting $prog: "

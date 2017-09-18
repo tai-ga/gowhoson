@@ -78,6 +78,7 @@ fi
 
 %changelog
 * Mon Sep 14 2017 Masahiro Ono <masahiro.o@gmail.com>
+- Add command option savefile for server mode
 - Fix permission for log directory
 
 * Mon Sep 14 2017 Masahiro Ono <masahiro.o@gmail.com> gowhoson-v0.1.3-1

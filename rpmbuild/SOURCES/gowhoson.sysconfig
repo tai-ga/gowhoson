@@ -1,1 +1,2 @@
 LOGFILE=/var/log/gowhoson/gowhoson.log
+SAVEFILE=/var/lib/gowhoson/gowhoson.json

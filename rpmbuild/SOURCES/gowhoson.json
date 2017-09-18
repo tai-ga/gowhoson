@@ -6,5 +6,6 @@
   "ServerID": 1,
   "Expvar": false,
   "GRPCPort": ":9877",
-  "SyncRemote": ""
+  "SyncRemote": "",
+  "SaveFile": "/var/lib/gowhoson/gowhoson.json"
 }
