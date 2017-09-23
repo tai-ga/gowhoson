@@ -16,14 +16,38 @@
 [[projects]]
   branch = "master"
   name = "github.com/golang/protobuf"
-  packages = ["proto","ptypes","ptypes/any","ptypes/duration","ptypes/timestamp"]
-  revision = "17ce1425424ab154092bbb43af630bd647f3bb0d"
+  packages = ["jsonpb","proto","ptypes","ptypes/any","ptypes/duration","ptypes/struct","ptypes/timestamp"]
+  revision = "130e6b02ab059e7b717a096f397c5b60111cae74"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/grpc-ecosystem/go-grpc-middleware"
+  packages = [".","logging","logging/zap","tags"]
+  revision = "645b33ed7ba8739747bf2df55d0349d4bba2e7f6"
+
+[[projects]]
+  name = "github.com/k0kubun/pp"
+  packages = ["."]
+  revision = "027a6d1765d673d337e687394dbe780dd64e2a1e"
+  version = "v2.3.0"
+
+[[projects]]
+  branch = "master"
   name = "github.com/kayac/go-katsubushi"
   packages = ["."]
-  revision = "ec38f7a524859e2b1abdb4fdc6b9e61c904eb46b"
-  version = "v1.4.1"
+  revision = "0256903db1694d542b7aa903f2ad501713687881"
+
+[[projects]]
+  name = "github.com/mattn/go-colorable"
+  packages = ["."]
+  revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
+  version = "v0.0.9"
+
+[[projects]]
+  name = "github.com/mattn/go-isatty"
+  packages = ["."]
+  revision = "fc9e8d8ef48496124e79ae0df75490096eccf6fe"
+  version = "v0.0.2"
 
 [[projects]]
   branch = "master"
@@ -58,26 +82,32 @@
 [[projects]]
   name = "go.uber.org/zap"
   packages = [".","buffer","internal/bufferpool","internal/color","internal/exit","zapcore"]
-  revision = "3216c4c73e8ebbafff73c456dd27143f4a7c1f94"
-  version = "v1.6.0"
+  revision = "7a9ca91fa627ed52c7ff4fcc95cd044dc2c82a51"
+  version = "v1.7.0"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = ["context","http2","http2/hpack","idna","internal/timeseries","lex/httplex","trace"]
-  revision = "66aacef3dd8a676686c7ae3716979581e8b03c47"
+  revision = "0744d001aa8470aaa53df28d32e5ceeb8af9bd70"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  revision = "429f518978ab01db8bb6f44b66785088e7fba58b"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/text"
-  packages = ["internal/gen","internal/triegen","internal/ucd","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
-  revision = "bd91bbf73e9a4a801adbfb97133c992678533126"
+  packages = ["collate","collate/build","internal/colltab","internal/gen","internal/tag","internal/triegen","internal/ucd","language","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
+  revision = "1cbadb444a806fd9430d14ad08967ed91da4fa0a"
 
 [[projects]]
   branch = "master"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
-  revision = "595979c8a7bf586b2d293fb42246bf91a0b893d9"
+  revision = "1e559d0a00eef8a9a43151db4665280bd8dd5886"
 
 [[projects]]
   name = "google.golang.org/grpc"
@@ -88,6 +118,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "635d348a914104493df4c9a0ebba81c433c8d95ed1a84619340bac91f14ef648"
+  inputs-digest = "8f91b17a62cad892d312477d9fac69b8e37af8a233dbd84ab51c460a4cf20701"
   solver-name = "gps-cdcl"
   solver-version = 1
