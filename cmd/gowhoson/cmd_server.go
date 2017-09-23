@@ -17,6 +17,11 @@ import (
 	"syscall"
 	"time"
 
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+
+	"github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"google.golang.org/grpc"
 
 	"github.com/tai-ga/gowhoson/whoson"
@@ -169,7 +174,20 @@ func cmdServer(c *cli.Context) error {
 
 	var g *grpc.Server
 	var lisgrpc net.Listener
-	g = grpc.NewServer()
+
+	opts := []grpc_zap.Option{
+		grpc_zap.WithDurationField(func(duration time.Duration) zapcore.Field {
+			return zap.Int64("grpc.time_ns", duration.Nanoseconds())
+		}),
+	}
+	g = grpc.NewServer(
+		grpc_middleware.WithUnaryServerChain(
+			grpc_zap.UnaryServerInterceptor(whoson.Logger, opts...),
+		),
+		grpc_middleware.WithStreamServerChain(
+			grpc_zap.StreamServerInterceptor(whoson.Logger, opts...),
+		),
+	)
 	lisgrpc, err = runGrpc(g, config, wg, c)
 	if err != nil {
 		return err

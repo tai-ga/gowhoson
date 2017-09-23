@@ -9,6 +9,8 @@ import (
 
 	"google.golang.org/grpc"
 
+	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+
 	"github.com/orcaman/concurrent-map"
 	"github.com/pkg/errors"
 )
@@ -214,6 +216,7 @@ func RunSyncRemote(ctx context.Context, hosts []string) {
 }
 
 func execSyncRemote(req *WSRequest, remotehost string) {
+	grpc_zap.ReplaceGrpcLogger(Logger)
 	l, err := grpc.Dial(remotehost,
 		grpc.WithInsecure(),
 		grpc.WithBlock(),

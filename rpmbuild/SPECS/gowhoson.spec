@@ -77,7 +77,8 @@ fi
 %config(missingok) /etc/rc.d/rc6.d/K30%{name}
 
 %changelog
-* Mon Sep 14 2017 Masahiro Ono <masahiro.o@gmail.com>
+* Mon Sep 23 2017 Masahiro Ono <masahiro.o@gmail.com>
+- Change grpc loging module to zap
 - Rename option GRPCPort to ControlPort
 - Add command option savefile for server mode
 - Fix permission for log directory
