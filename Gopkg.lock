@@ -26,28 +26,22 @@
   revision = "645b33ed7ba8739747bf2df55d0349d4bba2e7f6"
 
 [[projects]]
-  name = "github.com/k0kubun/pp"
-  packages = ["."]
-  revision = "027a6d1765d673d337e687394dbe780dd64e2a1e"
-  version = "v2.3.0"
-
-[[projects]]
   branch = "master"
   name = "github.com/kayac/go-katsubushi"
   packages = ["."]
   revision = "0256903db1694d542b7aa903f2ad501713687881"
 
 [[projects]]
-  name = "github.com/mattn/go-colorable"
+  name = "github.com/mattn/go-runewidth"
   packages = ["."]
-  revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
-  version = "v0.0.9"
+  revision = "9e777a8366cce605130a531d2cd6363d07ad7317"
+  version = "v0.0.2"
 
 [[projects]]
-  name = "github.com/mattn/go-isatty"
+  branch = "master"
+  name = "github.com/olekukonko/tablewriter"
   packages = ["."]
-  revision = "fc9e8d8ef48496124e79ae0df75490096eccf6fe"
-  version = "v0.0.2"
+  revision = "0fd34425a5aee40ff3f260b34e6c3b0d59f58c66"
 
 [[projects]]
   branch = "master"
@@ -93,12 +87,6 @@
 
 [[projects]]
   branch = "master"
-  name = "golang.org/x/sys"
-  packages = ["unix"]
-  revision = "429f518978ab01db8bb6f44b66785088e7fba58b"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/text"
   packages = ["collate","collate/build","internal/colltab","internal/gen","internal/tag","internal/triegen","internal/ucd","language","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
   revision = "1cbadb444a806fd9430d14ad08967ed91da4fa0a"
@@ -118,6 +106,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8f91b17a62cad892d312477d9fac69b8e37af8a233dbd84ab51c460a4cf20701"
+  inputs-digest = "95222223b0d428f3e124af363a3b6ec0ec735d3deda41b2583da30c4b74a0d2f"
   solver-name = "gps-cdcl"
   solver-version = 1
