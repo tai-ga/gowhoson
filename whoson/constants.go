@@ -26,6 +26,12 @@ type ClientConfig struct {
 	Server string
 }
 
+// ServerCtlConfig hold information for serverctl configration.
+type ServerCtlConfig struct {
+	Server string
+	JSON   bool
+}
+
 // ServerConfig hold information for server configration.
 type ServerConfig struct {
 	TCP         string

@@ -144,6 +144,23 @@ func makeApp() *cli.App {
 				},
 			},
 		},
+		{
+			Name:  "dump",
+			Usage: "gowhoson server control dump mode",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:   "server",
+					Usage:  "e.g. [ServerIP:Port]",
+					EnvVar: "GOWHOSON_SERVERCTL_DUMP_SERVER",
+				},
+				cli.BoolFlag{
+					Name:   "json",
+					Usage:  "e.g. (default: false)",
+					EnvVar: "GOWHOSON_SERVERCTL_DUMP_JSON",
+				},
+			},
+			Action: cmdDump,
+		},
 	}
 	app.Setup()
 	return app
@@ -160,42 +177,19 @@ func Run() int {
 
 	app.Before = func(c *cli.Context) error {
 		if len(c.Args()) > 0 && c.Args()[0] == "client" {
-			file, config, err := GetClientConfig(c)
+			err := runClient(c, app)
 			if err != nil {
 				return err
 			}
-			app.Metadata = map[string]interface{}{
-				"config": config,
-			}
-
-			if !fileExists(file) {
-				b, err := json.MarshalIndent(config, "", "  ")
-				if err != nil {
-					return fmt.Errorf("failed to store file: %v", err)
-				}
-				err = ioutil.WriteFile(file, b, 0600)
-				if err != nil {
-					return fmt.Errorf("failed to store file: %v", err)
-				}
-			}
-		} else {
-			file, config, err := GetServerConfig(c)
+		} else if len(c.Args()) > 0 && c.Args()[0] == "dump" {
+			err := runDump(c, app)
 			if err != nil {
 				return err
 			}
-			app.Metadata = map[string]interface{}{
-				"config": config,
-			}
-
-			if !fileExists(file) {
-				b, err := json.MarshalIndent(config, "", "  ")
-				if err != nil {
-					return fmt.Errorf("failed to store file: %v", err)
-				}
-				err = ioutil.WriteFile(file, b, 0644)
-				if err != nil {
-					return fmt.Errorf("failed to store file: %v", err)
-				}
+		} else if len(c.Args()) > 0 && c.Args()[0] == "server" {
+			err := runServer(c, app)
+			if err != nil {
+				return err
 			}
 		}
 		return nil
@@ -203,4 +197,70 @@ func Run() int {
 
 	app.Run(os.Args)
 	return 0
+}
+
+func runClient(c *cli.Context, app *cli.App) error {
+	file, config, err := GetClientConfig(c)
+	if err != nil {
+		return err
+	}
+	app.Metadata = map[string]interface{}{
+		"config": config,
+	}
+
+	if !fileExists(file) {
+		b, err := json.MarshalIndent(config, "", "  ")
+		if err != nil {
+			return fmt.Errorf("failed to store file: %v", err)
+		}
+		err = ioutil.WriteFile(file, b, 0600)
+		if err != nil {
+			return fmt.Errorf("failed to store file: %v", err)
+		}
+	}
+	return nil
+}
+
+func runDump(c *cli.Context, app *cli.App) error {
+	file, config, err := GetServerCtlConfig(c)
+	if err != nil {
+		return err
+	}
+	app.Metadata = map[string]interface{}{
+		"config": config,
+	}
+
+	if !fileExists(file) {
+		b, err := json.MarshalIndent(config, "", "  ")
+		if err != nil {
+			return fmt.Errorf("failed to store file: %v", err)
+		}
+		err = ioutil.WriteFile(file, b, 0600)
+		if err != nil {
+			return fmt.Errorf("failed to store file: %v", err)
+		}
+	}
+	return nil
+}
+
+func runServer(c *cli.Context, app *cli.App) error {
+	file, config, err := GetServerConfig(c)
+	if err != nil {
+		return err
+	}
+	app.Metadata = map[string]interface{}{
+		"config": config,
+	}
+
+	if !fileExists(file) {
+		b, err := json.MarshalIndent(config, "", "  ")
+		if err != nil {
+			return fmt.Errorf("failed to store file: %v", err)
+		}
+		err = ioutil.WriteFile(file, b, 0644)
+		if err != nil {
+			return fmt.Errorf("failed to store file: %v", err)
+		}
+	}
+	return nil
 }
