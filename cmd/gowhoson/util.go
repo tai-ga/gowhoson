@@ -34,7 +34,6 @@ func GetServerConfig(c *cli.Context) (string, *whoson.ServerConfig, error) {
 		Expvar:     false,
 		SyncRemote: "",
 		SaveFile:   "",
-		//SyncRemote: "127.0.0.1:9877,127.0.0.1:9878,127.0.0.1:9879",
 	}
 	if err == nil {
 		err = json.Unmarshal(b, &config)
