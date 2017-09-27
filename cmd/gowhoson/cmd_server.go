@@ -340,7 +340,9 @@ func loadStore(f string) error {
 		return err
 	}
 	for _, sd := range sds {
-		whoson.MainStore.SyncSet(sd.IP.String(), sd)
+		if sd.Expire.After(time.Now()) {
+			whoson.MainStore.SyncSet(sd.IP.String(), sd)
+		}
 	}
 	return nil
 }

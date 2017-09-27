@@ -135,7 +135,17 @@ func (ms MemStore) ItemsJSON() ([]byte, error) {
 	var sd []*StoreData
 	items := ms.Items()
 	for _, item := range items {
-		sd = append(sd, item.(*StoreData))
+		if w, ok := item.(*StoreData); ok {
+			if w.Expire.Before(time.Now()) {
+				msg := fmt.Sprintf("ExpireData:%s", w.Key())
+				Log("info", msg, nil, nil)
+				if MainStore != nil {
+					MainStore.SyncDel(w.Key())
+				}
+			} else {
+				sd = append(sd, w)
+			}
+		}
 	}
 	jsonb, err := json.Marshal(sd)
 	return jsonb, err
