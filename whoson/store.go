@@ -206,6 +206,9 @@ func RunExpireChecker(ctx context.Context) {
 func RunSyncRemote(ctx context.Context, hosts []string) {
 	defer close(syncChan)
 
+	if Logger != nil {
+		grpc_zap.ReplaceGrpcLogger(Logger)
+	}
 	Log("info", "RunSyncRemoteStart", nil, nil)
 	for {
 		select {
@@ -226,7 +229,6 @@ func RunSyncRemote(ctx context.Context, hosts []string) {
 }
 
 func execSyncRemote(req *WSRequest, remotehost string) {
-	grpc_zap.ReplaceGrpcLogger(Logger)
 	l, err := grpc.Dial(remotehost,
 		grpc.WithInsecure(),
 		grpc.WithBlock(),
