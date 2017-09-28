@@ -64,7 +64,9 @@ func (sc *ServerCtl) WriteJSON() error {
 	if err != nil {
 		return err
 	}
-	fmt.Fprint(sc.out, buf.String())
+	if buf.String() != "null" {
+		fmt.Fprint(sc.out, buf.String())
+	}
 	return nil
 }
 
