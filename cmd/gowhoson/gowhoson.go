@@ -158,6 +158,11 @@ func makeApp() *cli.App {
 					Usage:  "e.g. (default: false)",
 					EnvVar: "GOWHOSON_SERVERCTL_DUMP_JSON",
 				},
+				cli.BoolFlag{
+					Name:   "editconfig",
+					Usage:  "e.g. (default: false)",
+					EnvVar: "GOWHOSON_SERVERCTL_DUMP_EDITCONFIG",
+				},
 			},
 			Action: cmdDump,
 		},

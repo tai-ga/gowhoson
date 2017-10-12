@@ -13,7 +13,19 @@ import (
 
 func cmdDump(c *cli.Context) error {
 	var err error
+	var sc *whoson.ServerCtl
 	config := c.App.Metadata["config"].(*whoson.ServerCtlConfig)
+
+	if c.Bool("editconfig") != false {
+		config.EditConfig = c.Bool("editconfig")
+	}
+	if config.EditConfig {
+		file := filepath.Join(GetServerCtlConfigDir(), ServerCtlConfig)
+		e := NewFileEdit(file)
+		err = e.Edit()
+		goto DONE
+	}
+
 	if c.String("server") != "" {
 		config.Server = c.String("server")
 	}
@@ -21,7 +33,7 @@ func cmdDump(c *cli.Context) error {
 		config.JSON = c.Bool("json")
 	}
 
-	sc := whoson.NewServerCtl(config.Server)
+	sc = whoson.NewServerCtl(config.Server)
 	sc.SetWriter(c.App.Writer)
 	err = sc.Dump()
 	if err != nil {
@@ -33,6 +45,8 @@ func cmdDump(c *cli.Context) error {
 	} else {
 		err = sc.WriteTable()
 	}
+
+DONE:
 	if err != nil {
 		return err
 	}

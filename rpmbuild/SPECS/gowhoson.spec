@@ -77,7 +77,8 @@ fi
 %config(missingok) /etc/rc.d/rc6.d/K30%{name}
 
 %changelog
-* Mon Sep 25 2017 Masahiro Ono <masahiro.o@gmail.com>
+* Thu Oct 12 2017 Masahiro Ono <masahiro.o@gmail.com> gowhoson-v0.2.0-1
+- Add edit configration for server control mode
 - Add command dump mode
 - Change grpc loging module to zap
 - Rename option GRPCPort to ControlPort
