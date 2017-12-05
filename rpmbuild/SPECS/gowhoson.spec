@@ -77,6 +77,9 @@ fi
 %config(missingok) /etc/rc.d/rc6.d/K30%{name}
 
 %changelog
+* Tue Dec  5 2017 Masahiro Ono <masahiro.o@gmail.com> gowhoson-v0.0.0-1
+- Change sort condition of dump mode
+
 * Thu Oct 12 2017 Masahiro Ono <masahiro.o@gmail.com> gowhoson-v0.2.0-1
 - Add edit configration for server control mode
 - Add command dump mode
