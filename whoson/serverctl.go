@@ -84,7 +84,10 @@ func (sc *ServerCtl) WriteTable() error {
 	}
 
 	sort.Slice(sd, func(i, j int) bool {
-		return (sd[i].Expire.UnixNano() < sd[j].Expire.UnixNano()) || (sd[i].IP.String() < sd[j].IP.String())
+		if sd[i].Expire.Unix() < sd[j].Expire.Unix() {
+			return true
+		}
+		return (sd[i].Expire.Unix() == sd[j].Expire.Unix()) && (sd[i].IP.String() < sd[j].IP.String())
 	})
 
 	if len(sd) > 0 {
