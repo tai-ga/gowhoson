@@ -77,7 +77,8 @@ fi
 %config(missingok) /etc/rc.d/rc6.d/K30%{name}
 
 %changelog
-* Tue Dec  5 2017 Masahiro Ono <masahiro.o@gmail.com> gowhoson-v0.0.0-1
+* Tue Oct 20 2018 Masahiro Ono <masahiro.o@gmail.com> gowhoson-v0.2.1-1
+- Update Go version to 1.11
 - Change sort condition of dump mode
 
 * Thu Oct 12 2017 Masahiro Ono <masahiro.o@gmail.com> gowhoson-v0.2.0-1
