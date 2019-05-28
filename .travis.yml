@@ -4,12 +4,12 @@ go:
 - 1.12
 env:
 - GO111MODULE=on
-before_install:
-- go get github.com/mattn/goveralls
-- go get golang.org/x/tools/cmd/cover
+#before_install:
+#- go get github.com/mattn/goveralls
+#- go get golang.org/x/tools/cmd/cover
 script:
 - make
-- "$HOME/gopath/bin/goveralls -repotoken $COVERALLS_TOKEN"
+#- "$HOME/gopath/bin/goveralls -repotoken $COVERALLS_TOKEN"
 before_deploy:
 - go get -u github.com/laher/goxc
 - mkdir -p $TRAVIS_BUILD_DIR/dist
