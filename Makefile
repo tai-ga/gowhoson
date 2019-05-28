@@ -15,10 +15,9 @@ LDFLAGS    := -s -X 'main.gVersion=$(VERSION)' \
                  -X 'main.gGitcommit=$(REVISION)' \
                  -X 'main.gGoversion=$(GOVERSION)'
 
-all: deps test build
+all: setup test build
 
 setup:
-	go get -u github.com/golang/dep/cmd/dep
 	go get -u golang.org/x/lint/golint
 	go get -u github.com/client9/misspell/cmd/misspell
 	go get -u github.com/gordonklaus/ineffassign
@@ -26,9 +25,6 @@ setup:
 
 pb:
 	protoc --go_out=plugins=grpc:. whoson/sync.proto
-
-deps: setup
-	dep ensure
 
 lint:
 	@$(foreach file,$(SRCS),golint --set_exit_status $(file) || exit;)
@@ -42,12 +38,6 @@ ineffassign:
 
 gocyclo:
 	@$(foreach pkg,$(PKGS),gocyclo -over 15 $(pkg) || exit;)
-
-dep: ## dep ensure
-	dep ensure
-
-depup: ## dep -update
-	dep ensure -update
 
 vet:
 	@$(foreach pkg,$(PKGS),go vet $(pkg) || exit;)
