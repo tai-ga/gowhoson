@@ -3,11 +3,11 @@
 gowhoson is a golang implementation of the "Whoson" protocol.
 
 [![Build Status](https://travis-ci.org/tai-ga/gowhoson.svg?branch=master)](https://travis-ci.org/tai-ga/gowhoson)
+[![Coverage Status](https://coveralls.io/repos/github/tai-ga/gowhoson/badge.svg?branch=master)](https://coveralls.io/github/tai-ga/gowhoson?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/tai-ga/gowhoson)](https://goreportcard.com/report/github.com/tai-ga/gowhoson)
 [![GoDoc](https://godoc.org/github.com/tai-ga/gowhoson/whoson?status.svg)](http://godoc.org/github.com/tai-ga/gowhoson/whoson)
 [![GitHub release](https://img.shields.io/github/release/tai-ga/gowhoson.svg)](https://github.com/tai-ga/gowhoson/releases/latest)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/tai-ga/gowhoson/blob/master/LICENSE)
-<!-- [![Coverage Status](https://coveralls.io/repos/github/tai-ga/gowhoson/badge.svg?branch=master)](https://coveralls.io/github/tai-ga/gowhoson?branch=master) -->
 
 #### What is whoson ?
 Whoson ("WHO iS ONline") is a proposed Internet protocol that allows Internet server programs know if a particular (dynamically allocated) IP address is currently allocated to a known (trusted) user and, optionally, the identity of the said user.
