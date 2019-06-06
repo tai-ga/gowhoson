@@ -111,6 +111,7 @@ clean: ## Clean up
 	@rm -f rpmbuild/SOURCES/$(NAME)
 	@rm -rf vendor
 	@rm -rf rpm.bin
+	@rm -rf dist
 	@docker images | grep -q $(IMAGE_NAME) && docker rmi $(IMAGE_NAME) || true;
 	@docker images | grep -q $(IMAGE_NAME)-login && docker rmi $(IMAGE_NAME)-login || true;
 
