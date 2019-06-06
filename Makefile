@@ -22,6 +22,7 @@ setup:
 	go get -u github.com/client9/misspell/cmd/misspell
 	go get -u github.com/gordonklaus/ineffassign
 	go get -u github.com/fzipp/gocyclo
+	go get -u golang.org/x/tools/cmd/cover
 
 pb:
 	protoc --go_out=plugins=grpc:. whoson/sync.proto
