@@ -4,7 +4,7 @@ go:
 - 1.12
 script:
 - GO111MODULE=on make
-- GO111MODULE=on go test -v -covermode=atomic -coverprofile=coverage.out ./...
+- GO111MODULE=on go test -covermode=atomic -coverprofile=coverage.out ./...
 - go tool cover -html=coverage.out -o coverage.html
 - bash <(curl -s https://codecov.io/bash)
 deploy:
