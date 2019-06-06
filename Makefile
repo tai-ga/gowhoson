@@ -15,14 +15,29 @@ LDFLAGS    := -s -X 'main.gVersion=$(VERSION)' \
                  -X 'main.gGitcommit=$(REVISION)' \
                  -X 'main.gGoversion=$(GOVERSION)'
 
-all: setup test build
+INSTCMD             := golint misspell ineffassign gocyclo cover
+INSTCMD_golint      := "go get -u golang.org/x/lint/golint"
+INSTCMD_misspell    := "go get -u github.com/client9/misspell/cmd/misspell"
+INSTCMD_ineffassign := "go get -u github.com/gordonklaus/ineffassign"
+INSTCMD_gocyclo     := "go get -u github.com/fzipp/gocyclo"
+INSTCMD_cover       := "go get -u golang.org/x/tools/cmd/cover"
 
-setup:
-	go get -u golang.org/x/lint/golint
-	go get -u github.com/client9/misspell/cmd/misspell
-	go get -u github.com/gordonklaus/ineffassign
-	go get -u github.com/fzipp/gocyclo
-	go get -u golang.org/x/tools/cmd/cover
+#
+# Install commands
+#
+define instcmd
+.PHONY: _instcmd_$(1)
+_instcmd_$(1):
+	@if [ ! -f $(GOPATH)/bin/$1 ]; then \
+		echo "install $1"; \
+		"$2"; \
+	fi
+endef
+
+all: instcmd test build
+
+instcmd: $(addprefix _instcmd_,$(INSTCMD))
+$(foreach p,$(INSTCMD),$(eval $(call instcmd,$(p),$(INSTCMD_$(p)))))
 
 pb:
 	protoc --go_out=plugins=grpc:. whoson/sync.proto
@@ -102,4 +117,4 @@ clean: ## Clean up
 help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: all setup deps lint misspell ineffassign gocyclo dep depup vet fmt test build clean cover coverview goviz help
+.PHONY: all instcmd deps lint misspell ineffassign gocyclo dep depup vet fmt test build clean cover coverview goviz help
