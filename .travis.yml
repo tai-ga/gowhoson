@@ -5,23 +5,19 @@ go:
 env:
 - GO111MODULE=off
 before_install:
-- go get -u github.com/golang/dep/cmd/dep
-- go get -u github.com/mattn/goveralls
-- go get -u golang.org/x/tools/cmd/cover
+- GO111MODULE=off go get -u github.com/golang/dep/cmd/dep
+- GO111MODULE=off go get -u github.com/mattn/goveralls
+- GO111MODULE=off go get -u golang.org/x/tools/cmd/cover
 script:
 - GO111MODULE=on make
 - dep ensure
 - "$HOME/gopath/bin/goveralls -repotoken $COVERALLS_TOKEN"
-before_deploy:
-- go get -u github.com/laher/goxc
-- mkdir -p $TRAVIS_BUILD_DIR/dist
-- goxc -d=$TRAVIS_BUILD_DIR/dist -bc='darwin,linux,!arm,!386' -build-ldflags "-X main.gVersion=`git describe --tags --abbrev=0` -X main.gGitcommit=`git rev-parse --short HEAD` -X main.gGoversion=`go version | cut -d ' ' -f3 | sed 's/^go//'`" -tasks=clean-destination,xc,archive,rmbin
 deploy:
-  provider: releases
+- provider: script
   skip_cleanup: true
   api_key: "$GITHUB_TOKEN"
-  file_glob: true
-  file: "$TRAVIS_BUILD_DIR/dist/**/*.{tar.gz,zip}"
+  script:
+    curl -sL https://git.io/goreleaser | GOVERSION=$(go version | cut -d ' ' -f3 | sed 's/^go//') bash
   on:
     tags: true
     branch: master
