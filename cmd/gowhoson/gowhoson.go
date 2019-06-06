@@ -32,7 +32,7 @@ var (
 
 func makeApp() *cli.App {
 	cli.VersionPrinter = func(c *cli.Context) {
-		fmt.Printf("%s version %s, build %s, Go:%s\n", c.App.Name, c.App.Version, AppVersions.Gitcommit, AppVersions.Goversion)
+		fmt.Printf("%s version:%s, build:%s, Go:%s\n", c.App.Name, c.App.Version, AppVersions.Gitcommit, AppVersions.Goversion)
 	}
 
 	app := cli.NewApp()
