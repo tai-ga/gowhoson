@@ -106,7 +106,7 @@ rpm-login: rpm ## Login build environment for CentOS6
 
 clean: ## Clean up
 	@rm -f $(NAME)
-	@rm -f _coverage.out coverage.out
+	@rm -f _coverage.out coverage.out coverage.html
 	@rm -f goviz.png
 	@rm -f rpmbuild/SOURCES/$(NAME)
 	@rm -rf vendor
