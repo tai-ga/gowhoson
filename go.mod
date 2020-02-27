@@ -1,15 +1,14 @@
 module github.com/tai-ga/gowhoson
 
+go 1.14
+
 require (
 	github.com/Songmu/retry v0.0.1 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20190329173943-551aad21a668 // indirect
-	github.com/client9/misspell v0.3.4 // indirect
 	github.com/client9/reopen v0.0.0-20170325185825-1a6ccbeaae3f
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/fzipp/gocyclo v0.0.0-20150627053110-6acd4345c835 // indirect
 	github.com/gogo/protobuf v1.2.1 // indirect
 	github.com/golang/protobuf v0.0.0-20170920220647-130e6b02ab05
-	github.com/gordonklaus/ineffassign v0.0.0-20190601041439-ed7b1b5ee0f8 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v0.0.0-20170825075817-645b33ed7ba8
 	github.com/kayac/go-katsubushi v0.0.0-20170921062241-0256903db169
 	github.com/mattn/go-runewidth v0.0.2 // indirect
@@ -21,12 +20,9 @@ require (
 	go.uber.org/atomic v1.2.0 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v0.0.0-20180814183419-67bc79d13d15
-	golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5 // indirect
-	golang.org/x/lint v0.0.0-20190409202823-959b441ac422 // indirect
 	golang.org/x/net v0.0.0-20190603091049-60506f45cf65
-	golang.org/x/sys v0.0.0-20190606122018-79a91cf218c4 // indirect
+	golang.org/x/sync v0.0.0-20190423024810-112230192c58 // indirect
 	golang.org/x/text v0.3.2 // indirect
-	golang.org/x/tools v0.0.0-20190606124116-d0a3d012864b // indirect
 	google.golang.org/genproto v0.0.0-20170918111702-1e559d0a00ee // indirect
 	google.golang.org/grpc v1.6.0
 )
