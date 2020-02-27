@@ -1,7 +1,7 @@
 NAME       := gowhoson
-SRCS       := $(shell git ls-files '*.go' | grep -v '.pb.go')
+SRCS       := $(shell git ls-files '*.go' | grep -v '.pb.go' | grep -v 'tools/tools.go')
 PWD        := $(shell pwd)
-PKGS       := ./cmd/gowhoson ./whoson
+PKGS       := ./internal/gowhoson ./pkg/whoson
 DOCS       := README.md
 VERSION    := $(shell git describe --tags --abbrev=0)
 REVISION   := $(shell git rev-parse --short HEAD)
@@ -15,22 +15,26 @@ LDFLAGS    := -s -X 'main.gVersion=$(VERSION)' \
                  -X 'main.gGitcommit=$(REVISION)' \
                  -X 'main.gGoversion=$(GOVERSION)'
 
-INSTCMD             := golint misspell ineffassign gocyclo cover
-INSTCMD_golint      := "go get -u golang.org/x/lint/golint"
-INSTCMD_misspell    := "go get -u github.com/client9/misspell/cmd/misspell"
-INSTCMD_ineffassign := "go get -u github.com/gordonklaus/ineffassign"
-INSTCMD_gocyclo     := "go get -u github.com/fzipp/gocyclo"
-INSTCMD_cover       := "go get -u golang.org/x/tools/cmd/cover"
+INSTCMD             := golint misspell ineffassign gocyclo goviz
+INSTCMD_golint      := golang.org/x/lint/golint
+INSTCMD_misspell    := github.com/client9/misspell/cmd/misspell
+INSTCMD_ineffassign := github.com/gordonklaus/ineffassign
+INSTCMD_gocyclo     := github.com/fzipp/gocyclo
+INSTCMD_goviz       := github.com/trawler/goviz
+
+TOOLS_MOD_DIR := ./tools
+TOOLS_DIR := $(abspath ./.tools)
 
 #
 # Install commands
 #
 define instcmd
 .PHONY: _instcmd_$(1)
-_instcmd_$(1):
-	@if [ ! -f $(GOPATH)/bin/$1 ]; then \
-		echo "install $1"; \
-		"$2"; \
+_instcmd_$(1): $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
+	@if [ ! -f $(TOOLS_DIR)/$1 ]; then \
+		echo "install $1" && \
+		cd $(TOOLS_MOD_DIR) && \
+		go build -o $(TOOLS_DIR)/$1 $2; \
 	fi
 endef
 
@@ -43,17 +47,17 @@ pb:
 	protoc --go_out=plugins=grpc:. whoson/sync.proto
 
 lint:
-	@$(foreach file,$(SRCS),golint --set_exit_status $(file) || exit;)
+	@$(foreach file,$(SRCS),$(TOOLS_DIR)/golint --set_exit_status $(file) || exit;)
 
 misspell:
-	@$(foreach file,$(DOCS),misspell -error $(file) || exit;)
-	@$(foreach file,$(SRCS),misspell -error $(file) || exit;)
+	@$(foreach file,$(DOCS),$(TOOLS_DIR)/misspell -error $(file) || exit;)
+	@$(foreach file,$(SRCS),$(TOOLS_DIR)/misspell -error $(file) || exit;)
 
 ineffassign:
-	@$(foreach file,$(SRCS),ineffassign $(file) || exit;)
+	@$(foreach file,$(SRCS),$(TOOLS_DIR)/ineffassign $(file) || exit;)
 
 gocyclo:
-	@$(foreach pkg,$(PKGS),gocyclo -over 15 $(pkg) || exit;)
+	@$(foreach pkg,$(PKGS),$(TOOLS_DIR)/gocyclo -over 15 $(pkg) || exit;)
 
 vet:
 	@$(foreach pkg,$(PKGS),go vet $(pkg) || exit;)
@@ -65,7 +69,7 @@ test: lint misspell ineffassign gocyclo vet fmt ## Test
 	$(foreach pkg,$(PKGS),go test -cover -v $(pkg) || exit;)
 
 build: ## Build program
-	go build -ldflags "$(LDFLAGS)" -o $(NAME) $<
+	go build -ldflags "$(LDFLAGS)" -o $(NAME) $< -i cmd/gowhoson/main.go
 
 cover: ## Update coverage.out
 	@$(foreach pkg,$(PKGS),cd $(pkg); go test -coverprofile=coverage.out;cd $(PWD) || exit;)
@@ -77,10 +81,10 @@ coverview: ## Coverage view
 	@go tool cover -html=coverage.out
 
 goviz: ## Create struct map
-	@goviz -i github.com/tai-ga/gowhoson | dot -Tpng -o goviz.png
+	$(TOOLS_DIR)/goviz -i cmd/gowhoson | dot -Tpng -o goviz.png
 
 $(SRCDIR)/$(NAME):
-	GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -o $(SRCDIR)/$(NAME)
+	GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -o $(SRCDIR)/$(NAME) -i cmd/gowhoson/main.go
 	@docker images | grep -q $(IMAGE_NAME) && docker rmi $(IMAGE_NAME) || true;
 	@docker images | grep -q $(IMAGE_NAME)-login && docker rmi $(IMAGE_NAME)-login || true;
 
@@ -112,6 +116,7 @@ clean: ## Clean up
 	@rm -rf vendor
 	@rm -rf rpm.bin
 	@rm -rf dist
+	@rm -rf $(TOOLS_DIR)
 	@docker images | grep -q $(IMAGE_NAME) && docker rmi $(IMAGE_NAME) || true;
 	@docker images | grep -q $(IMAGE_NAME)-login && docker rmi $(IMAGE_NAME)-login || true;
 

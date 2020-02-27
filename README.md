@@ -58,7 +58,7 @@ func main() {
 ```
 #### Install
 ```
-$ go get -u github.com/tai-ga/gowhoson
+$ go get -u github.com/tai-ga/gowhoson/cmd/gowhoson
 ```
 
 #### Usage
