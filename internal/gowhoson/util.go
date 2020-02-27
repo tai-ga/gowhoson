@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/tai-ga/gowhoson/whoson"
+	"github.com/tai-ga/gowhoson/pkg/whoson"
 	"github.com/urfave/cli"
 )
 

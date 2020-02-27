@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/tai-ga/gowhoson/cmd/gowhoson"
+	"github.com/tai-ga/gowhoson/internal/gowhoson"
 )
 
 var (

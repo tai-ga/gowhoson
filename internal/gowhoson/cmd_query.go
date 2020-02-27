@@ -3,11 +3,11 @@ package gowhoson
 import (
 	"errors"
 
-	"github.com/tai-ga/gowhoson/whoson"
+	"github.com/tai-ga/gowhoson/pkg/whoson"
 	"github.com/urfave/cli"
 )
 
-func cmdLogout(c *cli.Context) error {
+func cmdQuery(c *cli.Context) error {
 	config := c.App.Metadata["config"].(*whoson.ClientConfig)
 	optOverwite(c, config)
 
@@ -25,7 +25,7 @@ func cmdLogout(c *cli.Context) error {
 	}
 	defer client.Quit()
 
-	res, err := client.Logout(ip)
+	res, err := client.Query(ip)
 	if err != nil {
 		displayError(c.App.ErrWriter, err)
 		return err
