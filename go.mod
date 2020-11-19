@@ -8,7 +8,7 @@ require (
 	github.com/client9/reopen v0.0.0-20170325185825-1a6ccbeaae3f
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gogo/protobuf v1.2.1 // indirect
-	github.com/golang/protobuf v1.4.1
+	github.com/golang/protobuf v1.4.3
 	github.com/grpc-ecosystem/go-grpc-middleware v0.0.0-20170825075817-645b33ed7ba8
 	github.com/kayac/go-katsubushi v0.0.0-20170921062241-0256903db169
 	github.com/olekukonko/tablewriter v0.0.4
