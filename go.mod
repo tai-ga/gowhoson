@@ -8,7 +8,7 @@ require (
 	github.com/client9/reopen v0.0.0-20170325185825-1a6ccbeaae3f
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gogo/protobuf v1.2.1 // indirect
-	github.com/golang/protobuf v0.0.0-20170920220647-130e6b02ab05
+	github.com/golang/protobuf v1.4.1
 	github.com/grpc-ecosystem/go-grpc-middleware v0.0.0-20170825075817-645b33ed7ba8
 	github.com/kayac/go-katsubushi v0.0.0-20170921062241-0256903db169
 	github.com/mattn/go-runewidth v0.0.2 // indirect
@@ -22,6 +22,5 @@ require (
 	go.uber.org/zap v0.0.0-20180814183419-67bc79d13d15
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58 // indirect
-	google.golang.org/genproto v0.0.0-20170918111702-1e559d0a00ee // indirect
-	google.golang.org/grpc v1.6.0
+	google.golang.org/grpc v1.33.2
 )
