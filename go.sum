@@ -42,6 +42,8 @@ github.com/grpc-ecosystem/go-grpc-middleware v0.0.0-20170825075817-645b33ed7ba8 
 github.com/grpc-ecosystem/go-grpc-middleware v0.0.0-20170825075817-645b33ed7ba8/go.mod h1:FiyG127CGDf3tlThmgyCl78X/SZQqEOJBCDaAfeWzPs=
 github.com/kayac/go-katsubushi v0.0.0-20170921062241-0256903db169 h1:lnPIw3VLqEqFL2Xi8uhfVculVVw4LHygbL0xMQqYZGs=
 github.com/kayac/go-katsubushi v0.0.0-20170921062241-0256903db169/go.mod h1:fFRK0YwSk8KIgSM8qqajgs+37A4fYWNyGMHguvTI0nM=
+github.com/kayac/go-katsubushi v0.1.0 h1:ckiamz9aboOBeFm3KpjK1AbhcRDPoA/ncs4/WunkcRg=
+github.com/kayac/go-katsubushi v0.1.0/go.mod h1:fFRK0YwSk8KIgSM8qqajgs+37A4fYWNyGMHguvTI0nM=
 github.com/kisielk/errcheck v1.1.0/go.mod h1:EZBBE59ingxPouuu3KfxchcWSUPOHkagtvWXihfKN4Q=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/mattn/go-runewidth v0.0.2 h1:UnlwIPBGaTZfPQ6T1IGzPI0EkYAQmT9fAEJ/poFC63o=
@@ -128,5 +130,7 @@ google.golang.org/protobuf v1.22.0/go.mod h1:EGpADcykh3NcUnDUJcl1+ZksZNG86OlYog2
 google.golang.org/protobuf v1.23.1-0.20200526195155-81db48ad09cc/go.mod h1:EGpADcykh3NcUnDUJcl1+ZksZNG86OlYog2l/sGQquU=
 google.golang.org/protobuf v1.25.0 h1:Ejskq+SyPohKW+1uil0JJMtmHCgJPJ/qWTxr8qp+R4c=
 google.golang.org/protobuf v1.25.0/go.mod h1:9JNX74DMeImyA3h4bdi1ymwjUzf21/xIlbajtzgsN7c=
+gopkg.in/Sirupsen/logrus.v0 v0.11.5 h1:Utyd/1wErvKDUJ5SMQ0kgQwtQGdmsirTJmTVlcmevg8=
+gopkg.in/Sirupsen/logrus.v0 v0.11.5/go.mod h1:TNfjrxCaKxZ19rOF6SyCKP+ZdZ0WSD39SXmddhMXAYo=
 honnef.co/go/tools v0.0.0-20190102054323-c2f93a96b099/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 honnef.co/go/tools v0.0.0-20190523083050-ea95bdfd59fc/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
