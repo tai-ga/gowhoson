@@ -1,16 +1,10 @@
-project_name: gowhoson
-release:
-  github:
-    owner: tai-ga
-    name: gowhoson
-env:
-  - CGO_ENABLED=0
-  - GO111MODULE=on
 before:
   hooks:
     - go mod download
 builds:
-  - binary: gowhoson
+  - env:
+      - CGO_ENABLED=0
+      - GO111MODULE=on
     goos:
       - darwin
       - linux
@@ -18,11 +12,17 @@ builds:
       - amd64
     main: .
     ldflags: -s -w -X main.gVersion={{.Version}} -X main.gGitcommit={{.Commit}} -X main.gGoversion={{.Env.GOVERSION}}
-archive:
-  format: tar.gz
-  name_template: '{{ .Binary }}_{{.Version}}_{{ .Os }}_{{ .Arch }}'
-  files:
-  - LICENSE
-  - README*
+archives:
+  - replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+    format: tar.gz
+    name_template: '{{ .Binary }}_{{.Version}}_{{ .Os }}_{{ .Arch }}'
+    files:
+      - LICENSE
+      - README*
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}
