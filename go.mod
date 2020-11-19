@@ -20,9 +20,8 @@ require (
 	go.uber.org/atomic v1.2.0 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v0.0.0-20180814183419-67bc79d13d15
-	golang.org/x/net v0.0.0-20190603091049-60506f45cf65
+	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58 // indirect
-	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/genproto v0.0.0-20170918111702-1e559d0a00ee // indirect
 	google.golang.org/grpc v1.6.0
 )
