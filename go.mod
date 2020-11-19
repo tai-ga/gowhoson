@@ -11,8 +11,7 @@ require (
 	github.com/golang/protobuf v1.4.1
 	github.com/grpc-ecosystem/go-grpc-middleware v0.0.0-20170825075817-645b33ed7ba8
 	github.com/kayac/go-katsubushi v0.0.0-20170921062241-0256903db169
-	github.com/mattn/go-runewidth v0.0.2 // indirect
-	github.com/olekukonko/tablewriter v0.0.0-20170909130530-0fd34425a5ae
+	github.com/olekukonko/tablewriter v0.0.4
 	github.com/orcaman/concurrent-map v0.0.0-20190826125027-8c72a8bb44f6
 	github.com/pkg/errors v0.0.0-20170910134614-2b3a18b5f0fb
 	github.com/stretchr/testify v1.3.0 // indirect
