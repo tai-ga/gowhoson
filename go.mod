@@ -8,11 +8,10 @@ require (
 	github.com/client9/reopen v0.0.0-20170325185825-1a6ccbeaae3f
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gogo/protobuf v1.2.1 // indirect
-	github.com/golang/protobuf v0.0.0-20170920220647-130e6b02ab05
+	github.com/golang/protobuf v1.4.1
 	github.com/grpc-ecosystem/go-grpc-middleware v0.0.0-20170825075817-645b33ed7ba8
-	github.com/kayac/go-katsubushi v0.0.0-20170921062241-0256903db169
-	github.com/mattn/go-runewidth v0.0.2 // indirect
-	github.com/olekukonko/tablewriter v0.0.0-20170909130530-0fd34425a5ae
+	github.com/kayac/go-katsubushi v0.1.0
+	github.com/olekukonko/tablewriter v0.0.4
 	github.com/orcaman/concurrent-map v0.0.0-20190826125027-8c72a8bb44f6
 	github.com/pkg/errors v0.0.0-20170910134614-2b3a18b5f0fb
 	github.com/stretchr/testify v1.3.0 // indirect
@@ -22,6 +21,6 @@ require (
 	go.uber.org/zap v0.0.0-20180814183419-67bc79d13d15
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58 // indirect
-	google.golang.org/genproto v0.0.0-20170918111702-1e559d0a00ee // indirect
-	google.golang.org/grpc v1.6.0
+	google.golang.org/grpc v1.33.2
+	gopkg.in/Sirupsen/logrus.v0 v0.11.5 // indirect
 )
