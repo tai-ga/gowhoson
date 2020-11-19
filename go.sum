@@ -22,8 +22,6 @@ github.com/mattn/go-runewidth v0.0.2 h1:UnlwIPBGaTZfPQ6T1IGzPI0EkYAQmT9fAEJ/poFC
 github.com/mattn/go-runewidth v0.0.2/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
 github.com/olekukonko/tablewriter v0.0.0-20170909130530-0fd34425a5ae h1:xSz68q8CxHfjNusnguLOY8J+sDGGyzYCOUSwzFshWoI=
 github.com/olekukonko/tablewriter v0.0.0-20170909130530-0fd34425a5ae/go.mod h1:vsDQFd/mU46D+Z4whnwzcISnGGzXWMclvtLoiIKAKIo=
-github.com/orcaman/concurrent-map v0.0.0-20170328080553-2ae17bc4c860 h1:OlBQDK31lo5TKZaZQl4692oakjlHJG58oX7Ue1kBZM0=
-github.com/orcaman/concurrent-map v0.0.0-20170328080553-2ae17bc4c860/go.mod h1:Lu3tH6HLW3feq74c2GC+jIMS/K2CFcDWnWD9XkenwhI=
 github.com/orcaman/concurrent-map v0.0.0-20190826125027-8c72a8bb44f6 h1:lNCW6THrCKBiJBpz8kbVGjC7MgdCGKwuvBgc7LoD6sw=
 github.com/orcaman/concurrent-map v0.0.0-20190826125027-8c72a8bb44f6/go.mod h1:Lu3tH6HLW3feq74c2GC+jIMS/K2CFcDWnWD9XkenwhI=
 github.com/pkg/errors v0.0.0-20170910134614-2b3a18b5f0fb h1:jqgy5xL4OiYfjh8g+suiKXNwSJnf+a/HjO5XKaLOR+c=
