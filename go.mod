@@ -5,7 +5,7 @@ go 1.14
 require (
 	github.com/Songmu/retry v0.0.1 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20190329173943-551aad21a668 // indirect
-	github.com/client9/reopen v0.0.0-20170325185825-1a6ccbeaae3f
+	github.com/client9/reopen v1.0.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gogo/protobuf v1.2.1 // indirect
 	github.com/golang/protobuf v1.4.1
