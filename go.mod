@@ -10,7 +10,7 @@ require (
 	github.com/gogo/protobuf v1.2.1 // indirect
 	github.com/golang/protobuf v1.4.1
 	github.com/grpc-ecosystem/go-grpc-middleware v0.0.0-20170825075817-645b33ed7ba8
-	github.com/kayac/go-katsubushi v0.0.0-20170921062241-0256903db169
+	github.com/kayac/go-katsubushi v0.1.0
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/orcaman/concurrent-map v0.0.0-20190826125027-8c72a8bb44f6
 	github.com/pkg/errors v0.0.0-20170910134614-2b3a18b5f0fb
@@ -22,4 +22,5 @@ require (
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58 // indirect
 	google.golang.org/grpc v1.33.2
+	gopkg.in/Sirupsen/logrus.v0 v0.11.5 // indirect
 )
