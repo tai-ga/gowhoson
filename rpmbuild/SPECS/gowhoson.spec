@@ -77,6 +77,10 @@ fi
 %config(missingok) /etc/rc.d/rc6.d/K30%{name}
 
 %changelog
+* Thu Nov 19 2020 Masahiro Ono <masahiro.o@gmail.com> gowhoson-v0.2.4-1
+- Update repository layout
+- Update modules
+
 * Tue May 28 2019 Masahiro Ono <masahiro.o@gmail.com> gowhoson-v0.2.2-1
 - Support for Go Modules
 - Update Go version to 1.12
