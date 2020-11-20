@@ -78,6 +78,8 @@ github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UV
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
 github.com/urfave/cli v0.0.0-20170911040819-7fb9c86b14e6 h1:NafPusNjZSf3yp8fXu9BI24oR3yteuNKDHxbeqeHF+k=
 github.com/urfave/cli v0.0.0-20170911040819-7fb9c86b14e6/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=
+github.com/urfave/cli v0.1.0 h1:X2GkSx6d6isKcS4nlTkr+/An46CasAuDanozCls6BvQ=
+github.com/urfave/cli v0.1.0/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=
 go.uber.org/atomic v1.3.1 h1:U8WaWEmp56LGz7PReduqHRVF6zzs9GbMC2NEZ42dxSQ=
 go.uber.org/atomic v1.3.1/go.mod h1:gD2HeocX3+yG+ygLZcrzQJaqmWj9AIm7n08wl/qW/PE=
 go.uber.org/atomic v1.6.0/go.mod h1:sABNBOSYdrvTF6hTgEIbc7YasKWGhgEQZyfxyTvoXHQ=
