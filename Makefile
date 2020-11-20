@@ -65,7 +65,7 @@ vet:
 fmt:
 	@$(foreach file,$(SRCS),go fmt $(file) || exit;)
 
-test: lint misspell ineffassign gocyclo vet fmt ## Test
+test: instcmd lint misspell ineffassign gocyclo vet fmt ## Test
 	$(foreach pkg,$(PKGS),go test -cover -v $(pkg) || exit;)
 
 build: ## Build program
