@@ -1,29 +1,34 @@
+project_name: gowhoson
 before:
   hooks:
     - go mod download
 builds:
-  - env:
+  - main: ./cmd/gowhoson
+    binary: gowhoson
+    env:
       - CGO_ENABLED=0
       - GO111MODULE=on
-    binary: gowhoson
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}} -X main.gitcommit={{.ShortCommit}}
     goos:
       - darwin
       - linux
     goarch:
       - amd64
-    main: ./cmd/gowhoson
-    ldflags: -s -w -X main.gVersion={{.Version}} -X main.gGitcommit={{.Commit}} -X main.gGoversion={{.Env.GOVERSION}}
 archives:
   - replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
+      darwin: darwin
+      linux: linux
+      windows: windows
       386: i386
       amd64: x86_64
-    format: tar.gz
     name_template: '{{ .Binary }}_{{.Version}}_{{ .Os }}_{{ .Arch }}'
+    format: tar.gz
     files:
       - LICENSE
       - README*
 snapshot:
   name_template: SNAPSHOT-{{ .Commit }}
+release:
+  prerelease: auto
