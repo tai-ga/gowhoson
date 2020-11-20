@@ -90,7 +90,7 @@ var (
 	// LogWriter is IO Writer.
 	LogWriter reopen.Writer
 	// IDGenerator halds id generator.
-	IDGenerator *katsubushi.Generator
+	IDGenerator katsubushi.Generator
 
 	// start time
 	startTime = time.Now().UTC()
