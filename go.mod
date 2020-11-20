@@ -9,7 +9,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gogo/protobuf v1.2.1 // indirect
 	github.com/golang/protobuf v1.4.3
-	github.com/grpc-ecosystem/go-grpc-middleware v0.0.0-20170825075817-645b33ed7ba8
+	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/kayac/go-katsubushi v1.6.0
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/olekukonko/tablewriter v0.0.4
