@@ -15,9 +15,8 @@ require (
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/orcaman/concurrent-map v0.0.0-20190826125027-8c72a8bb44f6
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/urfave/cli v0.0.0-20170911040819-7fb9c86b14e6
-	go.uber.org/zap v1.7.1
+	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
 	google.golang.org/grpc v1.33.2
 )
