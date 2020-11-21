@@ -12,8 +12,7 @@ IMAGE_NAME := $(NAME)-build
 TARGZ_FILE := $(NAME).tar.gz
 UID        := $(shell id -u)
 LDFLAGS    := -s -X 'main.gVersion=$(VERSION)' \
-                 -X 'main.gGitcommit=$(REVISION)' \
-                 -X 'main.gGoversion=$(GOVERSION)'
+                 -X 'main.gGitcommit=$(REVISION)'
 
 INSTCMD             := golint misspell ineffassign gocyclo goviz
 INSTCMD_golint      := golang.org/x/lint/golint

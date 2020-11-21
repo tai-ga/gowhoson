@@ -9,10 +9,9 @@ import (
 var (
 	gVersion   string
 	gGitcommit string
-	gGoversion string
 )
 
 func main() {
-	gowhoson.AppVersions = gowhoson.NewVersions(gVersion, gGitcommit, gGoversion)
+	gowhoson.AppVersions = gowhoson.NewVersions(gVersion, gGitcommit)
 	os.Exit(gowhoson.Run())
 }

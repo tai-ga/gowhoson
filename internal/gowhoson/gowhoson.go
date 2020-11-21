@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"runtime"
 
 	"github.com/urfave/cli"
 )
@@ -13,15 +14,13 @@ import (
 type Versions struct {
 	Version   string
 	Gitcommit string
-	Goversion string
 }
 
 // NewVersions return new Versions struct pointer.
-func NewVersions(v, git, gov string) *Versions {
+func NewVersions(v, git string) *Versions {
 	return &Versions{
 		Version:   v,
 		Gitcommit: git,
-		Goversion: gov,
 	}
 }
 
@@ -32,7 +31,7 @@ var (
 
 func makeApp() *cli.App {
 	cli.VersionPrinter = func(c *cli.Context) {
-		fmt.Printf("%s version:%s, build:%s, Go:%s\n", c.App.Name, c.App.Version, AppVersions.Gitcommit, AppVersions.Goversion)
+		fmt.Printf("%s version:%s, build:%s, Go:%s\n", c.App.Name, c.App.Version, AppVersions.Gitcommit, runtime.Version())
 	}
 
 	app := cli.NewApp()

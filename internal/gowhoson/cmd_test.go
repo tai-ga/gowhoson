@@ -50,7 +50,7 @@ func startTCPServer(t *testing.T) {
 }
 
 func testWithServer(t *testing.T, testFuncs ...func(*cli.App)) string {
-	AppVersions = NewVersions("", "", "")
+	AppVersions = NewVersions("", "")
 	var buf bytes.Buffer
 	startTCPServer(t)
 
