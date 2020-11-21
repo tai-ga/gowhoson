@@ -25,7 +25,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/tai-ga/gowhoson/pkg/whoson"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func signalHandler(ctx context.Context, ch <-chan os.Signal, wg *sync.WaitGroup, c *cli.Context, f func()) {

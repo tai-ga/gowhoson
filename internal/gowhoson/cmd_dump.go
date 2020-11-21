@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/tai-ga/gowhoson/pkg/whoson"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func cmdDump(c *cli.Context) error {
