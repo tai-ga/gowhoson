@@ -18,7 +18,7 @@ INSTCMD             := golint misspell ineffassign gocyclo goviz
 INSTCMD_golint      := golang.org/x/lint/golint
 INSTCMD_misspell    := github.com/client9/misspell/cmd/misspell
 INSTCMD_ineffassign := github.com/gordonklaus/ineffassign
-INSTCMD_gocyclo     := github.com/fzipp/gocyclo
+INSTCMD_gocyclo     := github.com/fzipp/gocyclo/cmd/gocyclo
 INSTCMD_goviz       := github.com/trawler/goviz
 
 TOOLS_MOD_DIR := ./tools
