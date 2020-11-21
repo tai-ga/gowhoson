@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/tai-ga/gowhoson/pkg/whoson"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 type TestEnv struct {

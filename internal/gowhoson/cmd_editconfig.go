@@ -11,7 +11,7 @@ import (
 	"runtime"
 
 	"github.com/tai-ga/gowhoson/pkg/whoson"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func cmdEditConfig(c *cli.Context) error {
