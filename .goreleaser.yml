@@ -10,7 +10,7 @@ builds:
       - GO111MODULE=on
     ldflags:
       - -s -w
-      - -X main.version={{.Version}} -X main.gitcommit={{.ShortCommit}}
+      - -X main.gVersion={{.Version}} -X main.gGitcommit={{.ShortCommit}}
     goos:
       - darwin
       - linux
