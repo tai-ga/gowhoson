@@ -5,7 +5,7 @@ gowhoson is a golang implementation of the "Whoson" protocol.
 [![Build](https://github.com/tai-ga/gowhoson/workflows/Build/badge.svg)](https://github.com/tai-ga/gowhoson/actions?query=workflow%3ABuild)
 [![codecov](https://codecov.io/gh/tai-ga/gowhoson/branch/master/graph/badge.svg)](https://codecov.io/gh/tai-ga/gowhoson)
 [![Go Report Card](https://goreportcard.com/badge/github.com/tai-ga/gowhoson)](https://goreportcard.com/report/github.com/tai-ga/gowhoson)
-[![GoDoc](https://godoc.org/github.com/tai-ga/gowhoson/whoson?status.svg)](http://godoc.org/github.com/tai-ga/gowhoson/whoson)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/tai-ga/gowhoson/whoson)](https://pkg.go.dev/github.com/tai-ga/gowhoson/whoson)
 [![GitHub release](https://img.shields.io/github/release/tai-ga/gowhoson.svg)](https://github.com/tai-ga/gowhoson/releases/latest)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/tai-ga/gowhoson/blob/master/LICENSE)
 
