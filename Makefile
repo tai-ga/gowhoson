@@ -53,7 +53,7 @@ misspell:
 	@$(foreach file,$(SRCS),$(TOOLS_DIR)/misspell -error $(file) || exit;)
 
 ineffassign:
-	@$(foreach file,$(SRCS),$(TOOLS_DIR)/ineffassign $(file) || exit;)
+	@$(foreach pkg,$(PKGS),$(TOOLS_DIR)/ineffassign $(pkg) || exit;)
 
 gocyclo:
 	@$(foreach pkg,$(PKGS),$(TOOLS_DIR)/gocyclo -over 15 $(pkg) || exit;)
