@@ -12,7 +12,7 @@ require (
 	github.com/kayac/go-katsubushi v1.6.0
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/olekukonko/tablewriter v0.0.4
-	github.com/orcaman/concurrent-map v0.0.0-20190826125027-8c72a8bb44f6
+	github.com/orcaman/concurrent-map v0.0.0-20210106121528-16402b402231
 	github.com/pkg/errors v0.9.1
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/urfave/cli/v2 v2.3.0
