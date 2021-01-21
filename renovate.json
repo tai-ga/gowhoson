@@ -4,10 +4,5 @@
     "patch": {
         "automerge": true
     },
-    "packageRules": [
-        {
-            "depTypeList": ["devDependencies"],
-            "automerge": true
-        }
-    ]
+    "packageRules": []
 }
