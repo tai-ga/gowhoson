@@ -18,5 +18,5 @@ require (
 	github.com/urfave/cli/v2 v2.3.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20210410081132-afb366fc7cd1
-	google.golang.org/grpc v1.36.1
+	google.golang.org/grpc v1.37.0
 )
