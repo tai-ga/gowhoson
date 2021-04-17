@@ -68,7 +68,7 @@ test: instcmd lint misspell ineffassign gocyclo vet fmt ## Test
 	$(foreach pkg,$(PKGS),go test -cover -v $(pkg) || exit;)
 
 build: ## Build program
-	go build -ldflags "$(LDFLAGS)" -o $(NAME) $< -i cmd/gowhoson/main.go
+	go build -trimpath -ldflags "$(LDFLAGS)" -o $(NAME) $< cmd/gowhoson/main.go
 
 cover: ## Update coverage.out
 	@$(foreach pkg,$(PKGS),cd $(pkg); go test -coverprofile=coverage.out;cd $(PWD) || exit;)
@@ -83,7 +83,7 @@ goviz: ## Create struct map
 	$(TOOLS_DIR)/goviz -i cmd/gowhoson | dot -Tpng -o goviz.png
 
 $(SRCDIR)/$(NAME):
-	GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -o $(SRCDIR)/$(NAME) -i cmd/gowhoson/main.go
+	GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "$(LDFLAGS)" -o $(SRCDIR)/$(NAME) cmd/gowhoson/main.go
 	@docker images | grep -q $(IMAGE_NAME) && docker rmi $(IMAGE_NAME) || true;
 	@docker images | grep -q $(IMAGE_NAME)-login && docker rmi $(IMAGE_NAME)-login || true;
 
