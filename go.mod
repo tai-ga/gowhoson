@@ -8,7 +8,7 @@ require (
 	github.com/client9/reopen v1.0.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/golang/protobuf v1.5.2
-	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/kayac/go-katsubushi v1.6.0
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/olekukonko/tablewriter v0.0.5
