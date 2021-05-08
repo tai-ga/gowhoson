@@ -8,5 +8,5 @@ require (
 	github.com/gordonklaus/ineffassign v0.0.0-20210225214923-2e10b2664254
 	github.com/spf13/cobra v0.0.6 // indirect
 	github.com/trawler/goviz v0.0.0-20181113143047-634081648655
-	golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5
+	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
 )
