@@ -15,13 +15,12 @@ LDFLAGS    := -s -X 'main.gVersion=$(VERSION)' \
                  -X 'main.gGitcommit=$(REVISION)'
 
 INSTCMD             := golint misspell ineffassign gocyclo goviz
-INSTCMD_golint      := golang.org/x/lint/golint
-INSTCMD_misspell    := github.com/client9/misspell/cmd/misspell
-INSTCMD_ineffassign := github.com/gordonklaus/ineffassign
-INSTCMD_gocyclo     := github.com/fzipp/gocyclo/cmd/gocyclo
-INSTCMD_goviz       := github.com/trawler/goviz
+INSTCMD_golint      := golang.org/x/lint/golint@v0.0.0-20210508222113-6edffad5e616
+INSTCMD_misspell    := github.com/client9/misspell/cmd/misspell@v0.3.4
+INSTCMD_ineffassign := github.com/gordonklaus/ineffassign@v0.0.0-20210225214923-2e10b2664254
+INSTCMD_gocyclo     := github.com/fzipp/gocyclo/cmd/gocyclo@v0.3.1
+INSTCMD_goviz       := github.com/trawler/goviz@v0.0.0-20181113143047-634081648655
 
-TOOLS_MOD_DIR := ./tools
 TOOLS_DIR := $(abspath ./.tools)
 
 #
@@ -29,11 +28,10 @@ TOOLS_DIR := $(abspath ./.tools)
 #
 define instcmd
 .PHONY: _instcmd_$(1)
-_instcmd_$(1): $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
+_instcmd_$(1):
 	@if [ ! -f $(TOOLS_DIR)/$1 ]; then \
 		echo "install $1" && \
-		cd $(TOOLS_MOD_DIR) && \
-		go build -o $(TOOLS_DIR)/$1 $2; \
+		GOBIN=$(TOOLS_DIR) go install $2; \
 	fi
 endef
 
