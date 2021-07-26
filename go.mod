@@ -17,6 +17,6 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/urfave/cli/v2 v2.3.0
 	go.uber.org/zap v1.18.1
-	golang.org/x/net v0.0.0-20210614182718-04defd469f4e
+	golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985
 	google.golang.org/grpc v1.37.1
 )
