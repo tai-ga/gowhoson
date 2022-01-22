@@ -15,7 +15,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/urfave/cli/v2 v2.3.0
-	go.uber.org/zap v1.18.1
+	go.uber.org/zap v1.20.0
 	golang.org/x/net v0.0.0-20220121210141-e204ce36a2ba
 	google.golang.org/grpc v1.37.1
 )
