@@ -11,7 +11,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/kayac/go-katsubushi v1.6.1
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/orcaman/concurrent-map v0.0.0-20210501183033-44dafcb38ecc
+	github.com/orcaman/concurrent-map v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/urfave/cli/v2 v2.3.0
