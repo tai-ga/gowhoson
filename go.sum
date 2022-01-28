@@ -82,6 +82,8 @@ github.com/kayac/go-katsubushi v1.6.0 h1:QAKkWXyIXZ2TKrIiHg3Bp8VaDWouYFx4jZsMFdB
 github.com/kayac/go-katsubushi v1.6.0/go.mod h1:+YfcUGqcRYqfdiOU8oLQMO5rUDCNv0POyZvM3dT9iVo=
 github.com/kayac/go-katsubushi v1.6.1 h1:TaZV7qXqyIYXy9VcUH4jTUzxXmbBIF+zh6fS8oo7oyQ=
 github.com/kayac/go-katsubushi v1.6.1/go.mod h1:Zp5AcPM2dYToMkZj2dZSvhgtPVHKuc0jpADVnVb7dR0=
+github.com/kayac/go-katsubushi v1.6.2 h1:yglKdAISm5HfRDj5hRYQ/oW7CKXd1EEqvVSEjSsVPaI=
+github.com/kayac/go-katsubushi v1.6.2/go.mod h1:Zp5AcPM2dYToMkZj2dZSvhgtPVHKuc0jpADVnVb7dR0=
 github.com/kisielk/errcheck v1.5.0/go.mod h1:pFxgyoBC7bSaBwPgfKdkLd5X25qrDl4LWUI2bnpBCr8=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
