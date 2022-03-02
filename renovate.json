@@ -7,6 +7,6 @@
     ":automergePatch"
   ],
   "dependencyDashboard": true,
-  "ignorePaths": [],
+  "ignorePaths": ["Dockerfile.build"],
   "packageRules": []
 }
