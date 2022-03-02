@@ -63,15 +63,16 @@ func (c *syncClient) Dump(ctx context.Context, in *WSDumpRequest, opts ...grpc.C
 }
 
 // SyncServer is the server API for Sync service.
-// All implementations should embed UnimplementedSyncServer
+// All implementations must embed UnimplementedSyncServer
 // for forward compatibility
 type SyncServer interface {
 	Set(context.Context, *WSRequest) (*WSResponse, error)
 	Del(context.Context, *WSRequest) (*WSResponse, error)
 	Dump(context.Context, *WSDumpRequest) (*WSDumpResponse, error)
+	mustEmbedUnimplementedSyncServer()
 }
 
-// UnimplementedSyncServer should be embedded to have forward compatible implementations.
+// UnimplementedSyncServer must be embedded to have forward compatible implementations.
 type UnimplementedSyncServer struct {
 }
 
@@ -84,6 +85,7 @@ func (UnimplementedSyncServer) Del(context.Context, *WSRequest) (*WSResponse, er
 func (UnimplementedSyncServer) Dump(context.Context, *WSDumpRequest) (*WSDumpResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Dump not implemented")
 }
+func (UnimplementedSyncServer) mustEmbedUnimplementedSyncServer() {}
 
 // UnsafeSyncServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to SyncServer will

@@ -7,8 +7,12 @@ import (
 	"golang.org/x/net/context"
 )
 
+var _ SyncServer = (*Sync)(nil)
+
 // Sync hold information for synchronization.
-type Sync struct{}
+type Sync struct {
+	UnimplementedSyncServer
+}
 
 // Set sync to repliction servers
 func (s *Sync) Set(c context.Context, wreq *WSRequest) (*WSResponse, error) {
