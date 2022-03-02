@@ -14,12 +14,14 @@ UID        := $(shell id -u)
 LDFLAGS    := -s -X 'main.gVersion=$(VERSION)' \
                  -X 'main.gGitcommit=$(REVISION)'
 
-INSTCMD             := golint misspell ineffassign gocyclo goviz
+INSTCMD             := golint misspell ineffassign gocyclo goviz protoc-gen-go protoc-gen-go-grpc
 INSTCMD_golint      := golang.org/x/lint/golint@v0.0.0-20210508222113-6edffad5e616
 INSTCMD_misspell    := github.com/client9/misspell/cmd/misspell@v0.3.4
 INSTCMD_ineffassign := github.com/gordonklaus/ineffassign@v0.0.0-20210225214923-2e10b2664254
 INSTCMD_gocyclo     := github.com/fzipp/gocyclo/cmd/gocyclo@v0.3.1
 INSTCMD_goviz       := github.com/trawler/goviz@v0.0.0-20181113143047-634081648655
+INSTCMD_protoc-gen-go := google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1
+INSTCMD_protoc-gen-go-grpc := google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
 
 TOOLS_DIR := $(abspath ./.tools)
 
@@ -41,7 +43,15 @@ instcmd: $(addprefix _instcmd_,$(INSTCMD))
 $(foreach p,$(INSTCMD),$(eval $(call instcmd,$(p),$(INSTCMD_$(p)))))
 
 pb:
-	protoc --go_out=plugins=grpc:. whoson/sync.proto
+	protoc \
+		--plugin=$(TOOLS_DIR)/protoc-gen-go \
+		--plugin=$(TOOLS_DIR)/protoc-gen-go-grpc \
+		--go_out=. \
+		--go-grpc_out=. \
+		--go_opt=paths=source_relative \
+		--go-grpc_opt=paths=source_relative \
+		--go-grpc_opt=require_unimplemented_servers=false \
+		./pkg/whoson/sync.proto
 
 lint:
 	@$(foreach file,$(SRCS),$(TOOLS_DIR)/golint --set_exit_status $(file) || exit;)
