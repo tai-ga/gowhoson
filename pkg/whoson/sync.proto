@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package whoson;
+option  go_package = "github.com/tai-ga/gowhoso/pkg/whoson;whoson";
 
 service sync {
   rpc Set(WSRequest) returns (WSResponse){}
