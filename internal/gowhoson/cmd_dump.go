@@ -16,9 +16,8 @@ func cmdDump(c *cli.Context) error {
 	var sc *whoson.ServerCtl
 	config := c.App.Metadata["config"].(*whoson.ServerCtlConfig)
 
-	if c.Bool("editconfig") != false {
-		config.EditConfig = c.Bool("editconfig")
-	}
+	config.EditConfig = c.Bool("editconfig")
+
 	if config.EditConfig {
 		file := filepath.Join(GetServerCtlConfigDir(), ServerCtlConfig)
 		e := NewFileEdit(file)
@@ -29,9 +28,8 @@ func cmdDump(c *cli.Context) error {
 	if c.String("server") != "" {
 		config.Server = c.String("server")
 	}
-	if c.Bool("json") != false {
-		config.JSON = c.Bool("json")
-	}
+
+	config.JSON = c.Bool("json")
 
 	sc = whoson.NewServerCtl(config.Server)
 	sc.SetWriter(c.App.Writer)

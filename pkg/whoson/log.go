@@ -89,8 +89,8 @@ func switchLogger(status string) (func(string, ...zapcore.Field), error) {
 
 // Log is API entry point of Logging.
 func Log(status, msg string, ses *Session, err error) {
-	logger, err := switchLogger(status)
-	if err != nil {
+	logger, swlerr := switchLogger(status)
+	if swlerr != nil {
 		return
 	}
 

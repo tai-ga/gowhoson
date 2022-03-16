@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/olekukonko/tablewriter"
 )
@@ -32,10 +33,12 @@ func NewServerCtl(server string) *ServerCtl {
 
 // Dump Set grpc repository to sc.dumpResp
 func (sc *ServerCtl) Dump() error {
-	l, err := grpc.Dial(sc.server,
-		grpc.WithInsecure(),
-		grpc.WithBlock(),
-		grpc.WithTimeout(time.Duration(5*time.Second)))
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	l, err := grpc.DialContext(ctx, sc.server,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithBlock())
 	if err != nil {
 		return err
 	}

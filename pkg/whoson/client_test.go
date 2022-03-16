@@ -79,7 +79,6 @@ func startUDPServer(t *testing.T) {
 			return
 		}
 	}
-	return
 }
 
 func TestClient_Commands(t *testing.T) {

@@ -12,9 +12,8 @@ import (
 )
 
 type TestEnv struct {
-	tcpconn   *net.TCPListener
-	tcpclient *whoson.Client
-	wg        *sync.WaitGroup
+	tcpconn *net.TCPListener
+	wg      *sync.WaitGroup
 }
 
 func (te *TestEnv) close() {
@@ -46,7 +45,6 @@ func startTCPServer(t *testing.T) {
 			whoson.ServeTCP(te.tcpconn)
 		}()
 	}
-	return
 }
 
 func testWithServer(t *testing.T, testFuncs ...func(*cli.App)) string {

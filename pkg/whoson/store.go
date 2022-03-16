@@ -8,10 +8,11 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 
-	"github.com/orcaman/concurrent-map"
+	cmap "github.com/orcaman/concurrent-map"
 	"github.com/pkg/errors"
 )
 
@@ -229,14 +230,18 @@ func RunSyncRemote(ctx context.Context, hosts []string) {
 }
 
 func execSyncRemote(req *WSRequest, remotehost string) {
-	l, err := grpc.Dial(remotehost,
-		grpc.WithInsecure(),
-		grpc.WithBlock(),
-		grpc.WithTimeout(time.Duration(15*time.Second)))
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	l, err := grpc.DialContext(ctx, remotehost,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithBlock())
 	if err != nil {
 		Log("error", "execSyncRemote:Error", nil, err)
 		return
 	}
+	defer l.Close()
+
 	client := NewSyncClient(l)
 
 	switch req.Method {
@@ -250,5 +255,4 @@ func execSyncRemote(req *WSRequest, remotehost string) {
 	if err != nil {
 		Log("error", "execSyncRemote:Error", nil, err)
 	}
-	l.Close()
 }

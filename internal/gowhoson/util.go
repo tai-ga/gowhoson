@@ -62,13 +62,3 @@ func displayError(w io.Writer, e error) {
 func display(w io.Writer, s string) {
 	fmt.Fprintln(w, s)
 }
-
-func sliceLen(ss []string) int {
-	var ret []string
-	for _, s := range ss {
-		if s != "" {
-			ret = append(ret, s)
-		}
-	}
-	return len(ret)
-}

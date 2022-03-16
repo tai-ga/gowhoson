@@ -151,11 +151,6 @@ DONE:
 	return err
 }
 
-// wait causes the caller to block until all active Whoson sessions have finished
-func (s *UDPServer) wait() {
-	s.wg.Wait()
-}
-
 // Worker hold information for udp server processing workers.
 type Worker struct {
 	s *UDPServer

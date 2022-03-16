@@ -45,7 +45,7 @@ func signalHandler(ctx context.Context, ch <-chan os.Signal, wg *sync.WaitGroup,
 			default:
 				f()
 				time.AfterFunc(time.Second*8, func() {
-					displayError(c.App.ErrWriter, errors.New("Clean shutdown took too long, forcing exit"))
+					displayError(c.App.ErrWriter, errors.New("clean shutdown took too long, forcing exit"))
 					os.Exit(0)
 				})
 			}
@@ -81,9 +81,9 @@ func cmdServerValidate(c *cli.Context) (*whoson.ServerConfig, error) {
 	if c.Int("serverid") != 0 {
 		config.ServerID = c.Int("serverid")
 	}
-	if c.Bool("expvar") != false {
-		config.Expvar = c.Bool("expvar")
-	}
+
+	config.Expvar = c.Bool("expvar")
+
 	if c.String("tcp") != "" {
 		err := cmdServerValidateTCP(c, config)
 		if err != nil {

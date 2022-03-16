@@ -35,20 +35,6 @@ func (r *Response) Parse(req string) error {
 	return nil
 }
 
-func newRespPositive(m string) *Response {
-	return &Response{
-		result: rPositive,
-		Msg:    m,
-	}
-}
-
-func newRespNegative(m string) *Response {
-	return &Response{
-		result: rNegative,
-		Msg:    m,
-	}
-}
-
 // Client hold information for whoson API client.
 type Client struct {
 	tp         *textproto.Conn
