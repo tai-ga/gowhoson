@@ -14,7 +14,8 @@ UID        := $(shell id -u)
 LDFLAGS    := -s -X 'main.gVersion=$(VERSION)' \
                  -X 'main.gGitcommit=$(REVISION)'
 
-INSTCMD             := golint misspell ineffassign gocyclo goviz protoc-gen-go protoc-gen-go-grpc
+INSTCMD             := golint misspell ineffassign gocyclo goviz \
+                       protoc-gen-go protoc-gen-go-grpc staticcheck
 INSTCMD_golint      := golang.org/x/lint/golint@v0.0.0-20210508222113-6edffad5e616
 INSTCMD_misspell    := github.com/client9/misspell/cmd/misspell@v0.3.4
 INSTCMD_ineffassign := github.com/gordonklaus/ineffassign@v0.0.0-20210914165742-4cc7213b9bc8
@@ -22,6 +23,7 @@ INSTCMD_gocyclo     := github.com/fzipp/gocyclo/cmd/gocyclo@v0.4.0
 INSTCMD_goviz       := github.com/trawler/goviz@v0.0.0-20181113143047-634081648655
 INSTCMD_protoc-gen-go := google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1
 INSTCMD_protoc-gen-go-grpc := google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
+INSTCMD_staticcheck := honnef.co/go/tools/cmd/staticcheck@v0.3.0-0.dev.0.20220306074811-23e1086441d2
 
 TOOLS_DIR := $(abspath ./.tools)
 
@@ -55,6 +57,9 @@ pb:
 lint:
 	@$(foreach file,$(SRCS),$(TOOLS_DIR)/golint --set_exit_status $(file) || exit;)
 
+staticcheck:
+	@$(TOOLS_DIR)/staticcheck ./...
+
 misspell:
 	@$(foreach file,$(DOCS),$(TOOLS_DIR)/misspell -error $(file) || exit;)
 	@$(foreach file,$(SRCS),$(TOOLS_DIR)/misspell -error $(file) || exit;)
@@ -71,7 +76,7 @@ vet:
 fmt:
 	@$(foreach file,$(SRCS),go fmt $(file) || exit;)
 
-test: instcmd lint misspell ineffassign gocyclo vet fmt ## Test
+test: instcmd lint staticcheck misspell ineffassign gocyclo vet fmt ## Test
 	$(foreach pkg,$(PKGS),go test -cover -v $(pkg) || exit;)
 
 build: ## Build program
@@ -129,4 +134,4 @@ clean: ## Clean up
 help:
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: all instcmd deps lint misspell ineffassign gocyclo dep depup vet fmt test build clean cover coverview goviz help
+.PHONY: all instcmd pb lint staticcheck misspell ineffassign gocyclo vet fmt test build cover coverview goviz clean help
