@@ -23,7 +23,7 @@ INSTCMD_gocyclo     := github.com/fzipp/gocyclo/cmd/gocyclo@v0.4.0
 INSTCMD_goviz       := github.com/trawler/goviz@v0.0.0-20181113143047-634081648655
 INSTCMD_protoc-gen-go := google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1
 INSTCMD_protoc-gen-go-grpc := google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
-INSTCMD_staticcheck := honnef.co/go/tools/cmd/staticcheck@v0.3.0-0.dev.0.20220306074811-23e1086441d2
+INSTCMD_staticcheck := honnef.co/go/tools/cmd/staticcheck@2022.1
 
 TOOLS_DIR := $(abspath ./.tools)
 
