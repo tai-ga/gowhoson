@@ -13,7 +13,7 @@ require (
 	github.com/urfave/cli/v2 v2.8.1
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	go.uber.org/zap v1.21.0
+	go.uber.org/zap v1.21.1-0.20220530044716-54f620483223
 	golang.org/x/net v0.0.0-20220526153639-5463443f8c37
 	google.golang.org/genproto v0.0.0-20220302033224-9aa15565e42a // indirect
 	google.golang.org/grpc v1.46.2
