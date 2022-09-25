@@ -6,7 +6,7 @@ require (
 	github.com/bradfitz/gomemcache v0.0.0-20190329173943-551aad21a668 // indirect
 	github.com/client9/reopen v1.0.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
-	github.com/kayac/go-katsubushi v1.6.2
+	github.com/kayac/go-katsubushi v1.7.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/orcaman/concurrent-map v1.0.0
 	github.com/pkg/errors v0.9.1
@@ -17,5 +17,5 @@ require (
 	golang.org/x/net v0.0.0-20220526153639-5463443f8c37
 	google.golang.org/genproto v0.0.0-20220302033224-9aa15565e42a // indirect
 	google.golang.org/grpc v1.46.2
-	google.golang.org/protobuf v1.27.1
+	google.golang.org/protobuf v1.28.0
 )
