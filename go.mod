@@ -1,6 +1,6 @@
 module github.com/tai-ga/gowhoson
 
-go 1.14
+go 1.19
 
 require (
 	github.com/bradfitz/gomemcache v0.0.0-20190329173943-551aad21a668 // indirect
