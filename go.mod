@@ -10,7 +10,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/orcaman/concurrent-map v1.0.0
 	github.com/pkg/errors v0.9.1
-	github.com/urfave/cli/v2 v2.8.1
+	github.com/urfave/cli/v2 v2.23.5
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.21.1-0.20220530044716-54f620483223
