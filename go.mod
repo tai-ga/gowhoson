@@ -17,5 +17,5 @@ require (
 	golang.org/x/net v0.0.0-20220526153639-5463443f8c37
 	google.golang.org/genproto v0.0.0-20220302033224-9aa15565e42a // indirect
 	google.golang.org/grpc v1.46.2
-	google.golang.org/protobuf v1.27.1
+	google.golang.org/protobuf v1.28.1
 )
