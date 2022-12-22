@@ -6,6 +6,7 @@ require (
 	github.com/client9/reopen v1.0.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/kayac/go-katsubushi v1.7.0
+	github.com/kayac/go-katsubushi/v2 v2.0.1
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/orcaman/concurrent-map v1.0.0
 	github.com/pkg/errors v0.9.1
