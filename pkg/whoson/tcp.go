@@ -18,7 +18,7 @@ type TCPServer struct {
 	Addr     string
 }
 
-//NewTCPServer return new TCPServer struct pointer.
+// NewTCPServer return new TCPServer struct pointer.
 func NewTCPServer() *TCPServer {
 	return &TCPServer{
 		timeOut: SessionTimeOut,

@@ -43,7 +43,7 @@ func ServeUDP(c *net.UDPConn) error {
 	return s.ServeUDP(c)
 }
 
-//ListenAndServe simple start udp server.
+// ListenAndServe simple start udp server.
 func (s *UDPServer) ListenAndServe() error {
 	var addrudp net.UDPAddr
 	addr := s.Addr
