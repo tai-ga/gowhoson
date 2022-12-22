@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -21,7 +20,7 @@ func GetServerConfig(c *cli.Context) (string, *whoson.ServerConfig, error) {
 		file = c.String("config")
 	}
 
-	b, err := ioutil.ReadFile(file)
+	b, err := os.ReadFile(file)
 	if err != nil && !os.IsNotExist(err) {
 		return "", nil, err
 	}

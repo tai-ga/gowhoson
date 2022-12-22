@@ -3,7 +3,6 @@ package gowhoson
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -70,7 +69,7 @@ func GetServerCtlConfig(c *cli.Context) (string, *whoson.ServerCtlConfig, error)
 	} else {
 		file = c.String("config")
 	}
-	b, err := ioutil.ReadFile(file)
+	b, err := os.ReadFile(file)
 	if err != nil && !os.IsNotExist(err) {
 		return "", nil, err
 	}

@@ -3,7 +3,6 @@ package gowhoson
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"runtime"
 
@@ -217,7 +216,7 @@ func runClient(c *cli.Context, app *cli.App) error {
 		if err != nil {
 			return fmt.Errorf("failed to store file: %v", err)
 		}
-		err = ioutil.WriteFile(file, b, 0600)
+		err = os.WriteFile(file, b, 0600)
 		if err != nil {
 			return fmt.Errorf("failed to store file: %v", err)
 		}
@@ -239,7 +238,7 @@ func runDump(c *cli.Context, app *cli.App) error {
 		if err != nil {
 			return fmt.Errorf("failed to store file: %v", err)
 		}
-		err = ioutil.WriteFile(file, b, 0600)
+		err = os.WriteFile(file, b, 0600)
 		if err != nil {
 			return fmt.Errorf("failed to store file: %v", err)
 		}
@@ -261,7 +260,7 @@ func runServer(c *cli.Context, app *cli.App) error {
 		if err != nil {
 			return fmt.Errorf("failed to store file: %v", err)
 		}
-		err = ioutil.WriteFile(file, b, 0644)
+		err = os.WriteFile(file, b, 0644)
 		if err != nil {
 			return fmt.Errorf("failed to store file: %v", err)
 		}

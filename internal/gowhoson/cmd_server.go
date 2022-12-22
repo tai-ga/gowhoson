@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
@@ -325,7 +324,7 @@ func loadStore(f string) error {
 	if f == "" {
 		return nil
 	}
-	b, err := ioutil.ReadFile(f)
+	b, err := os.ReadFile(f)
 	if err != nil {
 		return err
 	}
@@ -357,7 +356,7 @@ func saveStore(f string) error {
 	}
 
 	if string(jsonb) == "null" {
-		err = ioutil.WriteFile(f, []byte(""), 0644)
+		err = os.WriteFile(f, []byte(""), 0644)
 		if err != nil {
 			return err
 		}
@@ -370,7 +369,7 @@ func saveStore(f string) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(f, b.Bytes(), 0644)
+	err = os.WriteFile(f, b.Bytes(), 0644)
 	if err != nil {
 		return err
 	}
