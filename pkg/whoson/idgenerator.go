@@ -1,7 +1,7 @@
 package whoson
 
 import (
-	katsubushi "github.com/kayac/go-katsubushi"
+	katsubushi "github.com/kayac/go-katsubushi/v2"
 )
 
 // NewIDGenerator is set id generator to IDGenerator.

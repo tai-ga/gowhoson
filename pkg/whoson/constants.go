@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/client9/reopen"
-	katsubushi "github.com/kayac/go-katsubushi"
+	katsubushi "github.com/kayac/go-katsubushi/v2"
 	"go.uber.org/zap"
 )
 
