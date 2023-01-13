@@ -7,13 +7,11 @@ import (
 	"net"
 	"time"
 
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	cmap "github.com/orcaman/concurrent-map/v2"
+	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-
-	cmap "github.com/orcaman/concurrent-map"
-	"github.com/pkg/errors"
 )
 
 var syncChan chan *WSRequest
@@ -23,16 +21,18 @@ type Store interface {
 	Set(k string, w *StoreData)
 	Get(k string) (*StoreData, error)
 	Del(k string) bool
-	Items() map[string]interface{}
+	Items() map[string]*StoreData
 	ItemsJSON() ([]byte, error)
 	Count() int
 	SyncSet(k string, w *StoreData)
 	SyncDel(k string) bool
 }
 
+var _ Store = (*MemStore)(nil)
+
 // MemStore hold information for cmap.
 type MemStore struct {
-	cmap       cmap.ConcurrentMap
+	cmap       cmap.ConcurrentMap[string, *StoreData]
 	SyncRemote bool
 	Store
 }
@@ -40,7 +40,7 @@ type MemStore struct {
 // NewMemStore return new MemStore.
 func NewMemStore() Store {
 	return MemStore{
-		cmap:       cmap.New(),
+		cmap:       cmap.New[*StoreData](),
 		SyncRemote: false,
 	}
 }
@@ -56,7 +56,7 @@ func NewMainStore() {
 func NewMainStoreEnableSyncRemote() {
 	if MainStore == nil {
 		MainStore = MemStore{
-			cmap:       cmap.New(),
+			cmap:       cmap.New[*StoreData](),
 			SyncRemote: true,
 		}
 	}
@@ -87,15 +87,11 @@ func (ms MemStore) SyncSet(k string, w *StoreData) {
 
 // Get data from cmap store.
 func (ms MemStore) Get(k string) (*StoreData, error) {
-	if v, ok := ms.cmap.Get(k); ok {
-		if w, ok := v.(*StoreData); ok {
-			if w.Expire.After(time.Now()) {
-				return w, nil
-			}
-			ms.SyncDel(k)
-			return nil, errors.New("data not found")
+	if item, ok := ms.cmap.Get(k); ok {
+		if item.Expire.After(time.Now()) {
+			return item, nil
 		}
-		return nil, errors.New("type assertion error")
+		ms.SyncDel(k)
 	}
 	return nil, errors.New("data not found")
 }
@@ -127,29 +123,25 @@ func (ms MemStore) SyncDel(k string) bool {
 }
 
 // Items return all data from cmap store.
-func (ms MemStore) Items() map[string]interface{} {
+func (ms MemStore) Items() map[string]*StoreData {
 	return ms.cmap.Items()
 }
 
 // ItemsJSON return all data of json format.
 func (ms MemStore) ItemsJSON() ([]byte, error) {
 	var sd []*StoreData
-	items := ms.Items()
-	for _, item := range items {
-		if w, ok := item.(*StoreData); ok {
-			if w.Expire.Before(time.Now()) {
-				msg := fmt.Sprintf("ExpireData:%s", w.Key())
-				Log("info", msg, nil, nil)
-				if MainStore != nil {
-					MainStore.SyncDel(w.Key())
-				}
-			} else {
-				sd = append(sd, w)
+	for _, item := range ms.Items() {
+		if item.Expire.Before(time.Now()) {
+			msg := fmt.Sprintf("ExpireData:%s", item.Key())
+			Log("info", msg, nil, nil)
+			if MainStore != nil {
+				MainStore.SyncDel(item.Key())
 			}
+		} else {
+			sd = append(sd, item)
 		}
 	}
-	jsonb, err := json.Marshal(sd)
-	return jsonb, err
+	return json.Marshal(sd)
 }
 
 // Count return all data size.
@@ -175,13 +167,11 @@ func (sd *StoreData) Key() string {
 }
 
 func deleteExpireData(store Store) {
-	for k, v := range store.Items() {
-		if w, ok := v.(*StoreData); ok {
-			if w.Expire.Before(time.Now()) {
-				msg := fmt.Sprintf("ExpireData:%s", k)
-				Log("info", msg, nil, nil)
-				store.Del(k)
-			}
+	for _, item := range store.Items() {
+		if item.Expire.Before(time.Now()) {
+			msg := fmt.Sprintf("ExpireData:%s", item.Key())
+			Log("info", msg, nil, nil)
+			store.Del(item.Key())
 		}
 	}
 }
