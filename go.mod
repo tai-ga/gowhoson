@@ -1,6 +1,6 @@
 module github.com/tai-ga/gowhoson
 
-go 1.19
+go 1.20
 
 require (
 	github.com/client9/reopen v1.0.0
