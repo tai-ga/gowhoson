@@ -158,11 +158,17 @@ func cmdServer(c *cli.Context) error {
 	var con *net.UDPConn
 	if config.UDP != "nostart" {
 		con, err = runUDPServer(c, config, wg)
+		if err != nil {
+			return err
+		}
 	}
 
 	var lis *net.TCPListener
 	if config.TCP != "nostart" {
 		lis, err = runTCPServer(c, config, wg)
+		if err != nil {
+			return err
+		}
 	}
 
 	var lishttp net.Listener
