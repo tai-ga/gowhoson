@@ -14,13 +14,12 @@ UID        := $(shell id -u)
 LDFLAGS    := -s -X 'main.gVersion=$(VERSION)' \
                  -X 'main.gGitcommit=$(REVISION)'
 
-INSTCMD             := golint misspell ineffassign gocyclo goviz \
+INSTCMD             := golint misspell ineffassign gocyclo \
                        protoc-gen-go protoc-gen-go-grpc staticcheck
 INSTCMD_golint      := golang.org/x/lint/golint@v0.0.0-20210508222113-6edffad5e616
 INSTCMD_misspell    := github.com/client9/misspell/cmd/misspell@v0.3.4
 INSTCMD_ineffassign := github.com/gordonklaus/ineffassign@v0.0.0-20210914165742-4cc7213b9bc8
 INSTCMD_gocyclo     := github.com/fzipp/gocyclo/cmd/gocyclo@v0.4.0
-INSTCMD_goviz       := github.com/trawler/goviz@v0.0.0-20181113143047-634081648655
 INSTCMD_protoc-gen-go := google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1
 INSTCMD_protoc-gen-go-grpc := google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
 INSTCMD_staticcheck := honnef.co/go/tools/cmd/staticcheck@2023.1.2
@@ -90,9 +89,6 @@ cover: ## Update coverage.out
 
 coverview: ## Coverage view
 	@go tool cover -html=coverage.out
-
-goviz: ## Create struct map
-	$(TOOLS_DIR)/goviz -i cmd/gowhoson | dot -Tpng -o goviz.png
 
 $(SRCDIR)/$(NAME):
 	GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "$(LDFLAGS)" -o $(SRCDIR)/$(NAME) cmd/gowhoson/main.go
