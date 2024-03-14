@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/client9/reopen v1.0.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
-	github.com/kayac/go-katsubushi/v2 v2.0.3
+	github.com/kayac/go-katsubushi/v2 v2.0.4
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/orcaman/concurrent-map/v2 v2.0.1
 	github.com/pkg/errors v0.9.1
@@ -13,7 +13,7 @@ require (
 	go.uber.org/zap v1.27.0
 	golang.org/x/net v0.21.0
 	google.golang.org/grpc v1.61.1
-	google.golang.org/protobuf v1.32.0
+	google.golang.org/protobuf v1.33.0
 )
 
 require (
