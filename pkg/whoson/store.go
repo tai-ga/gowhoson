@@ -223,16 +223,16 @@ func execSyncRemote(req *WSRequest, remotehost string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	l, err := grpc.NewClient(remotehost,
+	conn, err := grpc.NewClient(remotehost,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
 		Log("error", "execSyncRemote:Error", nil, err)
 		return
 	}
-	defer l.Close()
+	defer conn.Close()
 
-	client := NewSyncClient(l)
+	client := NewSyncClient(conn)
 
 	switch req.Method {
 	case "Set":

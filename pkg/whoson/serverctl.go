@@ -40,13 +40,13 @@ func (sc *ServerCtl) Dump() error {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	}
 
-	l, err := grpc.NewClient(sc.server, opts...)
+	conn, err := grpc.NewClient(sc.server, opts...)
 	if err != nil {
 		return err
 	}
-	defer l.Close()
+	defer conn.Close()
 
-	client := NewSyncClient(l)
+	client := NewSyncClient(conn)
 
 	req := &WSDumpRequest{}
 	r, err := client.Dump(ctx, req)
