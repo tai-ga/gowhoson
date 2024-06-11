@@ -223,9 +223,9 @@ func execSyncRemote(req *WSRequest, remotehost string) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	l, err := grpc.DialContext(ctx, remotehost,
+	l, err := grpc.NewClient(remotehost,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock())
+	)
 	if err != nil {
 		Log("error", "execSyncRemote:Error", nil, err)
 		return
@@ -236,10 +236,10 @@ func execSyncRemote(req *WSRequest, remotehost string) {
 
 	switch req.Method {
 	case "Set":
-		_, err = client.Set(context.Background(), req)
+		_, err = client.Set(ctx, req)
 		Log("debug", "execSyncRemote:Set", nil, nil)
 	case "Del":
-		_, err = client.Del(context.Background(), req)
+		_, err = client.Del(ctx, req)
 		Log("debug", "execSyncRemote:Del", nil, nil)
 	}
 	if err != nil {

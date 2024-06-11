@@ -36,9 +36,11 @@ func (sc *ServerCtl) Dump() error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	l, err := grpc.DialContext(ctx, sc.server,
+	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock())
+	}
+
+	l, err := grpc.NewClient(sc.server, opts...)
 	if err != nil {
 		return err
 	}
@@ -47,7 +49,7 @@ func (sc *ServerCtl) Dump() error {
 	client := NewSyncClient(l)
 
 	req := &WSDumpRequest{}
-	r, err := client.Dump(context.Background(), req)
+	r, err := client.Dump(ctx, req)
 	if err != nil {
 		return err
 	}
