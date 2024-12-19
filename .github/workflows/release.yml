@@ -22,7 +22,7 @@ jobs:
         with:
           distribution: goreleaser
           version: '~> v2'
-          args: release --snapshot --clean
+          args: release --clean
   slack-notify:
     if: always()
     needs: [goreleaser]
