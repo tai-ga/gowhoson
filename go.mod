@@ -1,6 +1,8 @@
 module github.com/tai-ga/gowhoson
 
-go 1.20
+go 1.22.0
+
+toolchain go1.24.1
 
 require (
 	github.com/client9/reopen v1.0.0
@@ -11,9 +13,9 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/urfave/cli/v2 v2.27.6
 	go.uber.org/zap v1.27.0
-	golang.org/x/net v0.33.0
-	google.golang.org/grpc v1.64.1
-	google.golang.org/protobuf v1.34.2
+	golang.org/x/net v0.34.0
+	google.golang.org/grpc v1.71.0
+	google.golang.org/protobuf v1.36.4
 )
 
 require (
@@ -26,7 +28,7 @@ require (
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240318140521-94a12d6c2237 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250115164207-1a7da9e5054f // indirect
 )
