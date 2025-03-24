@@ -1,6 +1,8 @@
 module github.com/tai-ga/gowhoson
 
-go 1.20
+go 1.22
+
+toolchain go1.24.1
 
 require (
 	github.com/client9/reopen v1.0.0
@@ -13,7 +15,7 @@ require (
 	go.uber.org/zap v1.27.0
 	golang.org/x/net v0.33.0
 	google.golang.org/grpc v1.64.1
-	google.golang.org/protobuf v1.34.2
+	google.golang.org/protobuf v1.36.6
 )
 
 require (
