@@ -126,7 +126,7 @@ func (ses *Session) sendLine(str string) error {
 	var err error
 	if ses.protocol == pTCP {
 		ses.tp.StartResponse(ses.tpid)
-		err = ses.tp.PrintfLine(str + charCRLF)
+		err = ses.tp.PrintfLine("%s%s", str, charCRLF)
 		ses.tp.EndResponse(ses.tpid)
 	} else {
 		b := []byte(str + charCRLF + charCRLF)
