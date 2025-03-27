@@ -16,14 +16,13 @@ import (
 	"syscall"
 	"time"
 
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"google.golang.org/grpc"
 
 	"github.com/tai-ga/gowhoson/pkg/whoson"
 	"github.com/urfave/cli/v2"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 func signalHandler(ctx context.Context, ch <-chan os.Signal, wg *sync.WaitGroup, c *cli.Context, f func()) {
@@ -63,6 +62,25 @@ func splitHostPort(hostPort string) (host string, port int, err error) {
 	return
 }
 
+func ipportsValidate(c *cli.Context, optname string) (string, error) {
+	ipports := c.String(optname)
+	ipportList := strings.Split(ipports, ",")
+
+	for i, ipport := range ipportList {
+		ipport = strings.TrimSpace(ipport)
+		host, _, err := splitHostPort(ipport)
+		if err != nil {
+			return "", err
+		}
+		if net.ParseIP(host) == nil {
+			return "", fmt.Errorf("\"--%s %s\" parse error", optname, ipports)
+		}
+		ipportList[i] = ipport
+	}
+
+	return strings.Join(ipportList, ","), nil
+}
+
 func cmdServerValidate(c *cli.Context) (*whoson.ServerConfig, error) {
 	config := c.App.Metadata["config"].(*whoson.ServerConfig)
 	if c.String("loglevel") != "" {
@@ -82,50 +100,37 @@ func cmdServerValidate(c *cli.Context) (*whoson.ServerConfig, error) {
 
 	config.Expvar = c.Bool("expvar")
 
-	if c.String("tcp") != "" {
-		err := cmdServerValidateTCP(c, config)
-		if err != nil {
+	validatePortOption := func(optName string) error {
+		if c.String(optName) != "nostart" {
+			ipports, err := ipportsValidate(c, optName)
+			if err != nil {
+				return err
+			}
+
+			switch optName {
+			case "tcp":
+				config.TCP = ipports
+			case "udp":
+				config.UDP = ipports
+			case "controlport":
+				config.ControlPort = ipports
+			case "syncremote":
+				config.SyncRemote = ipports
+			}
+		}
+		return nil
+	}
+
+	for _, opt := range []string{"tcp", "udp", "controlport", "syncremote"} {
+		if err := validatePortOption(opt); err != nil {
 			return nil, err
 		}
 	}
-	if c.String("udp") != "" {
-		err := cmdServerValidateUDP(c, config)
-		if err != nil {
-			return nil, err
-		}
-	}
+
 	if c.String("savefile") != "" {
 		config.SaveFile = c.String("savefile")
 	}
 	return config, nil
-}
-
-func cmdServerValidateTCP(c *cli.Context, config *whoson.ServerConfig) error {
-	config.TCP = c.String("tcp")
-	if config.TCP != "nostart" {
-		host, _, err := splitHostPort(config.TCP)
-		if err != nil {
-			return err
-		}
-		if net.ParseIP(host) == nil {
-			return fmt.Errorf("\"--tcp %s\" parse error", config.TCP)
-		}
-	}
-	return nil
-}
-
-func cmdServerValidateUDP(c *cli.Context, config *whoson.ServerConfig) error {
-	config.UDP = c.String("udp")
-	if config.UDP != "nostart" {
-		host, _, err := splitHostPort(config.UDP)
-		if err != nil {
-			return err
-		}
-		if net.ParseIP(host) == nil {
-			return fmt.Errorf("\"--udp %s\" parse error", config.UDP)
-		}
-	}
-	return nil
 }
 
 func cmdServer(c *cli.Context) error {
@@ -179,17 +184,19 @@ func cmdServer(c *cli.Context) error {
 	var g *grpc.Server
 	var lisgrpc net.Listener
 
-	opts := []grpc_zap.Option{
-		grpc_zap.WithDurationField(func(duration time.Duration) zapcore.Field {
-			return zap.Int64("grpc.time_ns", duration.Nanoseconds())
-		}),
+	// Initialize logging interceptor
+	logOpts := []logging.Option{
+		logging.WithLogOnEvents(logging.StartCall, logging.FinishCall),
 	}
+
+	zapLogger := &zapLoggerAdapter{logger: whoson.Logger}
+
 	g = grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
-			grpc_zap.UnaryServerInterceptor(whoson.Logger, opts...),
+			logging.UnaryServerInterceptor(zapLogger, logOpts...),
 		),
 		grpc.ChainStreamInterceptor(
-			grpc_zap.StreamServerInterceptor(whoson.Logger, opts...),
+			logging.StreamServerInterceptor(zapLogger, logOpts...),
 		),
 	)
 	lisgrpc, err = runGrpc(g, config, wg, c)
@@ -379,4 +386,33 @@ func saveStore(f string) error {
 		return err
 	}
 	return nil
+}
+
+type zapLoggerAdapter struct {
+	logger *zap.Logger
+}
+
+func (l *zapLoggerAdapter) Log(ctx context.Context, level logging.Level, msg string, fields ...any) {
+	zapLevel := zapcore.InfoLevel
+	switch level {
+	case logging.LevelDebug:
+		zapLevel = zapcore.DebugLevel
+	case logging.LevelInfo:
+		zapLevel = zapcore.InfoLevel
+	case logging.LevelWarn:
+		zapLevel = zapcore.WarnLevel
+	case logging.LevelError:
+		zapLevel = zapcore.ErrorLevel
+	}
+
+	zapFields := make([]zap.Field, 0, len(fields)/2)
+	for i := 0; i < len(fields); i += 2 {
+		key, ok := fields[i].(string)
+		if !ok {
+			continue
+		}
+		zapFields = append(zapFields, zap.Any(key, fields[i+1]))
+	}
+
+	l.logger.Log(zapLevel, msg, zapFields...)
 }

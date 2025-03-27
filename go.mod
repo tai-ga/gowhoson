@@ -4,7 +4,7 @@ go 1.24
 
 require (
 	github.com/client9/reopen v1.0.0
-	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
+	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.1
 	github.com/kayac/go-katsubushi/v2 v2.0.4
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/orcaman/concurrent-map/v2 v2.0.1
@@ -20,10 +20,9 @@ require (
 	github.com/Songmu/retry v0.0.1 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20190329173943-551aad21a668 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
-	github.com/golang/protobuf v1.5.4 // indirect
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	github.com/stretchr/testify v1.10.0 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect

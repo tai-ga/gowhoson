@@ -7,7 +7,7 @@ import (
 	"net"
 	"time"
 
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	cmap "github.com/orcaman/concurrent-map/v2"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
@@ -198,7 +198,7 @@ func RunSyncRemote(ctx context.Context, hosts []string) {
 	defer close(syncChan)
 
 	if Logger != nil {
-		grpc_zap.ReplaceGrpcLogger(Logger)
+		logging.InjectLogField(context.Background(), "logger", Logger)
 	}
 	Log("info", "RunSyncRemoteStart", nil, nil)
 	for {
