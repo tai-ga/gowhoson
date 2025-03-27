@@ -2,7 +2,7 @@
 
 gowhoson is a golang implementation of the "Whoson" protocol.
 
-[![Build](https://github.com/tai-ga/gowhoson/workflows/Build/badge.svg)](https://github.com/tai-ga/gowhoson/actions?query=workflow%3ABuild)
+[![release](https://github.com/tai-ga/gowhoson/workflows/release/badge.svg)](https://github.com/tai-ga/gowhoson/actions?query=workflow%3Arelease)
 [![codecov](https://codecov.io/gh/tai-ga/gowhoson/branch/master/graph/badge.svg)](https://codecov.io/gh/tai-ga/gowhoson)
 [![Go Report Card](https://goreportcard.com/badge/github.com/tai-ga/gowhoson)](https://goreportcard.com/report/github.com/tai-ga/gowhoson)
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/tai-ga/gowhoson/whoson)](https://pkg.go.dev/github.com/tai-ga/gowhoson/whoson)
