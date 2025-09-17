@@ -20,8 +20,8 @@ INSTCMD_golint      := golang.org/x/lint/golint@v0.0.0-20241112194109-818c5a8040
 INSTCMD_misspell    := github.com/client9/misspell/cmd/misspell@v0.3.4
 INSTCMD_ineffassign := github.com/gordonklaus/ineffassign@v0.1.0
 INSTCMD_gocyclo     := github.com/fzipp/gocyclo/cmd/gocyclo@v0.6.0
-INSTCMD_protoc-gen-go := google.golang.org/protobuf/cmd/protoc-gen-go@v1.33.0
-INSTCMD_protoc-gen-go-grpc := google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.3.0
+INSTCMD_protoc-gen-go := google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.9
+INSTCMD_protoc-gen-go-grpc := google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.5.1
 INSTCMD_staticcheck := honnef.co/go/tools/cmd/staticcheck@2025.1.1
 
 TOOLS_DIR := $(abspath ./.tools)
