@@ -20,7 +20,7 @@ builds:
       - amd64
       - arm64
 archives:
-  - format: tar.gz
+  - formats: [ 'tar.gz' ]
     name_template: '{{ .Binary }}_{{.Version}}_{{ .Os }}_{{ .Arch }}'
     files:
       - LICENSE
