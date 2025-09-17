@@ -2,13 +2,14 @@ package gowhoson
 
 import (
 	"bytes"
+	"context"
 	"net"
 	"strings"
 	"sync"
 	"testing"
 
 	"github.com/tai-ga/gowhoson/pkg/whoson"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 type TestEnv struct {
@@ -47,14 +48,15 @@ func startTCPServer(t *testing.T) {
 	}
 }
 
-func testWithServer(t *testing.T, testFuncs ...func(*cli.App)) string {
+func testWithServer(t *testing.T, testFuncs ...func(*cli.Command)) string {
 	AppVersions = NewVersions("", "")
 	var buf bytes.Buffer
 	startTCPServer(t)
 
 	app := makeApp()
 	app.Writer = &buf
-	app.Metadata = map[string]interface{}{
+	app.ErrWriter = &buf
+	app.Metadata = map[string]any{
 		"config": &whoson.ClientConfig{
 			Mode:   "tcp",
 			Server: "localhost:9876",
@@ -64,6 +66,7 @@ func testWithServer(t *testing.T, testFuncs ...func(*cli.App)) string {
 	for _, f := range testFuncs {
 		f(app)
 	}
+
 	te.close()
 	return buf.String()
 }
@@ -71,14 +74,14 @@ func testWithServer(t *testing.T, testFuncs ...func(*cli.App)) string {
 func TestCmd(t *testing.T) {
 	out := testWithServer(
 		t,
-		func(app *cli.App) {
-			app.Run([]string{"gowhoson", "client", "login", "1.1.1.1", "TESTSTRING"})
+		func(app *cli.Command) {
+			app.Run(context.Background(), []string{"gowhoson", "client", "login", "1.1.1.1", "TESTSTRING"})
 		},
-		func(app *cli.App) {
-			app.Run([]string{"gowhoson", "client", "query", "1.1.1.1"})
+		func(app *cli.Command) {
+			app.Run(context.Background(), []string{"gowhoson", "client", "query", "1.1.1.1"})
 		},
-		func(app *cli.App) {
-			app.Run([]string{"gowhoson", "client", "logout", "1.1.1.1"})
+		func(app *cli.Command) {
+			app.Run(context.Background(), []string{"gowhoson", "client", "logout", "1.1.1.1"})
 		},
 	)
 	for _, s := range []string{"+LOGIN OK", "+TESTSTRING", "+LOGOUT record deleted"} {

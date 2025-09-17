@@ -17,15 +17,14 @@ import (
 	"time"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
-	"google.golang.org/grpc"
-
 	"github.com/tai-ga/gowhoson/pkg/whoson"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc"
 )
 
-func signalHandler(ctx context.Context, ch <-chan os.Signal, wg *sync.WaitGroup, c *cli.Context, f func()) {
+func signalHandler(ctx context.Context, ch <-chan os.Signal, wg *sync.WaitGroup, c *cli.Command, f func()) {
 	defer wg.Done()
 
 	for {
@@ -42,7 +41,7 @@ func signalHandler(ctx context.Context, ch <-chan os.Signal, wg *sync.WaitGroup,
 			default:
 				f()
 				time.AfterFunc(time.Second*8, func() {
-					displayError(c.App.ErrWriter, errors.New("clean shutdown took too long, forcing exit"))
+					displayError(c.Root().ErrWriter, errors.New("clean shutdown took too long, forcing exit"))
 					os.Exit(0)
 				})
 			}
@@ -62,7 +61,7 @@ func splitHostPort(hostPort string) (host string, port int, err error) {
 	return
 }
 
-func ipportsValidate(c *cli.Context, optname string) (string, error) {
+func ipportsValidate(c *cli.Command, optname string) (string, error) {
 	ipports := c.String(optname)
 	ipportList := strings.Split(ipports, ",")
 
@@ -81,8 +80,8 @@ func ipportsValidate(c *cli.Context, optname string) (string, error) {
 	return strings.Join(ipportList, ","), nil
 }
 
-func cmdServerValidate(c *cli.Context) (*whoson.ServerConfig, error) {
-	config := c.App.Metadata["config"].(*whoson.ServerConfig)
+func cmdServerValidate(c *cli.Command) (*whoson.ServerConfig, error) {
+	config := c.Root().Metadata["config"].(*whoson.ServerConfig)
 	if c.String("loglevel") != "" {
 		config.Loglevel = c.String("loglevel")
 		switch config.Loglevel {
@@ -133,11 +132,11 @@ func cmdServerValidate(c *cli.Context) (*whoson.ServerConfig, error) {
 	return config, nil
 }
 
-func cmdServer(c *cli.Context) error {
+func cmdServer(ctx context.Context, c *cli.Command) error {
 	var err error
 	config, err := cmdServerValidate(c)
 	if err != nil {
-		displayError(c.App.ErrWriter, err)
+		displayError(c.Root().ErrWriter, err)
 		return err
 	}
 
@@ -148,12 +147,12 @@ func cmdServer(c *cli.Context) error {
 	whoson.NewMainStoreEnableSyncRemote()
 	err = loadStore(config.SaveFile)
 	if err != nil {
-		displayError(c.App.ErrWriter, err)
+		displayError(c.Root().ErrWriter, err)
 		return err
 	}
 	err = whoson.NewLogger(config.Log, config.Loglevel)
 	if err != nil {
-		displayError(c.App.ErrWriter, err)
+		displayError(c.Root().ErrWriter, err)
 		return err
 	}
 	whoson.Log("info", fmt.Sprintf("ServerID:%d", config.ServerID), nil, nil)
@@ -236,7 +235,7 @@ func cmdServer(c *cli.Context) error {
 
 		err = saveStore(config.SaveFile)
 		if err != nil {
-			displayError(c.App.ErrWriter, err)
+			displayError(c.Root().ErrWriter, err)
 		}
 	})
 
@@ -244,10 +243,10 @@ func cmdServer(c *cli.Context) error {
 	return nil
 }
 
-func runUDPServer(c *cli.Context, config *whoson.ServerConfig, wg *sync.WaitGroup) (*net.UDPConn, error) {
+func runUDPServer(c *cli.Command, config *whoson.ServerConfig, wg *sync.WaitGroup) (*net.UDPConn, error) {
 	host, port, err := splitHostPort(config.UDP)
 	if err != nil {
-		displayError(c.App.ErrWriter, err)
+		displayError(c.Root().ErrWriter, err)
 		return nil, err
 	}
 	addrudp := net.UDPAddr{
@@ -257,7 +256,7 @@ func runUDPServer(c *cli.Context, config *whoson.ServerConfig, wg *sync.WaitGrou
 	var con *net.UDPConn
 	con, err = net.ListenUDP("udp", &addrudp)
 	if err != nil {
-		displayError(c.App.ErrWriter, err)
+		displayError(c.Root().ErrWriter, err)
 		return nil, err
 	}
 	wg.Add(1)
@@ -268,11 +267,11 @@ func runUDPServer(c *cli.Context, config *whoson.ServerConfig, wg *sync.WaitGrou
 	return con, nil
 }
 
-func runTCPServer(c *cli.Context, config *whoson.ServerConfig, wg *sync.WaitGroup) (*net.TCPListener, error) {
+func runTCPServer(c *cli.Command, config *whoson.ServerConfig, wg *sync.WaitGroup) (*net.TCPListener, error) {
 	var lis *net.TCPListener
 	host, port, err := splitHostPort(config.TCP)
 	if err != nil {
-		displayError(c.App.ErrWriter, err)
+		displayError(c.Root().ErrWriter, err)
 		return nil, err
 	}
 	addrtcp := net.TCPAddr{
@@ -281,7 +280,7 @@ func runTCPServer(c *cli.Context, config *whoson.ServerConfig, wg *sync.WaitGrou
 	}
 	lis, err = net.ListenTCP("tcp", &addrtcp)
 	if err != nil {
-		displayError(c.App.ErrWriter, err)
+		displayError(c.Root().ErrWriter, err)
 		return nil, err
 	}
 	wg.Add(1)
@@ -292,16 +291,16 @@ func runTCPServer(c *cli.Context, config *whoson.ServerConfig, wg *sync.WaitGrou
 	return lis, nil
 }
 
-func getListener(c *cli.Context, host string) (net.Listener, error) {
+func getListener(c *cli.Command, host string) (net.Listener, error) {
 	l, err := net.Listen("tcp", host)
 	if err != nil {
-		displayError(c.App.ErrWriter, err)
+		displayError(c.Root().ErrWriter, err)
 		return nil, err
 	}
 	return l, nil
 }
 
-func runExpvar(config *whoson.ServerConfig, wg *sync.WaitGroup, c *cli.Context) (net.Listener, error) {
+func runExpvar(config *whoson.ServerConfig, wg *sync.WaitGroup, c *cli.Command) (net.Listener, error) {
 	var lishttp net.Listener
 	var err error
 	if config.Expvar {
@@ -317,7 +316,7 @@ func runExpvar(config *whoson.ServerConfig, wg *sync.WaitGroup, c *cli.Context) 
 	return lishttp, nil
 }
 
-func runGrpc(g *grpc.Server, config *whoson.ServerConfig, wg *sync.WaitGroup, c *cli.Context) (net.Listener, error) {
+func runGrpc(g *grpc.Server, config *whoson.ServerConfig, wg *sync.WaitGroup, c *cli.Command) (net.Listener, error) {
 	var lisgrpc net.Listener
 	var err error
 	if lisgrpc, err = getListener(c, config.ControlPort); err != nil {

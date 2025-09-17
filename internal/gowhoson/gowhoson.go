@@ -1,12 +1,13 @@
 package gowhoson
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
 	"runtime"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 // Versions hold information for program and git and go versions.
@@ -28,22 +29,24 @@ var (
 	AppVersions *Versions
 )
 
-func makeApp() *cli.App {
-	cli.VersionPrinter = func(c *cli.Context) {
-		fmt.Printf("%s version:%s, build:%s, Go:%s\n", c.App.Name, c.App.Version, AppVersions.Gitcommit, runtime.Version())
+func makeApp() *cli.Command {
+	cli.VersionPrinter = func(c *cli.Command) {
+		fmt.Printf("%s version:%s, build:%s, Go:%s\n", c.Name, c.Version, AppVersions.Gitcommit, runtime.Version())
 	}
 
-	app := cli.NewApp()
-	app.Name = "gowhoson"
-	app.Usage = "gowhoson is whoson server & client"
-	app.Version = AppVersions.Version
-	app.ErrWriter = os.Stderr
+	app := &cli.Command{
+		Name:      "gowhoson",
+		Usage:     "gowhoson is whoson server & client",
+		Version:   AppVersions.Version,
+		Writer:    os.Stdout,
+		ErrWriter: os.Stderr,
+	}
 	app.Flags = []cli.Flag{
 		&cli.StringFlag{
 			Name:    "config",
 			Usage:   "config file path",
 			Value:   "",
-			EnvVars: []string{"GOWHOSON_CONFIG"},
+			Sources: cli.EnvVars("GOWHOSON_CONFIG"),
 		},
 	}
 
@@ -51,12 +54,12 @@ func makeApp() *cli.App {
 		&cli.StringFlag{
 			Name:    "mode",
 			Usage:   "e.g. [tcp|udp]",
-			EnvVars: []string{"GOWHOSON_CLIENT_MODE"},
+			Sources: cli.EnvVars("GOWHOSON_CLIENT_MODE"),
 		},
 		&cli.StringFlag{
 			Name:    "server",
 			Usage:   "e.g. [ServerIP:Port]",
-			EnvVars: []string{"GOWHOSON_CLIENT_SERVER"},
+			Sources: cli.EnvVars("GOWHOSON_CLIENT_SERVER"),
 		},
 	}
 
@@ -68,47 +71,47 @@ func makeApp() *cli.App {
 				&cli.StringFlag{
 					Name:    "tcp",
 					Usage:   "e.g. [ServerIP:Port|nostart]",
-					EnvVars: []string{"GOWHOSON_SERVER_TCP"},
+					Sources: cli.EnvVars("GOWHOSON_SERVER_TCP"),
 				},
 				&cli.StringFlag{
 					Name:    "udp",
 					Usage:   "e.g. [ServerIP:Port|nostart]",
-					EnvVars: []string{"GOWHOSON_SERVER_UDP"},
+					Sources: cli.EnvVars("GOWHOSON_SERVER_UDP"),
 				},
 				&cli.StringFlag{
 					Name:    "log",
 					Usage:   "e.g. [stdout|stderr|discard] or \"/var/log/filename.log\"",
-					EnvVars: []string{"GOWHOSON_SERVER_LOG"},
+					Sources: cli.EnvVars("GOWHOSON_SERVER_LOG"),
 				},
 				&cli.StringFlag{
 					Name:    "loglevel",
 					Usage:   "e.g. [debug|info|warn|error|dpanic|panic|fatal]",
-					EnvVars: []string{"GOWHOSON_SERVER_LOGLEVEL"},
+					Sources: cli.EnvVars("GOWHOSON_SERVER_LOGLEVEL"),
 				},
 				&cli.IntFlag{
 					Name:    "serverid",
 					Usage:   "e.g. [1000]",
-					EnvVars: []string{"GOWHOSON_SERVER_SERVERID"},
+					Sources: cli.EnvVars("GOWHOSON_SERVER_SERVERID"),
 				},
 				&cli.BoolFlag{
 					Name:    "expvar",
 					Usage:   "e.g. (default: false)",
-					EnvVars: []string{"GOWHOSON_SERVER_EXPVAR"},
+					Sources: cli.EnvVars("GOWHOSON_SERVER_EXPVAR"),
 				},
 				&cli.StringFlag{
 					Name:    "controlport",
 					Usage:   "e.g. [ServerIP:Port]",
-					EnvVars: []string{"GOWHOSON_SERVER_CONTROLPORT"},
+					Sources: cli.EnvVars("GOWHOSON_SERVER_CONTROLPORT"),
 				},
 				&cli.StringFlag{
 					Name:    "syncremote",
 					Usage:   "e.g. [ServerIP:Port,ServerIP:Port...]",
-					EnvVars: []string{"GOWHOSON_SERVER_SYNCREMOTE"},
+					Sources: cli.EnvVars("GOWHOSON_SERVER_SYNCREMOTE"),
 				},
 				&cli.StringFlag{
 					Name:    "savefile",
 					Usage:   "e.g. [/var/lib/gowhoson.json]",
-					EnvVars: []string{"GOWHOSON_SERVER_SAVEFILE"},
+					Sources: cli.EnvVars("GOWHOSON_SERVER_SAVEFILE"),
 				},
 			},
 			Action: cmdServer,
@@ -116,7 +119,7 @@ func makeApp() *cli.App {
 		{
 			Name:  "client",
 			Usage: "gowhoson client mode",
-			Subcommands: []*cli.Command{
+			Commands: []*cli.Command{
 				{
 					Name:   "login",
 					Usage:  "whoson command \"LOGIN\"",
@@ -149,23 +152,22 @@ func makeApp() *cli.App {
 				&cli.StringFlag{
 					Name:    "server",
 					Usage:   "e.g. [ServerIP:Port]",
-					EnvVars: []string{"GOWHOSON_SERVERCTL_DUMP_SERVER"},
+					Sources: cli.EnvVars("GOWHOSON_SERVERCTL_DUMP_SERVER"),
 				},
 				&cli.BoolFlag{
 					Name:    "json",
 					Usage:   "e.g. (default: false)",
-					EnvVars: []string{"GOWHOSON_SERVERCTL_DUMP_JSON"},
+					Sources: cli.EnvVars("GOWHOSON_SERVERCTL_DUMP_JSON"),
 				},
 				&cli.BoolFlag{
 					Name:    "editconfig",
 					Usage:   "e.g. (default: false)",
-					EnvVars: []string{"GOWHOSON_SERVERCTL_DUMP_EDITCONFIG"},
+					Sources: cli.EnvVars("GOWHOSON_SERVERCTL_DUMP_EDITCONFIG"),
 				},
 			},
 			Action: cmdDump,
 		},
 	}
-	app.Setup()
 	return app
 }
 
@@ -178,36 +180,36 @@ func fileExists(filename string) bool {
 func Run() int {
 	app := makeApp()
 
-	app.Before = func(c *cli.Context) error {
+	app.Before = func(ctx context.Context, c *cli.Command) (context.Context, error) {
 		if c.Args().Len() > 0 && c.Args().Slice()[0] == "client" {
-			err := runClient(c, app)
+			err := runClient(ctx, c, app)
 			if err != nil {
-				return err
+				return ctx, err
 			}
 		} else if c.Args().Len() > 0 && c.Args().Slice()[0] == "dump" {
-			err := runDump(c, app)
+			err := runDump(ctx, c, app)
 			if err != nil {
-				return err
+				return ctx, err
 			}
 		} else if c.Args().Len() > 0 && c.Args().Slice()[0] == "server" {
-			err := runServer(c, app)
+			err := runServer(ctx, c, app)
 			if err != nil {
-				return err
+				return ctx, err
 			}
 		}
-		return nil
+		return ctx, nil
 	}
 
-	app.Run(os.Args)
+	app.Run(context.Background(), os.Args)
 	return 0
 }
 
-func runClient(c *cli.Context, app *cli.App) error {
+func runClient(_ context.Context, c *cli.Command, app *cli.Command) error {
 	file, config, err := GetClientConfig(c)
 	if err != nil {
 		return err
 	}
-	app.Metadata = map[string]interface{}{
+	app.Metadata = map[string]any{
 		"config": config,
 	}
 
@@ -224,7 +226,7 @@ func runClient(c *cli.Context, app *cli.App) error {
 	return nil
 }
 
-func runDump(c *cli.Context, app *cli.App) error {
+func runDump(_ context.Context, c *cli.Command, app *cli.Command) error {
 	file, config, err := GetServerCtlConfig(c)
 	if err != nil {
 		return err
@@ -246,12 +248,12 @@ func runDump(c *cli.Context, app *cli.App) error {
 	return nil
 }
 
-func runServer(c *cli.Context, app *cli.App) error {
+func runServer(_ context.Context, c *cli.Command, app *cli.Command) error {
 	file, config, err := GetServerConfig(c)
 	if err != nil {
 		return err
 	}
-	app.Metadata = map[string]interface{}{
+	app.Metadata = map[string]any{
 		"config": config,
 	}
 

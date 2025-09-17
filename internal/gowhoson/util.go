@@ -8,11 +8,11 @@ import (
 	"path/filepath"
 
 	"github.com/tai-ga/gowhoson/pkg/whoson"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 // GetServerConfig return server config file and new ServerConfig struct pointer and error.
-func GetServerConfig(c *cli.Context) (string, *whoson.ServerConfig, error) {
+func GetServerConfig(c *cli.Command) (string, *whoson.ServerConfig, error) {
 	var file string
 	if c.String("config") == "" {
 		file = filepath.Join("/etc", ServerConfig)
@@ -43,7 +43,7 @@ func GetServerConfig(c *cli.Context) (string, *whoson.ServerConfig, error) {
 	return file, config, nil
 }
 
-func optOverwite(c *cli.Context, config *whoson.ClientConfig) {
+func optOverwite(c *cli.Command, config *whoson.ClientConfig) {
 	if c.String("mode") != "" {
 		config.Mode = c.String("mode")
 	}

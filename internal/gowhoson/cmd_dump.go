@@ -1,19 +1,20 @@
 package gowhoson
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/tai-ga/gowhoson/pkg/whoson"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
-func cmdDump(c *cli.Context) error {
+func cmdDump(ctx context.Context, c *cli.Command) error {
 	var err error
 	var sc *whoson.ServerCtl
-	config := c.App.Metadata["config"].(*whoson.ServerCtlConfig)
+	config := c.Root().Metadata["config"].(*whoson.ServerCtlConfig)
 
 	config.EditConfig = c.Bool("editconfig")
 
@@ -31,7 +32,7 @@ func cmdDump(c *cli.Context) error {
 	config.JSON = c.Bool("json")
 
 	sc = whoson.NewServerCtl(config.Server)
-	sc.SetWriter(c.App.Writer)
+	sc.SetWriter(c.Root().Writer)
 	err = sc.Dump()
 	if err != nil {
 		return err
@@ -58,7 +59,7 @@ func GetServerCtlConfigDir() string {
 }
 
 // GetServerCtlConfig return server config file and new ServerCtlConfig struct pointer and error.
-func GetServerCtlConfig(c *cli.Context) (string, *whoson.ServerCtlConfig, error) {
+func GetServerCtlConfig(c *cli.Command) (string, *whoson.ServerCtlConfig, error) {
 	var file string
 	if c.String("config") == "" {
 		dir := GetServerCtlConfigDir()

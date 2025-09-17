@@ -1,6 +1,7 @@
 package gowhoson
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,10 +11,10 @@ import (
 	"runtime"
 
 	"github.com/tai-ga/gowhoson/pkg/whoson"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
-func cmdEditConfig(c *cli.Context) error {
+func cmdEditConfig(ctx context.Context, c *cli.Command) error {
 	file := filepath.Join(GetClientConfigDir(), ClientConfig)
 	e := NewFileEdit(file)
 	e.Edit()
@@ -74,7 +75,7 @@ func GetClientConfigDir() string {
 }
 
 // GetClientConfig return client config file and new ClientConfig struct pointer and error.
-func GetClientConfig(c *cli.Context) (string, *whoson.ClientConfig, error) {
+func GetClientConfig(c *cli.Command) (string, *whoson.ClientConfig, error) {
 	var file string
 	if c.String("config") == "" {
 		dir := GetClientConfigDir()
