@@ -1,12 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
+    "config:recommended",
     ":timezone(Asia/Tokyo)",
     ":prHourlyLimitNone",
     ":automergePatch"
   ],
   "dependencyDashboard": true,
-  "ignorePaths": ["Dockerfile.build"],
+  "ignorePaths": [
+    "Dockerfile.build"
+  ],
   "packageRules": []
 }
