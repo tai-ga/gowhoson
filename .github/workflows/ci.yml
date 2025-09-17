@@ -45,7 +45,7 @@ jobs:
     name: workflow notification to slack
     runs-on: ubuntu-latest
     steps:
-      - uses: Gamesight/slack-workflow-status@master
+      - uses: Gamesight/slack-workflow-status@68bf00d0dbdbcb206c278399aa1ef6c14f74347a # v1.3.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
