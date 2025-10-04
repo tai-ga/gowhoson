@@ -100,7 +100,8 @@ func cmdServerValidate(c *cli.Command) (*whoson.ServerConfig, error) {
 	config.Expvar = c.Bool("expvar")
 
 	validatePortOption := func(optName string) error {
-		if c.String(optName) != "nostart" {
+		optValue := c.String(optName)
+		if optValue != "" && optValue != "nostart" {
 			ipports, err := ipportsValidate(c, optName)
 			if err != nil {
 				return err
@@ -213,8 +214,10 @@ func cmdServer(ctx context.Context, c *cli.Command) error {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		hosts := strings.Split(config.SyncRemote, ",")
-		whoson.RunSyncRemote(ctx, hosts)
+		if config.SyncRemote != "" {
+			hosts := strings.Split(config.SyncRemote, ",")
+			whoson.RunSyncRemote(ctx, hosts)
+		}
 	}()
 
 	wg.Add(1)
