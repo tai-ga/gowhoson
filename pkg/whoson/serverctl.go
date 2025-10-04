@@ -14,6 +14,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/tw"
 )
 
 // ServerCtl hold information for server control.
@@ -77,10 +78,22 @@ func (sc *ServerCtl) WriteJSON() error {
 
 // WriteTable Output Table with io.Writer
 func (sc *ServerCtl) WriteTable() error {
-	t := tablewriter.NewWriter(sc.out)
-	t.SetHeader([]string{"Expire", "IP", "Data"})
-	t.SetAutoFormatHeaders(false)
-	t.SetBorder(false)
+	// New API: Create table with option-based approach
+	t := tablewriter.NewTable(sc.out,
+		tablewriter.WithConfig(tablewriter.Config{
+			Header: tw.CellConfig{
+				Formatting: tw.CellFormatting{
+					AutoFormat: tw.Off, // Disable automatic header formatting
+				},
+			},
+		}),
+		tablewriter.WithRendition(tw.Rendition{
+			Borders: tw.BorderNone, // Disable borders
+		}),
+	)
+
+	// Set headers (using new Header method)
+	t.Header("Expire", "IP", "Data")
 
 	var sd []*StoreData
 	err := json.Unmarshal(sc.dumpResp.Json, &sd)
@@ -97,9 +110,16 @@ func (sc *ServerCtl) WriteTable() error {
 
 	if len(sd) > 0 {
 		for _, v := range sd {
-			t.Append([]string{v.Expire.Format("2006-01-02 15:04:05"), v.IP.String(), v.Data})
+			// Append method (with error handling)
+			err := t.Append([]string{v.Expire.Format("2006-01-02 15:04:05"), v.IP.String(), v.Data})
+			if err != nil {
+				return fmt.Errorf("failed to append row: %w", err)
+			}
 		}
-		t.Render()
+		// Render method (with error handling)
+		if err := t.Render(); err != nil {
+			return fmt.Errorf("failed to render table: %w", err)
+		}
 	}
 	return nil
 }
