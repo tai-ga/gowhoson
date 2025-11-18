@@ -1,10 +1,9 @@
 package whoson
 
 import (
+	"context"
 	"net"
 	"time"
-
-	"golang.org/x/net/context"
 )
 
 var _ SyncServer = (*Sync)(nil)
