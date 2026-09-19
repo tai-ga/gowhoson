@@ -50,6 +50,8 @@ github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.4 h1:9ZJYjPEJpcleIKcqysXOo1
 github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.4/go.mod h1:0xydIeg2omQ9DH6zYMP24Kk57793rnLUvP8fwdbFvz8=
 github.com/kayac/go-katsubushi/v2 v2.3.0 h1:5q/Er0xnhQGGMtN7MqiWS1JcwEgUqc4rgfBSdE2g6oQ=
 github.com/kayac/go-katsubushi/v2 v2.3.0/go.mod h1:zYYPigRI/slOgCt0q06HnjyNhOQ5p7cVRoxNBYf52wk=
+github.com/kayac/go-katsubushi/v2 v2.3.1 h1:igRxafEg8wMpTCCRPiP8U+zoQeJaI2zg9TisYK/NjcQ=
+github.com/kayac/go-katsubushi/v2 v2.3.1/go.mod h1:yVPOPqM1YfUcuXtWgw4CFGOuFpCiMhqFr1hJZrXPROU=
 github.com/kisielk/errcheck v1.5.0/go.mod h1:pFxgyoBC7bSaBwPgfKdkLd5X25qrDl4LWUI2bnpBCr8=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
