@@ -5,8 +5,8 @@ go 1.27.1
 require (
 	github.com/client9/reopen v1.0.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.4
-	github.com/kayac/go-katsubushi/v2 v2.3.0
-	github.com/olekukonko/tablewriter v1.1.4
+	github.com/kayac/go-katsubushi/v2 v2.3.1
+	github.com/olekukonko/tablewriter v1.1.5
 	github.com/orcaman/concurrent-map/v2 v2.0.1
 	github.com/pkg/errors v0.9.1
 	github.com/urfave/cli/v3 v3.13.0
